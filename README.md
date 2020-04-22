@@ -2,7 +2,7 @@
 
 ![Language](https://img.shields.io/badge/Language-Swift%205.2-orange.svg)
 
-Bugen's logic-circuit-level CPU Simulator, in a description manner. (WIP)
+Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
 
 ## Example
 An overkill example of a *Max Machine*, that is, `out = max(a, b)`, is shown below:
