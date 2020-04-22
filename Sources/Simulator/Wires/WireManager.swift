@@ -38,13 +38,13 @@ public class WireManager {
         return checkpoint == newCheckpoint
     }
 
-    public func examine() -> Int {
+    public func examine(verbose: Bool = true) -> Int {
         return wires.values.reduce(0) { acc, wire in
             if wire.from == nil {
-                print("Warning: Wire \(wire.name): no from unit")
+                if verbose { print("Warning: Wire \(wire.name): no from unit") }
                 return acc + 1
             } else if wire.to.isEmpty {
-                print("Warning: Wire \(wire.name): no to unit")
+                if verbose { print("Warning: Wire \(wire.name): no to unit") }
                 return acc + 1
             }
             return acc
