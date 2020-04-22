@@ -53,10 +53,10 @@ class WireTests: XCTestCase {
     func testWireError() {
         let wire = Wire(wireName: "testWire", value: 0b1010_0101)
 
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[-1]) }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[64]) }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[-1...2]) }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[60...64]) }
+        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] }
+        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] }
+        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] }
+        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[60...64] }
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] = true }
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] = false }
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] = 0 }
