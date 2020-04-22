@@ -36,6 +36,18 @@ public class UnitManager {
         units[unitName] = unit
     }
 
+    public func addOutputUnit(
+        unitName: UnitName,
+        outputWires: [WireName],
+        outputValue: UInt64 ) {
+        guard !units.keys.contains(unitName) else {
+            fatalError(SimulatorError.UnitManagerDuplicateName.rawValue)
+        }
+        let unit: Unit = OutputUnit(unitName, outputWires, outputValue)
+        outputWires.forEach { wireName in wireManager[wireName].from = unitName }
+        units[unitName] = unit
+    }
+
 
     private func stablize() {
         wireManager.clearCheckpoint()

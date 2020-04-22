@@ -18,11 +18,12 @@ class PrinterUnit: Unit {
         _ inputWires: [WireName]) {
         self.name = unitName
         self.inputWires = inputWires
+        self.logic = onRisingFunc
         self.onRising = onRisingFunc
     }
 
     func onRisingFunc(_ wireManager: WireManager) {
         print("\(type(of: self)) \(name)")
-        inputWires.forEach { wireName in print("\t\(wireName): \(wireManager[wireName])") }
+        inputWires.forEach { print("\t\($0): \(wireManager[$0].value)") }
     }
 }
