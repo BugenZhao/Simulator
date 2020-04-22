@@ -25,7 +25,7 @@ public class UnitManager {
     }
 
 
-    public func addBasicUnit(
+    public func addGenericUnit(
         unitName: UnitName,
         inputWires: [WireName] = [],
         outputWires: [WireName] = [],
@@ -33,7 +33,7 @@ public class UnitManager {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
-        let unit: Unit = BasicUnit(unitName, inputWires, outputWires, logic)
+        let unit: Unit = GenericUnit(unitName, inputWires, outputWires, logic)
         inputWires.forEach { wireName in wireManager[wireName].to.append(unitName) }
         outputWires.forEach { wireName in wireManager[wireName].from = unitName }
         units[unitName] = unit

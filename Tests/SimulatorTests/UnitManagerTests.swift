@@ -37,7 +37,7 @@ class UnitManagerTests: XCTestCase {
             outputWires: ["wire_0"],
             outputValue: 8
         )
-        unitManager.addBasicUnit(
+        unitManager.addGenericUnit(
             unitName: "add_5_unit",
             inputWires: ["wire_0"],
             outputWires: ["wire_1"],
@@ -45,7 +45,7 @@ class UnitManagerTests: XCTestCase {
                 wm.wire_1.v = wm.wire_0.v + 5
             }
         )
-        unitManager.addBasicUnit(
+        unitManager.addGenericUnit(
             unitName: "times_2_unit",
             inputWires: ["wire_1"],
             outputWires: ["wire_2"],

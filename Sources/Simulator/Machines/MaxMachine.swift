@@ -29,7 +29,7 @@ class MaxMachine: Machine {
             outputWires: ["wb"],
             outputValue: b
         )
-        unitManager.addBasicUnit(
+        unitManager.addGenericUnit(
             unitName: "logical_comparator",
             inputWires: ["wa", "wb"],
             outputWires: ["wselect"],
@@ -37,7 +37,7 @@ class MaxMachine: Machine {
                 wm.wselect.b = wm.wa.v < wm.wb.v
             }
         )
-        unitManager.addBasicUnit(
+        unitManager.addGenericUnit(
             unitName: "mux",
             inputWires: ["wa", "wb", "wselect"],
             outputWires: ["wout"],
