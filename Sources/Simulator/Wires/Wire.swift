@@ -13,6 +13,7 @@ public typealias WireName = String
 public class Wire {
     var value: UInt64
     var v: UInt64 { set { value = newValue } get { value } }
+    var b: Bool { set { self[0] = newValue } get { self[0] } }
     private(set) var name: WireName
 
     var from: UnitName? = nil {
