@@ -42,7 +42,7 @@ class UnitManagerTests: XCTestCase {
             inputWires: ["wire_0"],
             outputWires: ["wire_1"],
             logic: { wm in
-                wm.wire_1.value = wm.wire_0.value + 5
+                wm.wire_1.v = wm.wire_0.v + 5
             }
         )
         unitManager.addBasicUnit(
@@ -50,7 +50,7 @@ class UnitManagerTests: XCTestCase {
             inputWires: ["wire_1"],
             outputWires: ["wire_2"],
             logic: { wm in
-                wm.wire_2.value = wm.wire_1.value * 2
+                wm.wire_2.v = wm.wire_1.v * 2
             }
         )
         unitManager.addPrinterUnit(
@@ -60,7 +60,7 @@ class UnitManagerTests: XCTestCase {
 
         XCTAssertEqual(unitManager.wireManager.examine(), 0)
         unitManager.clock()
-        XCTAssertEqual(unitManager.wireManager.wire_2.value, (8 + 5) * 2)
+        XCTAssertEqual(unitManager.wireManager.wire_2.v, (8 + 5) * 2)
     }
 
     func testWireExamine() {

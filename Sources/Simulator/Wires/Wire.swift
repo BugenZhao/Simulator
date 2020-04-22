@@ -12,6 +12,7 @@ public typealias WireName = String
 
 public class Wire {
     var value: UInt64
+    var v: UInt64 { set { value = newValue } get { value } }
     private(set) var name: WireName
 
     var from: UnitName? = nil {
@@ -33,19 +34,19 @@ public class Wire {
     }
 
 
-    public subscript(idx: Int) -> UInt64 {
+    public subscript(idx: Int) -> Bool {
         get {
             guard 0...63 ~= idx else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
-            return (value & Wire.mask(idx)) >> idx
+            return ((value & Wire.mask(idx)) >> idx) == 1
         }
         set {
             guard 0...63 ~= idx else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
             let mask = Wire.mask(idx)
-            value = value & ~mask | (newValue << idx) & mask
+            value = value & ~mask | (newValue.UInt64Value << idx) & mask
         }
     }
 

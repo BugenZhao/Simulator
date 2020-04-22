@@ -19,22 +19,24 @@ class WireTests: XCTestCase {
     }
 
     func testWire() {
-        var wire = Wire(wireName: "testWire", value: 0b1010_0101)
-
+        var wire = Wire(wireName: "testWire", value: 0b1111_1111)
+        wire.v = 0b1010_0101
         XCTAssert(wire.value == 0b1010_0101)
-        XCTAssert(wire[0] == 1)
-        XCTAssert(wire[1] == 0)
-        XCTAssert(wire[2] == 1)
-        XCTAssert(wire[7] == 1)
-        XCTAssert(wire[8] == 0)
-        XCTAssert(wire[31] == 0)
-        XCTAssert(wire[63] == 0)
-        wire[0] = 0
+        XCTAssert(wire.v == 0b1010_0101)
+        XCTAssert(wire[0] == true)
+        XCTAssert(wire[1] == false)
+        XCTAssert(wire[2] == true)
+        XCTAssert(wire[7] == true)
+        XCTAssert(wire[8] == false)
+        XCTAssert(wire[31] == false)
+        XCTAssert(wire[63] == false)
+        wire[0] = false
         XCTAssert(wire.value == 0b1010_0100)
-        wire[1] = 1
+        XCTAssert(wire.v == 0b1010_0100)
+        wire[1] = true
         XCTAssert(wire.value == 0b1010_0110)
-        wire[31] = 1
-        XCTAssert(wire[31] == 1)
+        wire[31] = true
+        XCTAssert(wire[31] == true)
 
         wire = Wire(wireName: "testWire", value: 0b1010_0101)
 
@@ -54,8 +56,8 @@ class WireTests: XCTestCase {
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[64]) }
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[-1...2]) }
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[60...64]) }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] = 1 }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] = 0 }
+        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] = true }
+        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] = false }
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] = 0 }
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[60...64] = 0 }
 
