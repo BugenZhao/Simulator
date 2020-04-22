@@ -21,6 +21,7 @@ class UnitManagerTests: XCTestCase {
             inputWires: ["echo_wire"]
         )
 
+        XCTAssertEqual(unitManager.wireManager.examine(), 0)
         XCTAssertEqual(unitManager.wireManager.echo_wire.value, 0)
         unitManager.clock()
         XCTAssertEqual(unitManager.wireManager.echo_wire.value, 88)
@@ -32,7 +33,7 @@ class UnitManagerTests: XCTestCase {
         let unitManager = UnitManager()
 
         unitManager.addOutputUnit(
-            unitName: "echo_8_unit",
+            unitName: "output_8_unit",
             outputWires: ["wire_0"],
             outputValue: 8
         )
@@ -57,7 +58,52 @@ class UnitManagerTests: XCTestCase {
             inputWires: ["wire_0", "wire_1", "wire_2"]
         )
 
+        XCTAssertEqual(unitManager.wireManager.examine(), 0)
         unitManager.clock()
         XCTAssertEqual(unitManager.wireManager.wire_2.value, (8 + 5) * 2)
+    }
+
+    func testWireExamine() {
+        let unitManager = UnitManager()
+
+        unitManager.addOutputUnit(
+            unitName: "lonely_output",
+            outputWires: ["lonely_wire_0"],
+            outputValue: 555
+        )
+        unitManager.addPrinterUnit(
+            unitName: "lonely_printer",
+            inputWires: ["lonely_wire_1"]
+        )
+
+        XCTAssertEqual(unitManager.wireManager.examine(), 2)
+    }
+
+    func testDuplicateName() {
+        let unitManager = UnitManager()
+
+        let addOne = {
+            unitManager.addOutputUnit(
+                unitName: "bugen",
+                outputWires: [],
+                outputValue: 555
+            ) }
+
+        addOne()
+        expectFatalError(expectedMessage: SimulatorError.UnitManagerDuplicateNameError.rawValue) { addOne() }
+    }
+
+    func testConflictOutput() {
+        let unitManager = UnitManager()
+
+        let addOne = { (name: String) -> Void in
+            unitManager.addOutputUnit(
+                unitName: name,
+                outputWires: ["crowded_wire"],
+                outputValue: 555
+            ) }
+
+        addOne("bugen")
+        expectFatalError(expectedMessage: SimulatorError.WireFromIsFinalError.rawValue) { addOne("zhao") }
     }
 }

@@ -16,7 +16,7 @@ class WireManagerTests: XCTestCase {
         XCTAssertEqual(wa.name, "wa")
         XCTAssertEqual(wa.value, 0)
         XCTAssertEqual(wa.from, nil)
-        XCTAssertEqual(wa.to, nil)
+        XCTAssertEqual(wa.to, [])
         XCTAssertEqual(wireManager.wires.count, 1)
 
         let anotherWa = wireManager.wa
