@@ -58,7 +58,6 @@ class UnitManagerTests: XCTestCase {
         )
 
         unitManager.clock()
-        unitManager.clock()
         XCTAssertEqual(unitManager.wireManager.wire_2.value, (8 + 5) * 2)
     }
 }
