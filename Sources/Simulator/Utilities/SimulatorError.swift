@@ -11,5 +11,5 @@ public enum SimulatorError: String {
     case WireFromIsFinalError = "Wire: from is final"
     case WireOutOfRangeError = "Wire: out of range"
     
-    case UnitManagerDuplicateName = "UnitManager: duplicate name"
+    case UnitManagerDuplicateNameError = "UnitManager: duplicate name"
 }

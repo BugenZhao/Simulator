@@ -7,17 +7,31 @@
 
 import Foundation
 
+@dynamicMemberLookup
 public class UnitManager {
     let wireManager = WireManager()
     private(set) var units: [UnitName: Unit] = [:]
 
+    subscript(dynamicMember unitName: UnitName) -> Unit? {
+        get {
+            return self[unitName]
+        }
+    }
+
+    subscript(_ unitName: UnitName) -> Unit? {
+        get {
+            return units[unitName]
+        }
+    }
+    
+    
     public func addBasicUnit(
         unitName: UnitName,
         inputWires: [WireName],
         outputWires: [WireName],
         logic: @escaping (WireManager) -> Void) {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateName.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
         let unit: Unit = BasicUnit(unitName, inputWires, outputWires, logic)
         inputWires.forEach { wireName in wireManager[wireName].to.append(unitName) }
@@ -29,7 +43,7 @@ public class UnitManager {
         unitName: UnitName,
         inputWires: [WireName]) {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateName.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
         let unit: Unit = PrinterUnit(unitName, inputWires)
         inputWires.forEach { wireName in wireManager[wireName].to.append(unitName) }
@@ -41,7 +55,7 @@ public class UnitManager {
         outputWires: [WireName],
         outputValue: UInt64 ) {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateName.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
         let unit: Unit = OutputUnit(unitName, outputWires, outputValue)
         outputWires.forEach { wireName in wireManager[wireName].from = unitName }
