@@ -23,13 +23,13 @@ public class UnitManager {
             return units[unitName]
         }
     }
-    
-    
+
+
     public func addBasicUnit(
         unitName: UnitName,
-        inputWires: [WireName],
-        outputWires: [WireName],
-        logic: @escaping (WireManager) -> Void) {
+        inputWires: [WireName] = [],
+        outputWires: [WireName] = [],
+        logic: @escaping (WireManager) -> Void = { _ in return }) {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
@@ -41,7 +41,7 @@ public class UnitManager {
 
     public func addPrinterUnit(
         unitName: UnitName,
-        inputWires: [WireName]) {
+        inputWires: [WireName] = []) {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
@@ -52,8 +52,8 @@ public class UnitManager {
 
     public func addOutputUnit(
         unitName: UnitName,
-        outputWires: [WireName],
-        outputValue: UInt64 ) {
+        outputWires: [WireName] = [],
+        outputValue: UInt64 = 0) {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
