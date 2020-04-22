@@ -12,18 +12,14 @@ public typealias WireName = String
 
 public class Wire {
     var value: UInt64
-    var name: WireName
+    private(set) var name: WireName
 
     var from: UnitName? = nil {
         willSet {
             guard from == nil else { fatalError(SimulatorError.WireFromIsFinalError.rawValue) }
         }
     }
-    var to: [UnitName]? = nil {
-        willSet {
-            guard to == nil else { fatalError(SimulatorError.WireToIsFinalError.rawValue) }
-        }
-    }
+    var to: [UnitName]
 
     class func mask(_ range: ClosedRange<Int>) -> UInt64 {
         return (0...63).reduce(0, { acc, idx in
@@ -68,8 +64,8 @@ public class Wire {
         }
     }
 
-    public init(name: WireName, value: UInt64 = 0, from: UnitName? = nil, to: [UnitName]? = nil) {
-        self.name = name
+    public init(wireName: WireName, value: UInt64 = 0, from: UnitName? = nil, to: [UnitName] = []) {
+        self.name = wireName
         self.value = value
         self.from = from
         self.to = to

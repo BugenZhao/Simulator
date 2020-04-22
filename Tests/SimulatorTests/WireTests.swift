@@ -62,8 +62,7 @@ class WireTests: XCTestCase {
         wire.from = "FROM1"
         print(wire.from!)
         expectFatalError(expectedMessage: SimulatorError.WireFromIsFinalError.rawValue) { wire.from = "FROM2" }
-        wire.to = ["TO1", "TO2"]
-        print(wire.to!)
-        expectFatalError(expectedMessage: SimulatorError.WireToIsFinalError.rawValue) { wire.to = ["TO3"] }
+        wire.to.append(contentsOf: ["TO1", "TO2"])
+        print(wire.to)
     }
 }
