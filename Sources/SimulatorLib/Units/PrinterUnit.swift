@@ -7,7 +7,7 @@
 
 import Foundation
 
-class PrinterUnit: Unit {
+public class PrinterUnit: Unit {
     var name: UnitName
     var inputWires: [WireName]
     var outputWires: [WireName] = []

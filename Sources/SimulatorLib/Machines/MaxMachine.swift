@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MaxMachine: Machine {
+public class MaxMachine: Machine {
     var unitManager = UnitManager()
     let a, b: UInt64
 
@@ -16,7 +16,7 @@ class MaxMachine: Machine {
         print("max(\(a), \(b)) is \(unitManager.wireManager.wout.v)")
     }
 
-    init(_ a: UInt64, _ b: UInt64) {
+    public init(_ a: UInt64, _ b: UInt64) {
         self.a = a
         self.b = b
         unitManager.addOutputUnit(

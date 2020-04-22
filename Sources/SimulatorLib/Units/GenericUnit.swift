@@ -7,7 +7,7 @@
 
 import Foundation
 
-class GenericUnit: Unit {
+public class GenericUnit: Unit {
     var name: UnitName
     var inputWires: [WireName]
     var outputWires: [WireName]

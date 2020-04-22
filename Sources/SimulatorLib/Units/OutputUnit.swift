@@ -7,7 +7,7 @@
 
 import Foundation
 
-class OutputUnit: Unit {
+public class OutputUnit: Unit {
     var name: UnitName
     var inputWires: [WireName] = []
     var outputWires: [WireName]

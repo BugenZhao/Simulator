@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import SimulatorLib
 
 class WireTests: XCTestCase {
     func testMask() {
