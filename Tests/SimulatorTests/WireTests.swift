@@ -19,7 +19,7 @@ class WireTests: XCTestCase {
     }
 
     func testWire() {
-        var wire = Wire(name: "testWire", value: 0b1010_0101)
+        var wire = Wire(wireName: "testWire", value: 0b1010_0101)
 
         XCTAssert(wire.value == 0b1010_0101)
         XCTAssert(wire[0] == 1)
@@ -36,7 +36,7 @@ class WireTests: XCTestCase {
         wire[31] = 1
         XCTAssert(wire[31] == 1)
 
-        wire = Wire(name: "testWire", value: 0b1010_0101)
+        wire = Wire(wireName: "testWire", value: 0b1010_0101)
 
         XCTAssert(wire[0...3] == 0b0101)
         XCTAssert(wire[4...7] == 0b1010)
@@ -48,7 +48,7 @@ class WireTests: XCTestCase {
     }
 
     func testWireError() {
-        let wire = Wire(name: "testWire", value: 0b1010_0101)
+        let wire = Wire(wireName: "testWire", value: 0b1010_0101)
 
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[-1]) }
         expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { print(wire[64]) }
