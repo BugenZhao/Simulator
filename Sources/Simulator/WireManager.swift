@@ -7,4 +7,16 @@
 
 import Foundation
 
-public class WireManager { }
+@dynamicMemberLookup
+public class WireManager {
+    var wires: [WireName: Wire] = [:]
+
+    subscript(dynamicMember wireName: WireName) -> Wire {
+        get {
+            if let wire = wires[wireName] { return wire }
+            let wire = Wire(name: wireName, value: 0)
+            wires[wireName] = wire
+            return wire
+        }
+    }
+}
