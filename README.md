@@ -36,3 +36,9 @@ unitManager.addGenericUnit(
 )
 unitManager.clock()
 ```
+## Build and Run
+This project is built with *Swift Package Manager*, to run the simulator, just run:
+
+```bash
+swift run
+```
