@@ -7,12 +7,12 @@
 
 import Foundation
 
-public class BasicUnit: Unit {
+class BasicUnit: Unit {
     var name: UnitName
     var inputWires: [WireName]
     var outputWires: [WireName]
     var logic: (WireManager) -> Void
-    var onRising: (WireManager) -> Void = { _ in return; }
+    var onRising: (WireManager) -> Void = { _ in return }
 
     init(_ unitName: UnitName,
         _ inputWires: [WireName],

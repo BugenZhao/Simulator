@@ -9,7 +9,7 @@ import Foundation
 
 public class UnitManager {
     let wireManager = WireManager()
-    var units: [UnitName: Unit] = [:]
+    private(set) var units: [UnitName: Unit] = [:]
 
     public func addBasicUnit(
         unitName: UnitName,
@@ -25,14 +25,26 @@ public class UnitManager {
         units[unitName] = unit
     }
 
-    func stablize() {
+    public func addPrinterUnit(
+        unitName: UnitName,
+        inputWires: [WireName]) {
+        guard !units.keys.contains(unitName) else {
+            fatalError(SimulatorError.UnitManagerDuplicateName.rawValue)
+        }
+        let unit: Unit = PrinterUnit(unitName, inputWires)
+        inputWires.forEach { wireName in wireManager[wireName].to.append(unitName) }
+        units[unitName] = unit
+    }
+
+
+    private func stablize() {
         wireManager.clearCheckpoint()
         repeat {
             units.values.forEach { $0.logic(wireManager) }
         } while(wireManager.doCheckpoint() == false)
     }
 
-    func rise() {
+    private func rise() {
         units.values.forEach { $0.onRising(wireManager) }
     }
 
