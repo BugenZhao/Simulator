@@ -1,6 +1,7 @@
 # Simulator
 
 ![Language](https://img.shields.io/badge/Language-Swift%205.2-orange.svg)
+![Test](https://github.com/bugenzhao/Simulator/workflows/Swift/badge.svg)
 
 Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
 
