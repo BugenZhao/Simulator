@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Nimble
 @testable import SimulatorLib
 
 class WireTests: XCTestCase {
@@ -51,61 +52,57 @@ class WireTests: XCTestCase {
     }
 
     func testWireError() {
-        #if Xcode
         let wire = Wire(wireName: "testWire", value: 0b1010_0101)
 
-        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] }
-        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] }
-        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] }
-        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[60...64] }
-        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] = true }
-        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] = false }
-        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] = 0 }
-        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[60...64] = 0 }
+        expect { _ = wire[-1] }.to(throwAssertion())
+        expect { _ = wire[64] }.to(throwAssertion())
+        expect { _ = wire[-1...2] }.to(throwAssertion())
+        expect { _ = wire[60...64] }.to(throwAssertion())
+        expect { wire[-1] = true }.to(throwAssertion())
+        expect { wire[64] = false }.to(throwAssertion())
+        expect { wire[-1...2] = 0 }.to(throwAssertion())
+        expect { wire[60...64] = 0 }.to(throwAssertion())
 
         wire.from = "FROM1"
         print(wire.from!)
-        expectFatalError(expectedPrefix: SimulatorError.WireFromIsFinalError.rawValue) { wire.from = "FROM2" }
+        expect { wire.from = "FROM2" }.to(throwAssertion())
         wire.to.append(contentsOf: ["TO1", "TO2"])
         print(wire.to)
-        #else
-        print("Ignored \(#function) since outside the Xcode.")
-        #endif
     }
-    
+
     func testWireCounter() {
         let wire = Wire(wireName: "wire", value: 0xffff)
         XCTAssertEqual(wire.counter.read, 0)
         XCTAssertEqual(wire.counter.write, 0)
-        
+
         print(wire.v)
         XCTAssertEqual(wire.counter.read, 1)
         XCTAssertEqual(wire.counter.write, 0)
-        
+
         print(wire.b)
         XCTAssertEqual(wire.counter.read, 2)
         XCTAssertEqual(wire.counter.write, 0)
-        
+
         print(wire[7...15])
         XCTAssertEqual(wire.counter.read, 3)
         XCTAssertEqual(wire.counter.write, 0)
-        
+
         wire[0] = false
         XCTAssertEqual(wire.counter.read, 3)
         XCTAssertEqual(wire.counter.write, 1)
-        
+
         wire[1...2] = 0
         XCTAssertEqual(wire.counter.read, 3)
         XCTAssertEqual(wire.counter.write, 2)
-        
+
         wire.v = 0xeeee
         XCTAssertEqual(wire.counter.read, 3)
         XCTAssertEqual(wire.counter.write, 3)
-        
+
         print(wire[2...2])
         XCTAssertEqual(wire.counter.read, 4)
         XCTAssertEqual(wire.counter.write, 3)
-        
+
         wire.clear()
         XCTAssertEqual(wire.counter.read, 0)
         XCTAssertEqual(wire.counter.write, 0)

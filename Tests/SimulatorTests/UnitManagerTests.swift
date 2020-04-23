@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Nimble
 @testable import SimulatorLib
 
 class UnitManagerTests: XCTestCase {
@@ -91,7 +92,7 @@ class UnitManagerTests: XCTestCase {
             ) }
 
         addOne()
-        expectFatalError(expectedPrefix: SimulatorError.UnitManagerDuplicateNameError.rawValue) { addOne() }
+        expect { addOne() }.to(throwAssertion())
     }
 
     func testConflictOutput() {
@@ -105,32 +106,32 @@ class UnitManagerTests: XCTestCase {
             ) }
 
         addOne("bugen")
-        expectFatalError(expectedPrefix: SimulatorError.WireFromIsFinalError.rawValue) { addOne("zhao") }
+        expect { addOne("zhao") }.to(throwAssertion())
     }
-    
+
     func testWriteInputWire() {
         #if Xcode
-        let unitManager = UnitManager()
+            let unitManager = UnitManager()
 
-        expectFatalError(expectedPrefix: SimulatorError.UnitManagerWriteNotAllowedError.rawValue) {
-            unitManager.addGenericUnit(
-                unitName: "illegal_write",
-                inputWires: ["wire_0"],
-                outputWires: ["wire_1"],
-                logic: { wm in
-                    wm.wire_1.v = wm.wire_0.v + 5
-                    wm.wire_0.v = 0
-                }
-            ) }
+            expect {
+                unitManager.addGenericUnit(
+                    unitName: "illegal_write",
+                    inputWires: ["wire_0"],
+                    outputWires: ["wire_1"],
+                    logic: { wm in
+                        wm.wire_1.v = wm.wire_0.v + 5
+                        wm.wire_0.v = 0
+                    }
+                ) }.to(throwAssertion())
         #else
-        print("Ignored \(#function) since outside the Xcode.")
+            print("Ignored \(#function) since outside the Xcode.")
         #endif
     }
 
     func testReadOutputWire() {
         let unitManager = UnitManager()
 
-        expectFatalError(expectedPrefix: SimulatorError.UnitManagerReadNotAllowedError.rawValue) {
+        expect {
             unitManager.addGenericUnit(
                 unitName: "illegal_read",
                 inputWires: ["wire_0"],
@@ -138,7 +139,7 @@ class UnitManagerTests: XCTestCase {
                 logic: { wm in
                     wm.wire_1.v = wm.wire_1.v + 5
                 }
-            ) }
+            ) }.to(throwAssertion())
     }
 
     func testReadNotDeclaredWire() {
@@ -153,7 +154,7 @@ class UnitManagerTests: XCTestCase {
             }
         )
 
-        expectFatalError(expectedPrefix: SimulatorError.WireManagerWireNotExistsError.rawValue) {
+        expect {
             unitManager.addGenericUnit(
                 unitName: "read_not_declared",
                 inputWires: ["eriw_1"],
@@ -161,11 +162,10 @@ class UnitManagerTests: XCTestCase {
                 logic: { wm in
                     wm.wire_2.v = wm.wire_1.v + 5
                 }
-            ) }
+            ) }.to(throwAssertion())
     }
-    
+
     func testWriteNotDeclaredWire() {
-        #if Xcode
         let unitManager = UnitManager()
 
         unitManager.addGenericUnit(
@@ -177,7 +177,7 @@ class UnitManagerTests: XCTestCase {
             }
         )
 
-        expectFatalError(expectedPrefix: SimulatorError.WireManagerWireNotExistsError.rawValue) {
+        expect {
             unitManager.addGenericUnit(
                 unitName: "write_not_declared",
                 inputWires: ["wire_1"],
@@ -185,9 +185,6 @@ class UnitManagerTests: XCTestCase {
                 logic: { wm in
                     wm.wire_2.v = wm.wire_1.v + 5
                 }
-            ) }
-        #else
-        print("Ignored \(#function) since outside the Xcode.")
-        #endif
+            ) }.to(throwAssertion())
     }
 }
