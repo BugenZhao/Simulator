@@ -109,6 +109,7 @@ class UnitManagerTests: XCTestCase {
     }
     
     func testWriteInputWire() {
+        #if Xcode
         let unitManager = UnitManager()
 
         expectFatalError(expectedPrefix: SimulatorError.UnitManagerWriteNotAllowedError.rawValue) {
@@ -121,6 +122,9 @@ class UnitManagerTests: XCTestCase {
                     wm.wire_0.v = 0
                 }
             ) }
+        #else
+        print("Ignored \(#function) since outside the Xcode.")
+        #endif
     }
 
     func testReadOutputWire() {
@@ -161,6 +165,7 @@ class UnitManagerTests: XCTestCase {
     }
     
     func testWriteNotDeclaredWire() {
+        #if Xcode
         let unitManager = UnitManager()
 
         unitManager.addGenericUnit(
@@ -181,5 +186,8 @@ class UnitManagerTests: XCTestCase {
                     wm.wire_2.v = wm.wire_1.v + 5
                 }
             ) }
+        #else
+        print("Ignored \(#function) since outside the Xcode.")
+        #endif
     }
 }
