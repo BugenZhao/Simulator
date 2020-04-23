@@ -45,6 +45,6 @@ public class MaxMachine: Machine {
                 wm.wout.v = wm.wselect.b ? wm.wb.v : wm.wa.v
             }
         )
-        unitManager.wireManager.examine(verbose: false)
+        _ = unitManager.wireManager.examine(verbose: false)
     }
 }
