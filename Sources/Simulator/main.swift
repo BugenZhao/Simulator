@@ -1,4 +1,5 @@
-import SimulatorLib
-
-let comparator = SimulatorLib.MaxMachine(15, 51)
+let comparator = MaxMachine(233, 666)
 comparator.run()
+
+let accumulator = Accumulator(0...100.u64)
+accumulator.run()

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SimulatorLib
 
 public class MaxMachine: Machine {
     public var unitManager = UnitManager()
