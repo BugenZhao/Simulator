@@ -72,4 +72,42 @@ class WireTests: XCTestCase {
         print("Ignored \(#function) since outside the Xcode.")
         #endif
     }
+    
+    func testWireCounter() {
+        let wire = Wire(wireName: "wire", value: 0xffff)
+        XCTAssertEqual(wire.counter.read, 0)
+        XCTAssertEqual(wire.counter.write, 0)
+        
+        print(wire.v)
+        XCTAssertEqual(wire.counter.read, 1)
+        XCTAssertEqual(wire.counter.write, 0)
+        
+        print(wire.b)
+        XCTAssertEqual(wire.counter.read, 2)
+        XCTAssertEqual(wire.counter.write, 0)
+        
+        print(wire[7...15])
+        XCTAssertEqual(wire.counter.read, 3)
+        XCTAssertEqual(wire.counter.write, 0)
+        
+        wire[0] = false
+        XCTAssertEqual(wire.counter.read, 3)
+        XCTAssertEqual(wire.counter.write, 1)
+        
+        wire[1...2] = 0
+        XCTAssertEqual(wire.counter.read, 3)
+        XCTAssertEqual(wire.counter.write, 2)
+        
+        wire.v = 0xeeee
+        XCTAssertEqual(wire.counter.read, 3)
+        XCTAssertEqual(wire.counter.write, 3)
+        
+        print(wire[2...2])
+        XCTAssertEqual(wire.counter.read, 4)
+        XCTAssertEqual(wire.counter.write, 3)
+        
+        wire.clear()
+        XCTAssertEqual(wire.counter.read, 0)
+        XCTAssertEqual(wire.counter.write, 0)
+    }
 }
