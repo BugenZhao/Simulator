@@ -64,7 +64,7 @@ public class Wire {
             }
             defer { counter.write += 1 }
             let mask = Wire.mask(idx)
-            value = value & ~mask | (newValue.UInt64Value << idx) & mask
+            value = value & ~mask | (newValue.u64 << idx) & mask
         }
     }
 

@@ -44,4 +44,9 @@ class AddressableTests: XCTestCase {
         expect { memory[l: 64] = 0x88 }.to(throwAssertion())
         expect { memory[q: 57] = 0x88 }.to(throwAssertion())
     }
+
+    func testRegister() {
+        var registerUnit = RegisterUnit("reg", [], [], { _, _ in return }, { _, _ in return }, 128)
+        _ = registerUnit[l: 0]
+    }
 }

@@ -8,10 +8,8 @@
 import Foundation
 
 
-protocol Addressable {
+public protocol Addressable {
     var data: Data { get set }
-
-    func validateAccess(at address: Int)
 
     subscript (b b: Int) -> UInt8 { get set }
     subscript (w w: Int) -> UInt16 { get set }
@@ -26,7 +24,7 @@ extension Addressable {
         }
     }
 
-    subscript (b b: Int) -> UInt8 {
+    public subscript (b b: Int) -> UInt8 {
         get {
             validateAccess(at: b)
             return data[b]
@@ -36,7 +34,7 @@ extension Addressable {
             data[b] = newValue
         }
     }
-    subscript (w w: Int) -> UInt16 {
+    public subscript (w w: Int) -> UInt16 {
         get {
             validateAccess(at: w + 1)
             return (UInt16(data[w + 0]) << 0x00) +
@@ -48,7 +46,7 @@ extension Addressable {
             data[w + 1] = UInt8((newValue & 0xff00) >> 0x08)
         }
     }
-    subscript (l l: Int) -> UInt32 {
+    public subscript (l l: Int) -> UInt32 {
         get {
             validateAccess(at: l + 3)
             return (UInt32(data[l + 0]) << 0x00) +
@@ -64,7 +62,7 @@ extension Addressable {
             data[l + 3] = UInt8((newValue & 0xff00_0000) >> 0x18)
         }
     }
-    subscript (q q: Int) -> UInt64 {
+    public subscript (q q: Int) -> UInt64 {
         get {
             validateAccess(at: q + 7)
             let lo = (UInt64(data[q + 0]) << 0x00) +

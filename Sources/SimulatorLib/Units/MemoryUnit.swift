@@ -14,7 +14,7 @@ public class MemoryUnit: Unit, Addressable {
     var logic: (WireManager) -> Void = { _ in return }
     var onRising: (WireManager) -> Void = { _ in return }
 
-    var data: Data
+    public var data: Data
 
     var realLogic: (WireManager, MemoryUnit) -> Void
     var realOnRising: (WireManager, MemoryUnit) -> Void

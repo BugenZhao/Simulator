@@ -8,7 +8,9 @@
 import Foundation
 
 public extension Bool {
-    var UInt64Value: UInt64 {
-        return self ? 1 : 0
-    }
+    var u64: UInt64 { return self ? 1 : 0 }
+}
+
+public extension BinaryInteger {
+    var u64: UInt64 { return UInt64(self) }
 }
