@@ -12,17 +12,17 @@ public class UnitManager {
     public let wireManager = WireManager()
     private(set) var units: [UnitName: Unit] = [:]
 
-    private(set) var halted: Bool = false
+    private(set) public var halted: Bool = false
 
     private(set) var cycle: UInt64 = 0
 
-    subscript(dynamicMember unitName: UnitName) -> Unit? {
+    public subscript(dynamicMember unitName: UnitName) -> Unit? {
         get {
             return self[unitName]
         }
     }
 
-    subscript(_ unitName: UnitName) -> Unit? {
+    public subscript(_ unitName: UnitName) -> Unit? {
         get {
             return units[unitName]
         }
@@ -154,7 +154,12 @@ public class UnitManager {
     }
 
     public func clock() {
-        if !self.halted { rise() }
+        if !self.halted { print("Cycle \(cycle):") }
+        else { print("Machine is halted.") }
+
+        if !self.halted {
+            rise()
+        }
         if !self.halted {
             stablize()
             cycle += 1
