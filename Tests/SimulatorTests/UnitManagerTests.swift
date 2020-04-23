@@ -23,11 +23,11 @@ class UnitManagerTests: XCTestCase {
         )
 
         XCTAssertEqual(unitManager.wireManager.examine(), 0)
-        XCTAssertEqual(unitManager.wireManager.echo_wire.value, 0)
+        XCTAssertEqual(unitManager.wireManager.echo_wire.v, 0)
         unitManager.clock()
-        XCTAssertEqual(unitManager.wireManager.echo_wire.value, 88)
+        XCTAssertEqual(unitManager.wireManager.echo_wire.v, 88)
         unitManager.clock()
-        XCTAssertEqual(unitManager.wireManager.echo_wire.value, 88)
+        XCTAssertEqual(unitManager.wireManager.echo_wire.v, 88)
     }
 
     func testProcedure() {
@@ -64,7 +64,7 @@ class UnitManagerTests: XCTestCase {
         XCTAssertEqual(unitManager.wireManager.wire_2.v, (8 + 5) * 2)
     }
 
-    func testWireExamine() {
+    func testLonelyWireExamine() {
         let unitManager = UnitManager()
 
         unitManager.addOutputUnit(
@@ -91,7 +91,7 @@ class UnitManagerTests: XCTestCase {
             ) }
 
         addOne()
-        expectFatalError(expectedMessage: SimulatorError.UnitManagerDuplicateNameError.rawValue) { addOne() }
+        expectFatalError(expectedPrefix: SimulatorError.UnitManagerDuplicateNameError.rawValue) { addOne() }
     }
 
     func testConflictOutput() {
@@ -105,6 +105,6 @@ class UnitManagerTests: XCTestCase {
             ) }
 
         addOne("bugen")
-        expectFatalError(expectedMessage: SimulatorError.WireFromIsFinalError.rawValue) { addOne("zhao") }
+        expectFatalError(expectedPrefix: SimulatorError.WireFromIsFinalError.rawValue) { addOne("zhao") }
     }
 }

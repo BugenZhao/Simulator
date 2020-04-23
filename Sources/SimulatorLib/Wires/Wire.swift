@@ -17,11 +17,17 @@ public class Wire {
     }
 
     private(set) var name: WireName
-    var value: UInt64
+    private var value: UInt64
     var counter = Counter()
 
-    var v: UInt64 { set { value = newValue } get { value } }
-    var b: Bool { set { self[0] = newValue } get { self[0] } }
+    var v: UInt64 {
+        set { counter.write += 1; value = newValue }
+        get { counter.read += 1; return value }
+    }
+    var b: Bool {
+        set { self[0] = newValue }
+        get { self[0] }
+    }
 
     var from: UnitName? = nil {
         willSet {
@@ -83,7 +89,7 @@ public class Wire {
         self.from = from
         self.to = to
     }
-    
+
     func clear() {
         value = 0
         counter = Counter()

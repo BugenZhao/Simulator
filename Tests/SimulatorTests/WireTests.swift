@@ -22,7 +22,7 @@ class WireTests: XCTestCase {
     func testWire() {
         var wire = Wire(wireName: "testWire", value: 0b1111_1111)
         wire.v = 0b1010_0101
-        XCTAssert(wire.value == 0b1010_0101)
+        XCTAssert(wire.v == 0b1010_0101)
         XCTAssert(wire.v == 0b1010_0101)
         XCTAssert(wire[0] == true)
         XCTAssert(wire[1] == false)
@@ -32,10 +32,10 @@ class WireTests: XCTestCase {
         XCTAssert(wire[31] == false)
         XCTAssert(wire[63] == false)
         wire[0] = false
-        XCTAssert(wire.value == 0b1010_0100)
+        XCTAssert(wire.v == 0b1010_0100)
         XCTAssert(wire.v == 0b1010_0100)
         wire[1] = true
-        XCTAssert(wire.value == 0b1010_0110)
+        XCTAssert(wire.v == 0b1010_0110)
         wire[31] = true
         XCTAssert(wire[31] == true)
 
@@ -47,25 +47,25 @@ class WireTests: XCTestCase {
         wire[4...7] = 0b0101
         XCTAssert(wire[0...7] == 0b0101_0101)
         wire[0...0] = 0
-        XCTAssert(wire.value == 0b0101_0100)
+        XCTAssert(wire.v == 0b0101_0100)
     }
 
     func testWireError() {
         #if Xcode
         let wire = Wire(wireName: "testWire", value: 0b1010_0101)
 
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[60...64] }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] = true }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] = false }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] = 0 }
-        expectFatalError(expectedMessage: SimulatorError.WireOutOfRangeError.rawValue) { wire[60...64] = 0 }
+        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] }
+        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] }
+        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] }
+        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[60...64] }
+        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1] = true }
+        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[64] = false }
+        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[-1...2] = 0 }
+        expectFatalError(expectedPrefix: SimulatorError.WireOutOfRangeError.rawValue) { wire[60...64] = 0 }
 
         wire.from = "FROM1"
         print(wire.from!)
-        expectFatalError(expectedMessage: SimulatorError.WireFromIsFinalError.rawValue) { wire.from = "FROM2" }
+        expectFatalError(expectedPrefix: SimulatorError.WireFromIsFinalError.rawValue) { wire.from = "FROM2" }
         wire.to.append(contentsOf: ["TO1", "TO2"])
         print(wire.to)
         #else

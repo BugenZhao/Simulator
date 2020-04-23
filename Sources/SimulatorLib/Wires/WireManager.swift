@@ -43,7 +43,7 @@ public class WireManager {
     public func doCheckpoint() -> Bool {
         var newCheckpoint: [WireName: UInt64] = [:]
         defer { checkpoint = newCheckpoint }
-        wires.forEach { wireName, wire in newCheckpoint[wireName] = wire.value }
+        wires.forEach { wireName, wire in newCheckpoint[wireName] = wire.v }
         return checkpoint == newCheckpoint
     }
 

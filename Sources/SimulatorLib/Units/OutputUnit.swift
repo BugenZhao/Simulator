@@ -26,7 +26,7 @@ public class OutputUnit: Unit {
     }
 
     func logicFunc(_ wireManager: WireManager) {
-        outputWires.forEach { wireManager[mayCreate: $0].value = outputValue }
+        outputWires.forEach { wireManager[mayCreate: $0].v = outputValue }
     }
 
     func copied() -> Self {
