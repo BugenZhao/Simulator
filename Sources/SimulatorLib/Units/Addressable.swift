@@ -11,10 +11,10 @@ import Foundation
 public protocol Addressable {
     var data: Data { get set }
 
-    subscript (b b: Int) -> UInt8 { get set }
-    subscript (w w: Int) -> UInt16 { get set }
-    subscript (l l: Int) -> UInt32 { get set }
-    subscript (q q: Int) -> UInt64 { get set }
+    subscript (b b: UInt64) -> UInt8 { get set }
+    subscript (w w: UInt64) -> UInt16 { get set }
+    subscript (l l: UInt64) -> UInt32 { get set }
+    subscript (q q: UInt64) -> UInt64 { get set }
 }
 
 extension Addressable {
@@ -24,30 +24,35 @@ extension Addressable {
         }
     }
 
-    public subscript (b b: Int) -> UInt8 {
+    public subscript (b b: UInt64) -> UInt8 {
         get {
+            let b = Int(b)
             validateAccess(at: b)
             return data[b]
         }
         set {
+            let b = Int(b)
             validateAccess(at: b)
             data[b] = newValue
         }
     }
-    public subscript (w w: Int) -> UInt16 {
+    public subscript (w w: UInt64) -> UInt16 {
         get {
+            let w = Int(w)
             validateAccess(at: w + 1)
             return (UInt16(data[w + 0]) << 0x00) +
                 (UInt16(data[w + 1]) << 0x08)
         }
         set {
+            let w = Int(w)
             validateAccess(at: w + 1)
             data[w + 0] = UInt8((newValue & 0x00ff) >> 0x00)
             data[w + 1] = UInt8((newValue & 0xff00) >> 0x08)
         }
     }
-    public subscript (l l: Int) -> UInt32 {
+    public subscript (l l: UInt64) -> UInt32 {
         get {
+            let l = Int(l)
             validateAccess(at: l + 3)
             return (UInt32(data[l + 0]) << 0x00) +
                 (UInt32(data[l + 1]) << 0x08) +
@@ -55,6 +60,7 @@ extension Addressable {
                 (UInt32(data[l + 3]) << 0x18)
         }
         set {
+            let l = Int(l)
             validateAccess(at: l + 3)
             data[l + 0] = UInt8((newValue & 0x0000_00ff) >> 0x00)
             data[l + 1] = UInt8((newValue & 0x0000_ff00) >> 0x08)
@@ -62,8 +68,9 @@ extension Addressable {
             data[l + 3] = UInt8((newValue & 0xff00_0000) >> 0x18)
         }
     }
-    public subscript (q q: Int) -> UInt64 {
+    public subscript (q q: UInt64) -> UInt64 {
         get {
+            let q = Int(q)
             validateAccess(at: q + 7)
             let lo = (UInt64(data[q + 0]) << 0x00) +
                 (UInt64(data[q + 1]) << 0x08) +
@@ -78,6 +85,7 @@ extension Addressable {
             return lo + hi
         }
         set {
+            let q = Int(q)
             validateAccess(at: q + 7)
             data[q + 0] = UInt8((newValue & 0x0000_0000_0000_00ff) >> 0x00)
             data[q + 1] = UInt8((newValue & 0x0000_0000_0000_ff00) >> 0x08)

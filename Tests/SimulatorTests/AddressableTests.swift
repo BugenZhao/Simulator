@@ -35,12 +35,8 @@ class AddressableTests: XCTestCase {
 
     func testAddressingError() {
         var memory = Memory64B()
-        expect { _ = memory[b: -1] }.to(throwAssertion())
-        expect { _ = memory[w: -100] }.to(throwAssertion())
         expect { _ = memory[l: 64] }.to(throwAssertion())
         expect { _ = memory[q: 57] }.to(throwAssertion())
-        expect { memory[b: -1] = 0x88 }.to(throwAssertion())
-        expect { memory[w: -100] = 0x88 }.to(throwAssertion())
         expect { memory[l: 64] = 0x88 }.to(throwAssertion())
         expect { memory[q: 57] = 0x88 }.to(throwAssertion())
     }
