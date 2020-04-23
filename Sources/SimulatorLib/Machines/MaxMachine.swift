@@ -8,7 +8,7 @@
 import Foundation
 
 public class MaxMachine: Machine {
-    var unitManager = UnitManager()
+    public var unitManager = UnitManager()
     let a, b: UInt64
 
     public func run() {

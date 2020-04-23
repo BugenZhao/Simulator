@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol Machine {
+public protocol Machine {
     var unitManager: UnitManager { get }
     func run()
 }

@@ -9,7 +9,7 @@ import Foundation
 
 @dynamicMemberLookup
 public class UnitManager {
-    let wireManager = WireManager()
+    public let wireManager = WireManager()
     private(set) var units: [UnitName: Unit] = [:]
 
     subscript(dynamicMember unitName: UnitName) -> Unit? {
@@ -24,6 +24,7 @@ public class UnitManager {
         }
     }
 
+    public init() { }
 
     public func addGenericUnit(
         unitName: UnitName,

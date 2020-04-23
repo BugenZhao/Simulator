@@ -20,11 +20,11 @@ public class Wire {
     private var value: UInt64
     var counter = Counter()
 
-    var v: UInt64 {
+    public var v: UInt64 {
         set { counter.write += 1; value = newValue }
         get { counter.read += 1; return value }
     }
-    var b: Bool {
+    public var b: Bool {
         set { self[0] = newValue }
         get { self[0] }
     }

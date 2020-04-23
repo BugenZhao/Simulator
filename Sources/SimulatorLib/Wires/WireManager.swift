@@ -12,13 +12,13 @@ public class WireManager {
     var wires: [WireName: Wire] = [:]
     var checkpoint: [WireName: UInt64] = [:]
 
-    subscript(dynamicMember wireName: WireName) -> Wire {
+    public subscript(dynamicMember wireName: WireName) -> Wire {
         get {
             return self[wireName]
         }
     }
 
-    subscript(mayCreate wireName: WireName) -> Wire {
+    public subscript(mayCreate wireName: WireName) -> Wire {
         get {
             if let wire = wires[wireName] { return wire }
             let wire = Wire(wireName: wireName, value: 0)
@@ -27,7 +27,7 @@ public class WireManager {
         }
     }
 
-    subscript(_ wireName: WireName) -> Wire {
+    public subscript(_ wireName: WireName) -> Wire {
         get {
             guard wires.keys.contains(wireName) else {
                 fatalError(SimulatorError.WireManagerWireNotExistsError.rawValue + " (\(wireName))")
