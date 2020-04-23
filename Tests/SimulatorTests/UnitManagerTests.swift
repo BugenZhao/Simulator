@@ -187,4 +187,23 @@ class UnitManagerTests: XCTestCase {
                 }
             ) }.to(throwAssertion())
     }
+
+    func testHalt() {
+        let unitManager = UnitManager()
+
+        unitManager.addOutputUnit(
+            unitName: "output_1",
+            outputWires: ["w"],
+            outputValue: 1
+        )
+        unitManager.addHaltUnit(
+            unitName: "halt",
+            inputWires: ["w"]
+        )
+
+        unitManager.clock()
+        XCTAssertEqual(unitManager.halted, false)
+        unitManager.clock()
+        XCTAssertEqual(unitManager.halted, true)
+    }
 }

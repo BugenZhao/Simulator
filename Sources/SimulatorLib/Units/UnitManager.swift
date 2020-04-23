@@ -12,6 +12,8 @@ public class UnitManager {
     public let wireManager = WireManager()
     private(set) var units: [UnitName: Unit] = [:]
 
+    private(set) var halted: Bool = false
+
     subscript(dynamicMember unitName: UnitName) -> Unit? {
         get {
             return self[unitName]
@@ -82,7 +84,7 @@ public class UnitManager {
         outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
         units[unitName] = unit
     }
-    
+
     public func addMemoryUnit(
         unitName: UnitName,
         inputWires: [WireName],
@@ -97,6 +99,18 @@ public class UnitManager {
         checkPermission(unit)
         inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
+        units[unitName] = unit
+    }
+
+    public func addHaltUnit(
+        unitName: UnitName,
+        inputWires: [WireName] = []) {
+        guard !units.keys.contains(unitName) else {
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+        }
+        let unit: Unit = HaltUnit(unitName, inputWires, { self.halted = true })
+        checkPermission(unit)
+        inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         units[unitName] = unit
     }
 
@@ -137,7 +151,9 @@ public class UnitManager {
     }
 
     public func clock() {
-        rise()
-        stablize()
+        if !self.halted {
+            rise()
+            stablize()
+        }
     }
 }
