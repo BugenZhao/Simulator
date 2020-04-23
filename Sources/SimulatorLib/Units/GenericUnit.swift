@@ -8,11 +8,11 @@
 import Foundation
 
 public class GenericUnit: Unit {
-    var name: UnitName
-    var inputWires: [WireName]
-    var outputWires: [WireName]
-    var logic: (WireManager) -> Void
-    var onRising: (WireManager) -> Void = { _ in return }
+    public var name: UnitName
+    public var inputWires: [WireName]
+    public var outputWires: [WireName]
+    public var logic: (WireManager) -> Void
+    public var onRising: (WireManager) -> Void = { _ in return }
 
     init(_ unitName: UnitName,
         _ inputWires: [WireName],
@@ -24,7 +24,7 @@ public class GenericUnit: Unit {
         self.logic = logic
     }
 
-    func copied() -> Self {
+    public func copied() -> Self {
         return GenericUnit(name, inputWires, outputWires, logic) as! Self
     }
 }

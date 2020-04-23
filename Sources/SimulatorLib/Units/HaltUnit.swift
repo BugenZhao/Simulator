@@ -8,11 +8,11 @@
 import Foundation
 
 public class HaltUnit: Unit {
-    var name: UnitName
-    var inputWires: [WireName]
-    var outputWires: [WireName] = []
-    var logic: (WireManager) -> Void = { _ in return }
-    var onRising: (WireManager) -> Void = { _ in return }
+    public var name: UnitName
+    public var inputWires: [WireName]
+    public var outputWires: [WireName] = []
+    public var logic: (WireManager) -> Void = { _ in return }
+    public var onRising: (WireManager) -> Void = { _ in return }
 
     var haltAction: () -> Void
 
@@ -31,7 +31,7 @@ public class HaltUnit: Unit {
     }
 
 
-    func copied() -> Self {
+    public func copied() -> Self {
         return HaltUnit(name, inputWires, haltAction) as! Self
     }
 }

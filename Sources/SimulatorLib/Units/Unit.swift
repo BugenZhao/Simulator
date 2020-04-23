@@ -9,7 +9,7 @@ import Foundation
 
 public typealias UnitName = String
 
-protocol Unit {
+public protocol Unit {
     var name: UnitName { get }
     var inputWires: [WireName] { get }
     var outputWires: [WireName] { get }

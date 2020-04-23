@@ -8,11 +8,11 @@
 import Foundation
 
 public class OutputUnit: Unit {
-    var name: UnitName
-    var inputWires: [WireName] = []
-    var outputWires: [WireName]
-    var logic: (WireManager) -> Void = { _ in return }
-    var onRising: (WireManager) -> Void = { _ in return }
+    public var name: UnitName
+    public var inputWires: [WireName] = []
+    public var outputWires: [WireName]
+    public var logic: (WireManager) -> Void = { _ in return }
+    public var onRising: (WireManager) -> Void = { _ in return }
 
     let outputValue: UInt64
 
@@ -29,7 +29,7 @@ public class OutputUnit: Unit {
         outputWires.forEach { wireManager[mayCreate: $0].v = outputValue }
     }
 
-    func copied() -> Self {
+    public func copied() -> Self {
         return OutputUnit(name, outputWires, outputValue) as! Self
     }
 }
