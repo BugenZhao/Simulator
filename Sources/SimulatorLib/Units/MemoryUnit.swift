@@ -1,5 +1,5 @@
 //
-//  RegisterUnit.swift
+//  MemoryUnit.swift
 //  SimulatorLib
 //
 //  Created by Bugen Zhao on 2020/4/23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class RegisterUnit: Unit, Addressable {
+public class MemoryUnit: Unit, Addressable {
     var name: UnitName
     var inputWires: [WireName]
     var outputWires: [WireName]
@@ -16,14 +16,14 @@ public class RegisterUnit: Unit, Addressable {
 
     var data: Data
 
-    var realLogic: (WireManager, RegisterUnit) -> Void
-    var realOnRising: (WireManager, RegisterUnit) -> Void
+    var realLogic: (WireManager, MemoryUnit) -> Void
+    var realOnRising: (WireManager, MemoryUnit) -> Void
 
     init(_ unitName: UnitName,
         _ inputWires: [WireName],
         _ outputWires: [WireName],
-        _ logic: @escaping (WireManager, RegisterUnit) -> Void,
-        _ onRising: @escaping (WireManager, RegisterUnit) -> Void,
+        _ logic: @escaping (WireManager, MemoryUnit) -> Void,
+        _ onRising: @escaping (WireManager, MemoryUnit) -> Void,
         _ bytesCount: Int) {
         self.name = unitName
         self.inputWires = inputWires
@@ -39,6 +39,6 @@ public class RegisterUnit: Unit, Addressable {
     }
 
     func copied() -> Self {
-        return RegisterUnit(name, inputWires, outputWires, realLogic, realOnRising, data.count) as! Self
+        return MemoryUnit(name, inputWires, outputWires, realLogic, realOnRising, data.count) as! Self
     }
 }

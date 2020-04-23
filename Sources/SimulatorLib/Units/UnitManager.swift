@@ -66,6 +66,40 @@ public class UnitManager {
         units[unitName] = unit
     }
 
+    public func addRegisterUnit(
+        unitName: UnitName,
+        inputWires: [WireName],
+        outputWires: [WireName],
+        logic: @escaping (WireManager, RegisterUnit) -> Void,
+        onRising: @escaping (WireManager, RegisterUnit) -> Void,
+        bytesCount: Int) {
+        guard !units.keys.contains(unitName) else {
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+        }
+        let unit: Unit = RegisterUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
+        checkPermission(unit)
+        inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
+        outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
+        units[unitName] = unit
+    }
+    
+    public func addMemoryUnit(
+        unitName: UnitName,
+        inputWires: [WireName],
+        outputWires: [WireName],
+        logic: @escaping (WireManager, MemoryUnit) -> Void,
+        onRising: @escaping (WireManager, MemoryUnit) -> Void,
+        bytesCount: Int) {
+        guard !units.keys.contains(unitName) else {
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+        }
+        let unit: Unit = MemoryUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
+        checkPermission(unit)
+        inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
+        outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
+        units[unitName] = unit
+    }
+
 
     private func checkPermission(_ unit: Unit) {
         let tempWireManager = WireManager()
