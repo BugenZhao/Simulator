@@ -18,12 +18,21 @@ public class WireManager {
         }
     }
 
-    subscript(_ wireName: WireName) -> Wire {
+    subscript(mayCreate wireName: WireName) -> Wire {
         get {
             if let wire = wires[wireName] { return wire }
             let wire = Wire(wireName: wireName, value: 0)
             wires[wireName] = wire
             return wire
+        }
+    }
+
+    subscript(_ wireName: WireName) -> Wire {
+        get {
+            guard wires.keys.contains(wireName) else {
+                fatalError(SimulatorError.WireManagerWireNotExistsError.rawValue + " (\(wireName))")
+            }
+            return wires[wireName]!
         }
     }
 

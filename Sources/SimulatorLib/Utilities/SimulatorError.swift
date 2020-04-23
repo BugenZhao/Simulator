@@ -12,4 +12,8 @@ public enum SimulatorError: String {
     case WireOutOfRangeError = "Wire: out of range"
     
     case UnitManagerDuplicateNameError = "UnitManager: duplicate name"
+    case UnitManagerReadNotAllowedError = "UnitManager: read not allowed"
+    case UnitManagerWriteNotAllowedError = "UnitManager: write not allowed"
+    
+    case WireManagerWireNotExistsError = "WireManager: wire not exists"
 }

@@ -34,8 +34,9 @@ public class UnitManager {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
         let unit: Unit = GenericUnit(unitName, inputWires, outputWires, logic)
-        inputWires.forEach { wireName in wireManager[wireName].to.append(unitName) }
-        outputWires.forEach { wireName in wireManager[wireName].from = unitName }
+        checkPermission(unit)
+        inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
+        outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
         units[unitName] = unit
     }
 
@@ -46,7 +47,8 @@ public class UnitManager {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
         let unit: Unit = PrinterUnit(unitName, inputWires)
-        inputWires.forEach { wireName in wireManager[wireName].to.append(unitName) }
+        checkPermission(unit)
+        inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         units[unitName] = unit
     }
 
@@ -58,19 +60,44 @@ public class UnitManager {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
         let unit: Unit = OutputUnit(unitName, outputWires, outputValue)
-        outputWires.forEach { wireName in wireManager[wireName].from = unitName }
+        checkPermission(unit)
+        outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
         units[unitName] = unit
     }
 
 
-    private func stablize() {
+    private func checkPermission(_ unit: Unit) {
+        let tempWireManager = WireManager()
+        let tempUnit = unit.copied()
+        tempUnit.inputWires.forEach { wireName in
+            tempWireManager[mayCreate: wireName].to.append(tempUnit.name)
+        }
+        tempUnit.outputWires.forEach { wireName in
+            tempWireManager[mayCreate: wireName].from = tempUnit.name
+        }
+        tempUnit.logic(tempWireManager)
+
+        guard (tempUnit.inputWires.allSatisfy { wireName in
+            tempWireManager[mayCreate: wireName].counter.write == 0
+        }) else {
+            fatalError(SimulatorError.UnitManagerWriteNotAllowedError.rawValue)
+        }
+        guard (tempUnit.outputWires.allSatisfy { wireName in
+            tempWireManager[mayCreate: wireName].counter.read == 0
+        }) else {
+            fatalError(SimulatorError.UnitManagerReadNotAllowedError.rawValue)
+        }
+    }
+
+
+    func stablize() {
         wireManager.clearCheckpoint()
         repeat {
             units.values.forEach { $0.logic(wireManager) }
         } while(wireManager.doCheckpoint() == false)
     }
 
-    private func rise() {
+    func rise() {
         units.values.forEach { $0.onRising(wireManager) }
     }
 

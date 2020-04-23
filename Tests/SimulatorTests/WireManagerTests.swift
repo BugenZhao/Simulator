@@ -13,21 +13,21 @@ class WireManagerTests: XCTestCase {
         let wireManager = WireManager()
         XCTAssertEqual(wireManager.wires.count, 0)
 
-        let wa = wireManager.wa
+        let wa = wireManager[mayCreate: "wa"]
         XCTAssertEqual(wa.name, "wa")
         XCTAssertEqual(wa.value, 0)
         XCTAssertEqual(wa.from, nil)
         XCTAssertEqual(wa.to, [])
         XCTAssertEqual(wireManager.wires.count, 1)
 
-        let anotherWa = wireManager.wa
+        let anotherWa = wireManager[mayCreate: "wa"]
         XCTAssertEqual(wireManager.wires.count, 1)
 
         anotherWa.value = 0x12345678
         XCTAssertEqual(wa.value, 0x12345678)
         XCTAssertEqual(wireManager.wa[0...15], 0x5678)
 
-        let wb = wireManager.wb
+        let wb = wireManager[mayCreate: "wb"]
         XCTAssertEqual(wb.name, "wb")
         XCTAssertEqual(wireManager.wires.count, 2)
     }

@@ -24,7 +24,7 @@ public class PrinterUnit: Unit {
 
     func onRisingFunc(_ wireManager: WireManager) {
         print("\(type(of: self)) \(name)")
-        inputWires.forEach { print("\t\($0): \(wireManager[$0].value)") }
+        inputWires.forEach { print("\t\($0): \(wireManager[mayCreate: $0].value)") }
     }
     
     func copied() -> Self {

@@ -83,4 +83,9 @@ public class Wire {
         self.from = from
         self.to = to
     }
+    
+    func clear() {
+        value = 0
+        counter = Counter()
+    }
 }
