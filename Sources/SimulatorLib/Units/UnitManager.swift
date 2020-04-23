@@ -14,6 +14,8 @@ public class UnitManager {
 
     private(set) var halted: Bool = false
 
+    private(set) var cycle: UInt64 = 0
+
     subscript(dynamicMember unitName: UnitName) -> Unit? {
         get {
             return self[unitName]
@@ -45,11 +47,12 @@ public class UnitManager {
 
     public func addPrinterUnit(
         unitName: UnitName,
-        inputWires: [WireName] = []) {
+        inputWires: [WireName],
+        onlyOnRising: Bool = true) {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
-        let unit: Unit = PrinterUnit(unitName, inputWires)
+        let unit: Unit = PrinterUnit(unitName, inputWires, onlyOnRising)
         checkPermission(unit)
         inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         units[unitName] = unit
@@ -151,9 +154,10 @@ public class UnitManager {
     }
 
     public func clock() {
+        if !self.halted { rise() }
         if !self.halted {
-            rise()
             stablize()
+            cycle += 1
         }
     }
 }
