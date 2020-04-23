@@ -26,4 +26,8 @@ public class PrinterUnit: Unit {
         print("\(type(of: self)) \(name)")
         inputWires.forEach { print("\t\($0): \(wireManager[$0].value)") }
     }
+    
+    func copied() -> Self {
+        return PrinterUnit(name, inputWires) as! Self
+    }
 }

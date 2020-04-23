@@ -23,4 +23,8 @@ public class GenericUnit: Unit {
         self.outputWires = outputWires
         self.logic = logic
     }
+
+    func copied() -> Self {
+        return GenericUnit(name, inputWires, outputWires, logic) as! Self
+    }
 }

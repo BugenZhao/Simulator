@@ -28,4 +28,8 @@ public class OutputUnit: Unit {
     func logicFunc(_ wireManager: WireManager) {
         outputWires.forEach { wireManager[$0].value = outputValue }
     }
+
+    func copied() -> Self {
+        return OutputUnit(name, outputWires, outputValue) as! Self
+    }
 }

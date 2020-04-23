@@ -16,4 +16,6 @@ protocol Unit {
 
     var logic: (WireManager) -> Void { get }
     var onRising: (WireManager) -> Void { get }
+
+    func copied() -> Self
 }
