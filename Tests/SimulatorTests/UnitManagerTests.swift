@@ -206,4 +206,37 @@ class UnitManagerTests: XCTestCase {
         unitManager.clock()
         XCTAssertEqual(unitManager.halted, true)
     }
+
+    func testRegisterInc() {
+        let unitManager = UnitManager()
+
+        unitManager.addRegisterUnit(
+            unitName: "PC",
+            inputWires: ["wpci"],
+            outputWires: ["wpco"],
+            logic: { wm, ru in wm.wpco.v = ru[q: 0] },
+            onRising: { wm, ru in
+                var ru = ru
+                ru[q: 0] = wm.wpci.v
+            },
+            bytesCount: 8
+        )
+        
+        unitManager.addGenericUnit(
+            unitName: "inc_1",
+            inputWires: ["wpco"],
+            outputWires: ["wpci"],
+            logic: { wm in wm.wpci.v = wm.wpco.v + 1 }
+        )
+
+        XCTAssertEqual((unitManager.PC as! RegisterUnit)[q: 0], 0)
+        unitManager.clock()
+        XCTAssertEqual((unitManager.PC as! RegisterUnit)[q: 0], 0)
+        unitManager.clock()
+        XCTAssertEqual((unitManager.PC as! RegisterUnit)[q: 0], 1)
+        unitManager.clock()
+        XCTAssertEqual((unitManager.PC as! RegisterUnit)[q: 0], 2)
+        unitManager.clock()
+        XCTAssertEqual((unitManager.PC as! RegisterUnit)[q: 0], 3)
+    }
 }
