@@ -35,15 +35,17 @@ public class Wire {
         }
     }
     var to: [UnitName]
-
-    class func mask(_ range: ClosedRange<Int>) -> UInt64 {
+    
+    static func rawRangeMask(_ range: ClosedRange<Int>) -> UInt64 {
         return (0...63).reduce(0, { acc, idx in
             if range.contains(idx) { return (1 << idx) + acc }
             else { return acc }
         })
     }
+    
+    static var mask = memoize(function: rawRangeMask)
 
-    class func mask(_ idx: Int) -> UInt64 {
+    static func mask(_ idx: Int) -> UInt64 {
         return mask(idx...idx)
     }
 
