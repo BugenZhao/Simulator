@@ -11,10 +11,17 @@ public typealias WireName = String
 
 
 public class Wire {
+    struct Counter {
+        var read: Int = 0
+        var write: Int = 0
+    }
+
+    private(set) var name: WireName
     var value: UInt64
+    var counter = Counter()
+
     var v: UInt64 { set { value = newValue } get { value } }
     var b: Bool { set { self[0] = newValue } get { self[0] } }
-    private(set) var name: WireName
 
     var from: UnitName? = nil {
         willSet {
@@ -40,12 +47,14 @@ public class Wire {
             guard 0...63 ~= idx else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
+            defer { counter.read += 1 }
             return ((value & Wire.mask(idx)) >> idx) == 1
         }
         set {
             guard 0...63 ~= idx else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
+            defer { counter.write += 1 }
             let mask = Wire.mask(idx)
             value = value & ~mask | (newValue.UInt64Value << idx) & mask
         }
@@ -55,12 +64,14 @@ public class Wire {
         get {
             guard 0...63 ~= range.first! && 0...63 ~= range.last! else { fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
+            defer { counter.read += 1 }
             return (value & Wire.mask(range)) >> range.first!
         }
         set {
             guard 0...63 ~= range.first! && 0...63 ~= range.last! else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
+            defer { counter.write += 1 }
             let mask = Wire.mask(range)
             value = value & ~mask | (newValue << range.first!) & mask
         }
