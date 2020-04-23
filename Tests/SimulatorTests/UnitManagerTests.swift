@@ -107,4 +107,79 @@ class UnitManagerTests: XCTestCase {
         addOne("bugen")
         expectFatalError(expectedPrefix: SimulatorError.WireFromIsFinalError.rawValue) { addOne("zhao") }
     }
+    
+    func testWriteInputWire() {
+        let unitManager = UnitManager()
+
+        expectFatalError(expectedPrefix: SimulatorError.UnitManagerWriteNotAllowedError.rawValue) {
+            unitManager.addGenericUnit(
+                unitName: "illegal_write",
+                inputWires: ["wire_0"],
+                outputWires: ["wire_1"],
+                logic: { wm in
+                    wm.wire_1.v = wm.wire_0.v + 5
+                    wm.wire_0.v = 0
+                }
+            ) }
+    }
+
+    func testReadOutputWire() {
+        let unitManager = UnitManager()
+
+        expectFatalError(expectedPrefix: SimulatorError.UnitManagerReadNotAllowedError.rawValue) {
+            unitManager.addGenericUnit(
+                unitName: "illegal_read",
+                inputWires: ["wire_0"],
+                outputWires: ["wire_1"],
+                logic: { wm in
+                    wm.wire_1.v = wm.wire_1.v + 5
+                }
+            ) }
+    }
+
+    func testReadNotDeclaredWire() {
+        let unitManager = UnitManager()
+
+        unitManager.addGenericUnit(
+            unitName: "add_5",
+            inputWires: ["wire_0"],
+            outputWires: ["wire_1"],
+            logic: { wm in
+                wm.wire_1.v = wm.wire_0.v + 5
+            }
+        )
+
+        expectFatalError(expectedPrefix: SimulatorError.WireManagerWireNotExistsError.rawValue) {
+            unitManager.addGenericUnit(
+                unitName: "read_not_declared",
+                inputWires: ["eriw_1"],
+                outputWires: ["wire_2"],
+                logic: { wm in
+                    wm.wire_2.v = wm.wire_1.v + 5
+                }
+            ) }
+    }
+    
+    func testWriteNotDeclaredWire() {
+        let unitManager = UnitManager()
+
+        unitManager.addGenericUnit(
+            unitName: "add_5",
+            inputWires: ["wire_0"],
+            outputWires: ["wire_1"],
+            logic: { wm in
+                wm.wire_1.v = wm.wire_0.v + 5
+            }
+        )
+
+        expectFatalError(expectedPrefix: SimulatorError.WireManagerWireNotExistsError.rawValue) {
+            unitManager.addGenericUnit(
+                unitName: "write_not_declared",
+                inputWires: ["wire_1"],
+                outputWires: ["eriw_2"],
+                logic: { wm in
+                    wm.wire_2.v = wm.wire_1.v + 5
+                }
+            ) }
+    }
 }
