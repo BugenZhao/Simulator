@@ -9,10 +9,12 @@ import Foundation
 
 @dynamicMemberLookup
 public class WireManager {
-    var wires: [WireName: Wire] = [:]
+    @usableFromInline var wires: [WireName: Wire] = [:]
     var checkpoint: [WireName: UInt64] = [:]
 
-    public subscript(dynamicMember wireName: WireName) -> Wire {
+    public let safe: Bool
+
+    @inlinable public subscript(dynamicMember wireName: WireName) -> Wire {
         get {
             return self[wireName]
         }
@@ -27,9 +29,9 @@ public class WireManager {
         }
     }
 
-    public subscript(_ wireName: WireName) -> Wire {
+    @inlinable public subscript(_ wireName: WireName) -> Wire {
         get {
-            guard wires.keys.contains(wireName) else {
+            guard !safe || wires.keys.contains(wireName) else {
                 fatalError(SimulatorError.WireManagerWireNotExistsError.rawValue + " (\(wireName))")
             }
             return wires[wireName]!
@@ -41,9 +43,8 @@ public class WireManager {
     }
 
     public func doCheckpoint() -> Bool {
-        var newCheckpoint: [WireName: UInt64] = [:]
+        var newCheckpoint = wires.mapValues { wire in wire.v }
         defer { checkpoint = newCheckpoint }
-        wires.forEach { wireName, wire in newCheckpoint[wireName] = wire.v }
         return checkpoint == newCheckpoint
     }
 
@@ -58,5 +59,9 @@ public class WireManager {
             }
             return acc
         }
+    }
+
+    init(safe: Bool = false) {
+        self.safe = safe
     }
 }

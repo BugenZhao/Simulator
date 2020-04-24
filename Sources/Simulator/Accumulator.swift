@@ -70,7 +70,7 @@ class Accumulator: Machine {
             unitName: "ANS",
             inputWires: ["wadder"],
             outputWires: ["wans"],
-            logic: { wm, ru in wm.wans[0...31] = ru[q: 0] },
+            logic: { wm, ru in wm.wans[0...63] = ru[q: 0] },
             onRising: { wm, ru in
                 var ru = ru
                 ru[q: 0] = wm.wadder[0...63]

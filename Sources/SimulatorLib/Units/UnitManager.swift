@@ -119,7 +119,7 @@ public class UnitManager {
 
 
     private func checkPermission(_ unit: Unit) {
-        let tempWireManager = WireManager()
+        let tempWireManager = WireManager(safe: true)
         let tempUnit = unit.copied()
         tempUnit.inputWires.forEach { wireName in
             tempWireManager[mayCreate: wireName].to.append(tempUnit.name)
@@ -154,8 +154,8 @@ public class UnitManager {
     }
 
     public func clock() {
-        if !self.halted { print("Cycle \(cycle):") }
-        else { print("Machine is halted.") }
+//        if !self.halted { print("Cycle \(cycle):") }
+//        else { print("Machine is halted.") }
 
         if !self.halted {
             rise()

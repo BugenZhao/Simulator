@@ -11,20 +11,20 @@ public typealias WireName = String
 
 
 public class Wire {
-    struct Counter {
-        var read: Int = 0
-        var write: Int = 0
+    @usableFromInline struct Counter {
+        @usableFromInline var read: Int = 0
+        @usableFromInline var write: Int = 0
     }
 
     private(set) var name: WireName
-    private var value: UInt64
-    var counter = Counter()
+    @usableFromInline private(set) var value: UInt64
+    @usableFromInline var counter = Counter()
 
-    public var v: UInt64 {
+    @inlinable public var v: UInt64 {
         set { counter.write += 1; value = newValue }
         get { counter.read += 1; return value }
     }
-    public var b: Bool {
+    @inlinable public var b: Bool {
         set { self[0] = newValue }
         get { self[0] }
     }
@@ -43,14 +43,14 @@ public class Wire {
         })
     }
     
-    static var mask = memoize(function: rawRangeMask)
+    @usableFromInline static var mask = memoize(function: rawRangeMask)
 
-    static func mask(_ idx: Int) -> UInt64 {
+    @usableFromInline static func mask(_ idx: Int) -> UInt64 {
         return mask(idx...idx)
     }
 
 
-    public subscript(idx: Int) -> Bool {
+    @inlinable public subscript(idx: Int) -> Bool {
         get {
             guard 0...63 ~= idx else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
@@ -68,9 +68,10 @@ public class Wire {
         }
     }
 
-    public subscript(range: ClosedRange<Int>) -> UInt64 {
+    @inlinable public subscript(range: ClosedRange<Int>) -> UInt64 {
         get {
-            guard 0...63 ~= range.first! && 0...63 ~= range.last! else { fatalError(SimulatorError.WireOutOfRangeError.rawValue)
+            guard 0...63 ~= range.first! && 0...63 ~= range.last! else {
+                fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
             defer { counter.read += 1 }
             return (value & Wire.mask(range)) >> range.first!
