@@ -15,6 +15,12 @@ class AddressableTests: XCTestCase {
 
         init() { data = Data(count: 64) }
     }
+    
+    class Memory70B: Addressable {
+        var data: Data
+
+        init() { data = Data(count: 70) }
+    }
 
     func testAddressing() {
         var memory = Memory64B()
@@ -44,5 +50,12 @@ class AddressableTests: XCTestCase {
     func testRegister() {
         let registerUnit = RegisterUnit("reg", [], [], { _, _ in return }, { _, _ in return }, 128)
         _ = registerUnit[l: 0]
+    }
+    
+    func testDump() {
+        var memory = Memory70B()
+        memory.dump(at: 0...0)
+        memory.dump(at: 16...47)
+        memory.dump(at: 48...69)
     }
 }

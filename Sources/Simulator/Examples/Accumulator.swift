@@ -100,5 +100,7 @@ class Accumulator: Machine {
             memory[q: addr * 8] = data
         }
         memory[q: range.count.u64 * 8] = ~0.u64
+        
+        memory.dump(at: 0...0x100)
     }
 }
