@@ -52,7 +52,7 @@ class WireTests: XCTestCase {
     }
 
     func testWireError() {
-        let wire = Wire(wireName: "testWire", value: 0b1010_0101)
+        let wire = Wire(wireName: "testWire", value: 0b1010_0101, safe: true)
 
         expect { _ = wire[-1] }.to(throwAssertion())
         expect { _ = wire[64] }.to(throwAssertion())
