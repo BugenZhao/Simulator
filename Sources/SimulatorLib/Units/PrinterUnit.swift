@@ -8,11 +8,11 @@
 import Foundation
 
 public class PrinterUnit: Unit {
-    public var name: UnitName
-    public var inputWires: [WireName]
-    public var outputWires: [WireName] = []
-    public var logic: (WireManager) -> Void = { _ in return }
-    public var onRising: (WireManager) -> Void = { _ in return }
+    var name: UnitName
+    var inputWires: [WireName]
+    var outputWires: [WireName] = []
+    var logic: (WireManager) -> Void = { _ in return }
+    var onRising: (WireManager) -> Void = { _ in return }
 
     var onlyOnRising: Bool
 
@@ -32,7 +32,7 @@ public class PrinterUnit: Unit {
         inputWires.forEach { print("\t\($0): \(wireManager[mayCreate: $0].v)") }
     }
 
-    public func copied() -> Self {
+    func copied() -> Self {
         return PrinterUnit(name, inputWires, onlyOnRising) as! Self
     }
 }

@@ -16,6 +16,8 @@ public class Wire {
         @usableFromInline var write: Int = 0
     }
 
+    public let safe: Bool
+
     private(set) var name: WireName
     @usableFromInline private(set) var value: UInt64
     @usableFromInline var counter = Counter()
@@ -35,14 +37,14 @@ public class Wire {
         }
     }
     var to: [UnitName]
-    
+
     static func rawRangeMask(_ range: ClosedRange<Int>) -> UInt64 {
         return (0...63).reduce(0, { acc, idx in
             if range.contains(idx) { return (1 << idx) + acc }
             else { return acc }
         })
     }
-    
+
     @usableFromInline static var mask = memoize(function: rawRangeMask)
 
     @usableFromInline static func mask(_ idx: Int) -> UInt64 {
@@ -52,14 +54,14 @@ public class Wire {
 
     @inlinable public subscript(idx: Int) -> Bool {
         get {
-            guard 0...63 ~= idx else {
+            guard !safe || 0...63 ~= idx else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
             defer { counter.read += 1 }
             return ((value & Wire.mask(idx)) >> idx) == 1
         }
         set {
-            guard 0...63 ~= idx else {
+            guard !safe || 0...63 ~= idx else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
             defer { counter.write += 1 }
@@ -70,14 +72,14 @@ public class Wire {
 
     @inlinable public subscript(range: ClosedRange<Int>) -> UInt64 {
         get {
-            guard 0...63 ~= range.first! && 0...63 ~= range.last! else {
+            guard !safe || 0...63 ~= range.first! && 0...63 ~= range.last! else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
             defer { counter.read += 1 }
             return (value & Wire.mask(range)) >> range.first!
         }
         set {
-            guard 0...63 ~= range.first! && 0...63 ~= range.last! else {
+            guard !safe || 0...63 ~= range.first! && 0...63 ~= range.last! else {
                 fatalError(SimulatorError.WireOutOfRangeError.rawValue)
             }
             defer { counter.write += 1 }
@@ -86,11 +88,16 @@ public class Wire {
         }
     }
 
-    public init(wireName: WireName, value: UInt64 = 0, from: UnitName? = nil, to: [UnitName] = []) {
+    public init(wireName: WireName,
+        value: UInt64 = 0,
+        from: UnitName? = nil,
+        to: [UnitName] = [],
+        safe: Bool = false) {
         self.name = wireName
         self.value = value
         self.from = from
         self.to = to
+        self.safe = safe
     }
 
     func clear() {

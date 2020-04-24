@@ -16,13 +16,13 @@ public class UnitManager {
 
     private(set) var cycle: UInt64 = 0
 
-    public subscript(dynamicMember unitName: UnitName) -> Unit? {
+    subscript(dynamicMember unitName: UnitName) -> Unit? {
         get {
             return self[unitName]
         }
     }
 
-    public subscript(_ unitName: UnitName) -> Unit? {
+    subscript(_ unitName: UnitName) -> Unit? {
         get {
             return units[unitName]
         }
@@ -34,41 +34,47 @@ public class UnitManager {
         unitName: UnitName,
         inputWires: [WireName] = [],
         outputWires: [WireName] = [],
-        logic: @escaping (WireManager) -> Void = { _ in return }) {
+        logic: @escaping (WireManager) -> Void = { _ in return }) -> GenericUnit {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
-        let unit: Unit = GenericUnit(unitName, inputWires, outputWires, logic)
+        let unit = GenericUnit(unitName, inputWires, outputWires, logic)
         checkPermission(unit)
         inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
         units[unitName] = unit
+
+        return unit
     }
 
     public func addPrinterUnit(
         unitName: UnitName,
         inputWires: [WireName],
-        onlyOnRising: Bool = true) {
+        onlyOnRising: Bool = true) -> PrinterUnit {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
-        let unit: Unit = PrinterUnit(unitName, inputWires, onlyOnRising)
+        let unit = PrinterUnit(unitName, inputWires, onlyOnRising)
         checkPermission(unit)
         inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         units[unitName] = unit
+
+        return unit
     }
 
     public func addOutputUnit(
         unitName: UnitName,
         outputWires: [WireName] = [],
-        outputValue: UInt64 = 0) {
+        outputValue: UInt64 = 0) -> OutputUnit {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
-        let unit: Unit = OutputUnit(unitName, outputWires, outputValue)
+        let unit = OutputUnit(unitName, outputWires, outputValue)
         checkPermission(unit)
         outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
         units[unitName] = unit
+
+        return unit
     }
 
     public func addRegisterUnit(
@@ -77,15 +83,17 @@ public class UnitManager {
         outputWires: [WireName],
         logic: @escaping (WireManager, RegisterUnit) -> Void,
         onRising: @escaping (WireManager, RegisterUnit) -> Void,
-        bytesCount: Int) {
+        bytesCount: Int) -> RegisterUnit {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
-        let unit: Unit = RegisterUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
+        let unit = RegisterUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
         checkPermission(unit)
         inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
         units[unitName] = unit
+
+        return unit
     }
 
     public func addMemoryUnit(
@@ -94,27 +102,31 @@ public class UnitManager {
         outputWires: [WireName],
         logic: @escaping (WireManager, MemoryUnit) -> Void,
         onRising: @escaping (WireManager, MemoryUnit) -> Void,
-        bytesCount: Int) {
+        bytesCount: Int) -> MemoryUnit {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
-        let unit: Unit = MemoryUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
+        let unit = MemoryUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
         checkPermission(unit)
         inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         outputWires.forEach { wireName in wireManager[mayCreate: wireName].from = unitName }
         units[unitName] = unit
+
+        return unit
     }
 
     public func addHaltUnit(
         unitName: UnitName,
-        inputWires: [WireName] = []) {
+        inputWires: [WireName] = []) -> HaltUnit {
         guard !units.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
         }
-        let unit: Unit = HaltUnit(unitName, inputWires, { self.halted = true })
+        let unit = HaltUnit(unitName, inputWires, { self.halted = true })
         checkPermission(unit)
         inputWires.forEach { wireName in wireManager[mayCreate: wireName].to.append(unitName) }
         units[unitName] = unit
+
+        return unit
     }
 
 

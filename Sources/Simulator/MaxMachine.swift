@@ -20,17 +20,17 @@ public class MaxMachine: Machine {
     public init(_ a: UInt64, _ b: UInt64) {
         self.a = a
         self.b = b
-        unitManager.addOutputUnit(
+        _ = unitManager.addOutputUnit(
             unitName: "a",
             outputWires: ["wa"],
             outputValue: a
         )
-        unitManager.addOutputUnit(
+        _ = unitManager.addOutputUnit(
             unitName: "b",
             outputWires: ["wb"],
             outputValue: b
         )
-        unitManager.addGenericUnit(
+        _ = unitManager.addGenericUnit(
             unitName: "logical_comparator",
             inputWires: ["wa", "wb"],
             outputWires: ["wselect"],
@@ -38,7 +38,7 @@ public class MaxMachine: Machine {
                 wm.wselect.b = wm.wa.v < wm.wb.v
             }
         )
-        unitManager.addGenericUnit(
+        _ = unitManager.addGenericUnit(
             unitName: "mux",
             inputWires: ["wa", "wb", "wselect"],
             outputWires: ["wout"],

@@ -11,14 +11,20 @@ import SimulatorLib
 class Accumulator: Machine {
     public var unitManager = UnitManager()
 
+    var range: ClosedRange<UInt64>
+    var ans: RegisterUnit
+
     public func run() {
         repeat {
             unitManager.clock()
         } while !unitManager.halted
+        print("Sum of \(range) is \(ans[q: 0])")
     }
 
     public init(_ range: ClosedRange<UInt64>) {
-        unitManager.addRegisterUnit(
+        self.range = range
+
+        _ = unitManager.addRegisterUnit(
             unitName: "PC",
             inputWires: ["wpcin"],
             outputWires: ["wpcout"],
@@ -29,7 +35,7 @@ class Accumulator: Machine {
             },
             bytesCount: 4
         )
-        unitManager.addMemoryUnit(
+        var memory = unitManager.addMemoryUnit(
             unitName: "memory",
             inputWires: ["wpcout"],
             outputWires: ["wmem"],
@@ -40,7 +46,7 @@ class Accumulator: Machine {
             onRising: { _, _ in return },
             bytesCount: 8 * (range.count + 10)
         )
-        unitManager.addGenericUnit(
+        _ = unitManager.addGenericUnit(
             unitName: "pcadder",
             inputWires: ["wpcout"],
             outputWires: ["wpcin"],
@@ -48,7 +54,7 @@ class Accumulator: Machine {
                 wm.wpcin[0...31] = wm.wpcout[0...31] + 8
             }
         )
-        unitManager.addGenericUnit(
+        _ = unitManager.addGenericUnit(
             unitName: "adder",
             inputWires: ["wadderin", "wans"],
             outputWires: ["wadder"],
@@ -56,7 +62,7 @@ class Accumulator: Machine {
                 wm.wadder[0...63] = wm.wadderin[0...63] + wm.wans[0...63]
             }
         )
-        unitManager.addGenericUnit(
+        _ = unitManager.addGenericUnit(
             unitName: "isnot0",
             inputWires: ["wmem"],
             outputWires: ["whalt", "wadderin"],
@@ -66,7 +72,7 @@ class Accumulator: Machine {
                 wm.wadderin[0...63] = cond ? 0 : wm.wmem[0...63]
             }
         )
-        unitManager.addRegisterUnit(
+        ans = unitManager.addRegisterUnit(
             unitName: "ANS",
             inputWires: ["wadder"],
             outputWires: ["wans"],
@@ -77,18 +83,14 @@ class Accumulator: Machine {
             },
             bytesCount: 8
         )
-        unitManager.addPrinterUnit(
-            unitName: "printer",
-            inputWires: ["wans"]
-        )
-        unitManager.addHaltUnit(
+        _ = unitManager.addHaltUnit(
             unitName: "halt",
             inputWires: ["whalt"]
         )
 
         _ = unitManager.wireManager.examine()
 
-        var memory = unitManager.memory as! MemoryUnit
+
         for (addr, data) in zip(0..<range.count.u64, range) {
             memory[q: addr * 8] = data
         }

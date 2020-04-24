@@ -42,7 +42,7 @@ class AddressableTests: XCTestCase {
     }
 
     func testRegister() {
-        var registerUnit = RegisterUnit("reg", [], [], { _, _ in return }, { _, _ in return }, 128)
+        let registerUnit = RegisterUnit("reg", [], [], { _, _ in return }, { _, _ in return }, 128)
         _ = registerUnit[l: 0]
     }
 }

@@ -23,7 +23,7 @@ public class WireManager {
     public subscript(mayCreate wireName: WireName) -> Wire {
         get {
             if let wire = wires[wireName] { return wire }
-            let wire = Wire(wireName: wireName, value: 0)
+            let wire = Wire(wireName: wireName, value: 0, safe: safe)
             wires[wireName] = wire
             return wire
         }

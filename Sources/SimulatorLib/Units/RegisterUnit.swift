@@ -8,11 +8,11 @@
 import Foundation
 
 public class RegisterUnit: Unit, Addressable {
-    public var name: UnitName
-    public var inputWires: [WireName]
-    public var outputWires: [WireName]
-    public var logic: (WireManager) -> Void = { _ in return }
-    public var onRising: (WireManager) -> Void = { _ in return }
+    var name: UnitName
+    var inputWires: [WireName]
+    var outputWires: [WireName]
+    var logic: (WireManager) -> Void = { _ in return }
+    var onRising: (WireManager) -> Void = { _ in return }
 
     public var data: Data
 
@@ -38,7 +38,7 @@ public class RegisterUnit: Unit, Addressable {
         self.onRising = { wm in self.realOnRising(wm, self) }
     }
 
-    public func copied() -> Self {
+    func copied() -> Self {
         return RegisterUnit(name, inputWires, outputWires, realLogic, realOnRising, data.count) as! Self
     }
 }
