@@ -1,16 +1,15 @@
 //
-//  Y86_64Seq.swift
-//  Simulator
+//  Constants.swift
+//  Y86_64Seq
 //
 //  Created by Bugen Zhao on 2020/4/24.
 //
 
 import Foundation
 
-import SimulatorLib
 
 // Instructions
-fileprivate class I {
+class I {
     static let HALT = 0.u64
     static let NOP = 1.u64
     static let RRMOVQ = 2.u64
@@ -26,7 +25,7 @@ fileprivate class I {
 }
 
 // Functions
-fileprivate class F {
+class F {
     static let NONE = 0.u64
 
     static let ADD = 0.u64
@@ -44,7 +43,7 @@ fileprivate class F {
 }
 
 // Registers
-fileprivate class R {
+class R {
     static let RAX = 0.u64
     static let RCX = 1.u64
     static let RDX = 2.u64
@@ -71,15 +70,3 @@ fileprivate class S {
     static let INS = 3.u64
     static let HLT = 4.u64
 }
-
-class Y86_64Seq: Machine {
-    public var unitManager = UnitManager()
-
-    public func run() {
-    }
-
-    public init() {
-
-    }
-}
-

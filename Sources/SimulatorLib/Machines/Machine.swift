@@ -8,6 +8,5 @@
 import Foundation
 
 public protocol Machine {
-    var unitManager: UnitManager { get }
     func run()
 }
