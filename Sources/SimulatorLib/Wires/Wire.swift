@@ -19,7 +19,7 @@ public class Wire {
     public let safe: Bool
 
     private(set) var name: WireName
-    @usableFromInline private(set) var value: UInt64
+    @usableFromInline var value: UInt64
     @usableFromInline var counter = Counter()
 
     @inlinable public var v: UInt64 {
