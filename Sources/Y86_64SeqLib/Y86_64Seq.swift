@@ -27,5 +27,11 @@ public class Y86_64Seq: Machine {
 
         _ = um.wireManager.examine()
     }
+
+    init(fetch: Bool = false, decode: Bool = false, execute: Bool = false, memory: Bool = false, writeBack: Bool = false) {
+        if fetch { addFetch() }
+
+        _ = um.wireManager.examine()
+    }
 }
 

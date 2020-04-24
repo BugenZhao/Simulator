@@ -51,8 +51,8 @@ extension Y86_64Seq {
                 "instValid", "needRegIDs", "needValC"],
             logic: { wm in
                 // split the instruction
-                let icode = wm.imemError.b ? I.NOP : wm.inst0[0...3]
-                let ifun = wm.imemError.b ? F.NONE : wm.inst0[4...7]
+                let icode = wm.imemError.b ? I.NOP : wm.inst0[4...7]
+                let ifun = wm.imemError.b ? F.NONE : wm.inst0[0...3]
                 wm.icode.v = icode
                 wm.ifun.v = ifun
 
