@@ -8,7 +8,7 @@
 import Foundation
 import SimulatorLib
 
-class Y86_64Seq: Machine {
+public class Y86_64Seq: Machine {
     var um = UnitManager()
 
     var imemory: MemoryUnit?
@@ -17,12 +17,12 @@ class Y86_64Seq: Machine {
     var register: RegisterUnit?
 
 
-    func run() {
+    public func run() {
         um.clock()
         um.clock()
     }
 
-    init() {
+    public init() {
         addFetch()
 
         _ = um.wireManager.examine()

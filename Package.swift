@@ -9,7 +9,8 @@ let package = Package(
         .macOS(.v10_15),
     ],
     products: [
-        .executable(name: "Y86_64Seq", targets: ["Y86_64Seq"]),
+        .executable(name: "Y86_64", targets: ["Y86_64"]),
+        .library(name: "Y86_64SeqLib", targets: ["Y86_64SeqLib"]),
         .executable(name: "Simulator", targets: ["Simulator"]),
         .library(name: "SimulatorLib", targets: ["SimulatorLib"])
     ],
@@ -28,10 +29,17 @@ let package = Package(
             name: "Simulator",
             dependencies: ["SimulatorLib"]),
         .target(
-            name: "Y86_64Seq",
+            name: "Y86_64SeqLib",
             dependencies: ["SimulatorLib"]),
+        .target(
+            name: "Y86_64",
+            dependencies: ["Y86_64SeqLib"]),
+        
         .testTarget(
             name: "SimulatorTests",
             dependencies: ["SimulatorLib", "Nimble"]),
+        .testTarget(
+            name: "Y86_64SeqTests",
+            dependencies: ["SimulatorLib", "Y86_64SeqLib", "Nimble"]),
     ]
 )
