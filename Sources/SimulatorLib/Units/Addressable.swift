@@ -11,6 +11,8 @@ import Foundation
 public protocol Addressable {
     var data: Data { get set }
 
+    subscript (_ idx: UInt64) -> UInt64 { get set } // quad index
+
     subscript (b b: UInt64) -> UInt64 { get set }
     subscript (w w: UInt64) -> UInt64 { get set }
     subscript (l l: UInt64) -> UInt64 { get set }
@@ -24,6 +26,11 @@ extension Addressable {
         guard 0..<data.count ~= address else {
             fatalError(SimulatorError.AddressableInvalidAccessError.rawValue + "\(address)")
         }
+    }
+
+    public subscript (_ idx: UInt64) -> UInt64 {
+        get { self[q: idx * 8] }
+        set { self[q: idx * 8] = newValue }
     }
 
     public subscript (b b: UInt64) -> UInt64 {

@@ -15,7 +15,7 @@ class AddressableTests: XCTestCase {
 
         init() { data = Data(count: 64) }
     }
-    
+
     class Memory70B: Addressable {
         var data: Data
 
@@ -48,12 +48,14 @@ class AddressableTests: XCTestCase {
     }
 
     func testRegister() {
-        let registerUnit = RegisterUnit("reg", [], [], { _, _ in return }, { _, _ in return }, 128)
-        _ = registerUnit[l: 0]
+        var registerUnit = RegisterUnit("reg", [], [], { _, _ in return }, { _, _ in return }, 128)
+        registerUnit[1] = 0x4847_4645_4443_4241
+        registerUnit.dump(at: 0x08...0x0f)
+        XCTAssertEqual(registerUnit[l: 0xc], 0x4847_4645)
     }
-    
+
     func testDump() {
-        var memory = Memory70B()
+        let memory = Memory70B()
         memory.dump(at: 0...0)
         memory.dump(at: 16...47)
         memory.dump(at: 48...69)
