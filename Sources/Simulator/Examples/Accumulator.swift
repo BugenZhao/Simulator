@@ -1,6 +1,6 @@
 //
 //  Accumulator.swift
-//  SimulatorLib
+//  Simulator
 //
 //  Created by Bugen Zhao on 2020/4/23.
 //
