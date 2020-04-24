@@ -9,6 +9,7 @@ let package = Package(
         .macOS(.v10_15),
     ],
     products: [
+        .executable(name: "Y86_64Seq", targets: ["Y86_64Seq"]),
         .executable(name: "Simulator", targets: ["Simulator"]),
         .library(name: "SimulatorLib", targets: ["SimulatorLib"])
     ],
@@ -25,6 +26,9 @@ let package = Package(
             dependencies: []),
         .target(
             name: "Simulator",
+            dependencies: ["SimulatorLib"]),
+        .target(
+            name: "Y86_64Seq",
             dependencies: ["SimulatorLib"]),
         .testTarget(
             name: "SimulatorTests",

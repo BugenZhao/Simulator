@@ -97,8 +97,8 @@ repeat {
 print("Sum of \(range) is \(ans[q: 0])")
 ```
 ## Build and Run
-This project is built with *Swift Package Manager*, to run the simulator, just run:
+This project is built with *Swift Package Manager*, to run the simulator, simply execute:
 
 ```bash
-swift run
+swift run -c release Simulator
 ```
