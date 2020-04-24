@@ -8,7 +8,7 @@ Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
 ## Example
 An example of Accumulator is shown below:
 
-![Accumulator Circuit](Resources/accumulator.heic)
+![Accumulator Circuit](Resources/accumulator.png)
 
 ```swift
 // Input range
