@@ -15,10 +15,15 @@ class Accumulator: Machine {
     var ans: RegisterUnit
 
     public func run() {
-        repeat {
-            unitManager.clock()
-        } while !unitManager.halted
-        print("Sum of \(range) is \(ans[q: 0])")
+        let time = evaluate {
+            repeat {
+                unitManager.clock()
+            } while !unitManager.halted
+            print("Sum of \(range) is \(ans[q: 0])")
+        }
+        let cycle = unitManager.cycle
+        print("Performance of \(type(of: self)): ")
+        print("\t\(cycle) cycles in \(time) sec, \(Double(cycle) / time) cycles per sec")
     }
 
     public init(_ range: ClosedRange<UInt64>) {
@@ -41,7 +46,7 @@ class Accumulator: Machine {
             outputWires: ["wmem"],
             logic: { wm, mu in
                 let addr = wm.wpcout[0...31]
-                wm.wmem[0...63] = mu[q: addr]
+                wm.wmem.v = mu[q: addr]
             },
             onRising: { _, _ in return },
             bytesCount: 8 * (range.count + 10)
@@ -59,7 +64,7 @@ class Accumulator: Machine {
             inputWires: ["wadderin", "wans"],
             outputWires: ["wadder"],
             logic: { wm in
-                wm.wadder[0...63] = wm.wadderin[0...63] + wm.wans[0...63]
+                wm.wadder.v = wm.wadderin.v + wm.wans.v
             }
         )
         _ = unitManager.addGenericUnit(
@@ -67,19 +72,19 @@ class Accumulator: Machine {
             inputWires: ["wmem"],
             outputWires: ["whalt", "wadderin"],
             logic: { wm in
-                let cond = wm.wmem[0...63] == ~0.u64
+                let cond = wm.wmem.v == ~0.u64
                 wm.whalt.b = cond
-                wm.wadderin[0...63] = cond ? 0 : wm.wmem[0...63]
+                wm.wadderin.v = cond ? 0 : wm.wmem.v
             }
         )
         ans = unitManager.addRegisterUnit(
             unitName: "ANS",
             inputWires: ["wadder"],
             outputWires: ["wans"],
-            logic: { wm, ru in wm.wans[0...63] = ru[q: 0] },
+            logic: { wm, ru in wm.wans.v = ru[q: 0] },
             onRising: { wm, ru in
                 var ru = ru
-                ru[q: 0] = wm.wadder[0...63]
+                ru[q: 0] = wm.wadder.v
             },
             bytesCount: 8
         )

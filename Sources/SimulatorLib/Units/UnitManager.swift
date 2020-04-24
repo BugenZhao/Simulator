@@ -14,7 +14,7 @@ public class UnitManager {
 
     private(set) public var halted: Bool = false
 
-    private(set) var cycle: UInt64 = 0
+    private(set) public var cycle: UInt64 = 0
 
     subscript(dynamicMember unitName: UnitName) -> Unit? {
         get {
