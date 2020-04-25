@@ -165,10 +165,11 @@ public class StaticUnitManager {
         units.values.forEach { $0.onRising() }
     }
 
-    public func clock() {
-        if !self.isReady {print("Warning: \(type(of:self)) may not be ready.")}
+    public func clock(clear: Bool = false) {
+        if !self.isReady { print("Warning: \(type(of: self)) may not be ready.") }
         stablize()
         rise()
+        if clear { wireManager.wires.forEach { $0.v = 0 } }
 //        print("Rise:")
 //        wireManager.wires.forEach { print($0.name, $0.v) }
         cycle += 1

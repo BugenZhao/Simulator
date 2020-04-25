@@ -165,10 +165,11 @@ public class UnitManager {
         units.values.forEach { $0.onRising(wireManager) }
     }
 
-    public func clock() {
+    public func clock(clear: Bool = false) {
 //        if !self.halted { print("Cycle \(cycle):") }
 //        else { print("Machine is halted.") }
 
+        // FIXIT: incorrect order and no clear
         if !self.halted {
             rise()
         }

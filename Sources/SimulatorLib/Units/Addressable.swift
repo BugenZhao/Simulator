@@ -26,10 +26,10 @@ public protocol Addressable {
 extension Addressable {
     func validateAccess(at address: Int) {
         guard 0..<data.count ~= address else {
-            fatalError(SimulatorError.AddressableInvalidAccessError.rawValue + "\(address)")
+            fatalError(SimulatorError.AddressableInvalidAccessError.rawValue + "\(String(format: "0x%016llx", address))")
         }
     }
-    
+
     public mutating func clear() {
         self.data.resetBytes(in: 0..<self.data.count)
     }
