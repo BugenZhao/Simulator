@@ -12,11 +12,14 @@ public class Y86_64Seq: Machine {
     var um = StaticUnitManager()
 
     var memory: StaticMemoryUnit?
-    var dmemory: StaticMemoryUnit?
     var pc: StaticRegisterUnit?
     var register: StaticRegisterUnit?
     var cc: StaticRegisterUnit?
     var stat: StaticRegisterUnit?
+
+    public var halted: Bool {
+        get { stat?[b: 0] == S.HLT }
+    }
 
     class WireSet {
         // MARK: Fetch
@@ -76,8 +79,11 @@ public class Y86_64Seq: Machine {
     var wires = WireSet()
 
     public func run() {
-        um.clock()
-        um.clock()
+        printStatus()
+        repeat {
+            um.clock()
+            printStatus()
+        } while !halted
     }
 
     convenience public init() {
@@ -96,7 +102,54 @@ public class Y86_64Seq: Machine {
         if memory { addMemory() }
         if newPC { addNewPC() }
 
-        assert(um.examine() == 0)
+        _ = um.ready()
+
+        self.memory?.clear()
+        self.pc?.clear()
+        self.register?.clear()
+        self.cc?.clear()
+        self.stat?.clear()
+
+//        self.memory!.dump(at: 0...0x1f)
+//        self.pc!.dump(at: 0...0x7)
+//        self.register!.dump(at: 0...15 * 8 - 1)
+//        self.cc!.dump(at: 0...2)
+//        print(self.stat![b: 0])
+    }
+
+    public func printStatus() {
+        let statDesc = { () -> String in
+            switch self.stat![b: 0] {
+            case 0...(S.AOK): return "AOK"
+            case S.ADR: return "ADR"
+            case S.INS: return "INS"
+            case S.HLT: return "HLT"
+            default: return "ERR"
+            }
+        }()
+
+        print("Cycle:\t\(um.cycle)\n")
+        print("\tPC: \t\(pc![0])")
+        print("\tSTAT:\t\(statDesc)")
+        print("\tRAX:\t\(register![R.RAX])")
+        print("\tRCX:\t\(register![R.RCX])")
+        print("\tRDX:\t\(register![R.RDX])")
+        print("\tRBX:\t\(register![R.RBX])")
+        print("\tRSP:\t\(register![R.RSP])")
+        print("\tRBP:\t\(register![R.RBP])")
+        print("\tRSI:\t\(register![R.RSI])")
+        print("\tRDI:\t\(register![R.RDI])")
+        print("\tR8: \t\(register![R.R8])")
+        print("\tR9: \t\(register![R.R9])")
+        print("\tR10:\t\(register![R.R10])")
+        print("\tR11:\t\(register![R.R11])")
+        print("\tR12:\t\(register![R.R12])")
+        print("\tR13:\t\(register![R.R13])")
+        print("\tR14:\t\(register![R.R14])")
+        print("\tZF: \t\(cc![b: 0] != 0)")
+        print("\tSF: \t\(cc![b: 1] != 0)")
+        print("\tOF: \t\(cc![b: 2] != 0)")
+        print("\n")
     }
 }
 

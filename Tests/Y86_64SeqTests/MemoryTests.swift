@@ -52,8 +52,6 @@ class MemoryTests: XCTestCase {
         XCTAssertEqual(CPU.wires.memAddr.v, 0x100)
         XCTAssertEqual(CPU.wires.memRead.b, true)
         XCTAssertEqual(CPU.wires.memWrite.b, false)
-
-        CPU.um.clock()
         XCTAssertEqual(CPU.register![R.RDI], 0x8888)
         XCTAssertEqual(CPU.register![R.RSP], 0x100 + 8)
         XCTAssertEqual(CPU.stat![b: 0], S.AOK)
@@ -63,8 +61,7 @@ class MemoryTests: XCTestCase {
         let CPU = self.CPU!
         CPU.memory?.data[0...9] = Data([0x00]) // halt
         CPU.um.clock()
-        CPU.um.clock()
-        XCTAssertEqual(CPU.um.halted, true)
+        XCTAssertEqual(CPU.halted, true)
     }
 }
 

@@ -29,6 +29,8 @@ public class StaticUnitManager {
         }
     }
 
+    var isReady = false
+
     public init() { }
 
     public func addGenericUnit(
@@ -154,6 +156,8 @@ public class StaticUnitManager {
         wireManager.clearCheckpoint()
         repeat {
             units.values.forEach { $0.logic() }
+//            print("Stablize:")
+//            wireManager.wires.forEach { print($0.name, $0.v) }
         } while(wireManager.doCheckpoint() == false)
     }
 
@@ -162,17 +166,16 @@ public class StaticUnitManager {
     }
 
     public func clock() {
-//        if !self.halted { print("Cycle \(cycle):") }
-//        else { print("Machine is halted.") }
-
-        if !self.halted {
-            rise()
-        }
-        if !self.halted {
-            stablize()
-            cycle += 1
-        }
+        if !self.isReady {print("Warning: \(type(of:self)) may not be ready.")}
+        stablize()
+        rise()
+//        print("Rise:")
+//        wireManager.wires.forEach { print($0.name, $0.v) }
+        cycle += 1
     }
 
-    public func examine() -> Int { self.wireManager.examine() }
+    public func ready() -> Int {
+        defer { isReady = true }
+        return self.wireManager.examine()
+    }
 }

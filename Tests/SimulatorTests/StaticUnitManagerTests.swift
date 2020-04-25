@@ -176,7 +176,6 @@ class StaticUnitManagerTests: XCTestCase {
             inputWires: [w]
         )
 
-        unitManager.clock()
         XCTAssertEqual(unitManager.halted, false)
         unitManager.clock()
         XCTAssertEqual(unitManager.halted, true)
@@ -207,8 +206,6 @@ class StaticUnitManagerTests: XCTestCase {
             logic: { wpci.v = wpco.v + 1 }
         )
 
-        XCTAssertEqual((unitManager.PC as! StaticRegisterUnit)[q: 0], 0)
-        unitManager.clock()
         XCTAssertEqual((unitManager.PC as! StaticRegisterUnit)[q: 0], 0)
         unitManager.clock()
         XCTAssertEqual((unitManager.PC as! StaticRegisterUnit)[q: 0], 1)

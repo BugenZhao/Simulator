@@ -19,6 +19,8 @@ public protocol Addressable {
     subscript (q q: UInt64) -> UInt64 { get set }
 
     func dump(at range: ClosedRange<UInt64>)
+
+    mutating func clear()
 }
 
 extension Addressable {
@@ -26,6 +28,10 @@ extension Addressable {
         guard 0..<data.count ~= address else {
             fatalError(SimulatorError.AddressableInvalidAccessError.rawValue + "\(address)")
         }
+    }
+    
+    public mutating func clear() {
+        self.data.resetBytes(in: 0..<self.data.count)
     }
 
     public subscript (_ idx: UInt64) -> UInt64 {
