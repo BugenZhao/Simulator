@@ -9,10 +9,20 @@ import Foundation
 import SimulatorLib
 
 class Accumulator: Machine {
-    public var unitManager = UnitManager()
+    public var unitManager = StaticUnitManager()
 
     var range: ClosedRange<UInt64>
-    var ans: RegisterUnit
+    var ans: StaticRegisterUnit
+
+    struct w {
+        static let pcin = Wire("pcin")
+        static let pcout = Wire("pcout")
+        static let mem = Wire("mem")
+        static let adderin = Wire("adderin")
+        static let adder = Wire("adder")
+        static let ans = Wire("ans")
+        static let halt = Wire("halt")
+    }
 
     public func run() {
         let time = evaluate {
@@ -31,66 +41,66 @@ class Accumulator: Machine {
 
         _ = unitManager.addRegisterUnit(
             unitName: "PC",
-            inputWires: ["wpcin"],
-            outputWires: ["wpcout"],
-            logic: { wm, ru in wm.wpcout[0...31] = ru[l: 0] },
-            onRising: { wm, ru in
+            inputWires: [w.pcin],
+            outputWires: [w.pcout],
+            logic: { ru in w.pcout[0...31] = ru[l: 0] },
+            onRising: { ru in
                 var ru = ru
-                ru[l: 0] = wm.wpcin[0...31]
+                ru[l: 0] = w.pcin[0...31]
             },
             bytesCount: 4
         )
         var memory = unitManager.addMemoryUnit(
             unitName: "memory",
-            inputWires: ["wpcout"],
-            outputWires: ["wmem"],
-            logic: { wm, mu in
-                let addr = wm.wpcout[0...31]
-                wm.wmem.v = mu[q: addr]
+            inputWires: [w.pcout],
+            outputWires: [w.mem],
+            logic: { mu in
+                let addr = w.pcout[0...31]
+                w.mem.v = mu[q: addr]
             },
-            onRising: { _, _ in return },
+            onRising: { _ in },
             bytesCount: 8 * (range.count + 10)
         )
         _ = unitManager.addGenericUnit(
             unitName: "pcadder",
-            inputWires: ["wpcout"],
-            outputWires: ["wpcin"],
-            logic: { wm in
-                wm.wpcin[0...31] = wm.wpcout[0...31] + 8
+            inputWires: [w.pcout],
+            outputWires: [w.pcin],
+            logic: {
+                w.pcin[0...31] = w.pcout[0...31] + 8
             }
         )
         _ = unitManager.addGenericUnit(
             unitName: "adder",
-            inputWires: ["wadderin", "wans"],
-            outputWires: ["wadder"],
-            logic: { wm in
-                wm.wadder.v = wm.wadderin.v + wm.wans.v
+            inputWires: [w.adderin, w.ans],
+            outputWires: [w.adder],
+            logic: {
+                w.adder.v = w.adderin.v + w.ans.v
             }
         )
         _ = unitManager.addGenericUnit(
             unitName: "isnot0",
-            inputWires: ["wmem"],
-            outputWires: ["whalt", "wadderin"],
-            logic: { wm in
-                let cond = wm.wmem.v == ~0.u64
-                wm.whalt.b = cond
-                wm.wadderin.v = cond ? 0 : wm.wmem.v
+            inputWires: [w.mem],
+            outputWires: [w.halt, w.adderin],
+            logic: {
+                let cond = w.mem.v == ~0.u64
+                w.halt.b = cond
+                w.adderin.v = cond ? 0 : w.mem.v
             }
         )
         ans = unitManager.addRegisterUnit(
             unitName: "ANS",
-            inputWires: ["wadder"],
-            outputWires: ["wans"],
-            logic: { wm, ru in wm.wans.v = ru[q: 0] },
-            onRising: { wm, ru in
+            inputWires: [w.adder],
+            outputWires: [w.ans],
+            logic: {  ru in w.ans.v = ru[q: 0] },
+            onRising: { ru in
                 var ru = ru
-                ru[q: 0] = wm.wadder.v
+                ru[q: 0] = w.adder.v
             },
             bytesCount: 8
         )
         _ = unitManager.addHaltUnit(
             unitName: "halt",
-            inputWires: ["whalt"]
+            inputWires: [w.halt]
         )
 
         _ = unitManager.wireManager.examine()
@@ -100,7 +110,7 @@ class Accumulator: Machine {
             memory[q: addr * 8] = data
         }
         memory[q: range.count.u64 * 8] = ~0.u64
-        
+
         memory.dump(at: 0...0x100)
     }
 }
