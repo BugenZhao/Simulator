@@ -15,6 +15,7 @@ public class Y86_64Seq: Machine {
     var dmemory: StaticMemoryUnit?
     var pc: StaticRegisterUnit?
     var register: StaticRegisterUnit?
+    var cc: StaticRegisterUnit?
 
     class WireSet {
         // MARK: Fetch
@@ -41,14 +42,24 @@ public class Y86_64Seq: Machine {
         let valB = Wire("valB")
 
         // MARK: Execute
-
+        let aluA = Wire("aluA")
+        let aluB = Wire("aluB")
+        let aluFun = Wire("aluFun")
+        let zfi = Wire("zfi")
+        let sfi = Wire("sfi")
+        let ofi = Wire("ofi")
+        let setCC = Wire("setCC")
+        let zfo = Wire("zfo")
+        let sfo = Wire("sfo")
+        let ofo = Wire("ofo")
+        let cond = Wire("cond")
+        let valE = Wire("valE")
         // MARK: Memory
 
         // MARK: WriteBack
         let dstE = Wire("dstE")
         let dstM = Wire("dstM")
         let valM = Wire("valM")
-        let valE = Wire("valE")
 
         // MARK: NewPC
 
@@ -73,6 +84,7 @@ public class Y86_64Seq: Machine {
 
         if fetch { addFetch() }
         if decodeWriteBack { addDecodeWriteBack() }
+        if execute { addExecute() }
 
         _ = um.examine()
     }
