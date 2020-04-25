@@ -33,17 +33,27 @@ public class Y86_64Seq: Machine {
         let rA = Wire("rA")
         let rB = Wire("rb")
         let valC = Wire("valC")
-        
+
         // MARK: Decode
-        
+        let srcA = Wire("srcA")
+        let srcB = Wire("srcB")
+        let valA = Wire("valA")
+        let valB = Wire("valB")
+
         // MARK: Execute
-        
+
         // MARK: Memory
-        
+
         // MARK: WriteBack
-        
+        let dstE = Wire("dstE")
+        let dstM = Wire("dstM")
+        let valM = Wire("valM")
+        let valE = Wire("valE")
+
+        // MARK: NewPC
+
     }
-    
+
     var wires = WireSet()
 
     public func run() {
@@ -51,16 +61,20 @@ public class Y86_64Seq: Machine {
         um.clock()
     }
 
-    public init() {
-        addFetch()
-
-        _ = um.wireManager.examine()
+    convenience public init() {
+        self.init(fetch: true, decodeWriteBack: true, execute: true, memory: true, newPC: true)
     }
 
-    init(fetch: Bool = false, decode: Bool = false, execute: Bool = false, memory: Bool = false, writeBack: Bool = false) {
-        if fetch { addFetch() }
+    init(fetch: Bool = false,
+        decodeWriteBack: Bool = false,
+        execute: Bool = false,
+        memory: Bool = false,
+        newPC: Bool = false) {
 
-        _ = um.wireManager.examine()
+        if fetch { addFetch() }
+        if decodeWriteBack { addDecodeWriteBack() }
+
+        _ = um.examine()
     }
 }
 

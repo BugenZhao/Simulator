@@ -9,19 +9,19 @@ import Foundation
 
 
 // Instructions
-struct I {
-    static let HALT = 0.u64
-    static let NOP = 1.u64
-    static let RRMOVQ = 2.u64
-    static let IRMOVQ = 3.u64
-    static let RMMOVQ = 4.u64
-    static let MRMOVQ = 5.u64
-    static let OPQ = 6.u64
-    static let JXX = 7.u64
-    static let CALL = 8.u64
-    static let RET = 9.u64
-    static let PUSHQ = 0xa.u64
-    static let POPQ = 0xb.u64
+struct I {                     // A  , B  , E  , M
+    static let HALT = 0.u64    // ---, ---, ---, ---
+    static let NOP = 1.u64     // ---, ---, ---, ---
+    static let RRMOVQ = 2.u64  // rA , ---, rB , ---
+    static let IRMOVQ = 3.u64  // ---, ---, rB , ---
+    static let RMMOVQ = 4.u64  // rA , rB , ---, ---
+    static let MRMOVQ = 5.u64  // ---, rB , ---, rA  !!
+    static let OPQ = 6.u64     // rA , rB , rB , ---
+    static let JXX = 7.u64     // ---, ---, ---, ---
+    static let CALL = 8.u64    // ---, rsp, rsp, ---
+    static let RET = 9.u64     // rsp, rsp, rsp, ---
+    static let PUSHQ = 0xa.u64 // rA , rsp, rsp, ---
+    static let POPQ = 0xb.u64  // rsp, rsp, rsp, rA
 }
 
 // Functions
