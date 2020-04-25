@@ -9,90 +9,92 @@ import Foundation
 
 extension Y86_64Seq {
     func addFetch() {
+        let w = self.wires
+
         pc = um.addRegisterUnit(
             unitName: "PC",
-            inputWires: ["newPC"],
-            outputWires: ["pc"],
-            logic: { wm, mu in
+            inputWires: [w.newPC],
+            outputWires: [w.pc],
+            logic: { mu in
                 // PC
-                wm.pc.v = mu[0]
+                w.pc.v = mu[0]
             },
-            onRising: { wm, mu in var mu = mu
+            onRising: { mu in var mu = mu
                 // update PC
-                mu[0] = wm.newPC.v
+                mu[0] = w.newPC.v
             },
             bytesCount: 8
         )
 
         imemory = um.addMemoryUnit(
             unitName: "Imemory",
-            inputWires: ["pc"],
-            outputWires: ["inst0", "inst18", "inst29",
-                "imemError"],
-            logic: { wm, mu in
+            inputWires: [w.pc],
+            outputWires: [w.inst0, w.inst18, w.inst29,
+                w.imemError],
+            logic: { mu in
                 // instruction
-                let addr = wm.pc.v
-                wm.inst0[0...7] = mu[b: addr]
-                wm.inst18.v = mu[q: addr + 1]
-                wm.inst29.v = mu[q: addr + 2]
+                let addr = w.pc.v
+                w.inst0[0...7] = mu[b: addr]
+                w.inst18.v = mu[q: addr + 1]
+                w.inst29.v = mu[q: addr + 2]
 
                 // FIXME: imemError always false now
-                wm.imemError.b = false
+                w.imemError.b = false
             },
-            onRising: { _, _ in return },
+            onRising: { _ in },
             bytesCount: 0x100000
         )
 
         _ = um.addGenericUnit(
             unitName: "Split",
-            inputWires: ["inst0",
-                "imemError"],
-            outputWires: ["icode", "ifun",
-                "instValid", "needRegIDs", "needValC"],
-            logic: { wm in
+            inputWires: [w.inst0,
+                w.imemError],
+            outputWires: [w.icode, w.ifun,
+                w.instValid, w.needRegIDs, w.needValC],
+            logic: {
                 // split the instruction
-                let icode = wm.imemError.b ? I.NOP : wm.inst0[4...7]
-                let ifun = wm.imemError.b ? F.NONE : wm.inst0[0...3]
-                wm.icode.v = icode
-                wm.ifun.v = ifun
+                let icode = w.imemError.b ? I.NOP : w.inst0[4...7]
+                let ifun = w.imemError.b ? F.NONE : w.inst0[0...3]
+                w.icode.v = icode
+                w.ifun.v = ifun
 
                 // control signals
-                wm.instValid.b = [I.HALT, I.NOP, I.RRMOVQ, I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.OPQ, I.JXX, I.CALL, I.RET, I.PUSHQ, I.POPQ].contains(icode)
-                wm.needRegIDs.b = [I.RRMOVQ, I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.OPQ, I.PUSHQ, I.POPQ].contains(icode)
-                wm.needValC.b = [I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.JXX, I.CALL].contains(icode)
+                w.instValid.b = [I.HALT, I.NOP, I.RRMOVQ, I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.OPQ, I.JXX, I.CALL, I.RET, I.PUSHQ, I.POPQ].contains(icode)
+                w.needRegIDs.b = [I.RRMOVQ, I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.OPQ, I.PUSHQ, I.POPQ].contains(icode)
+                w.needValC.b = [I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.JXX, I.CALL].contains(icode)
             }
         )
 
         _ = um.addGenericUnit(
             unitName: "Align",
-            inputWires: ["inst18", "inst29",
-                "needRegIDs"],
-            outputWires: ["rA", "rB", "valC"],
-            logic: { wm in
-                if wm.needRegIDs.b {
+            inputWires: [w.inst18, w.inst29,
+                w.needRegIDs],
+            outputWires: [w.rA, w.rB, w.valC],
+            logic: {
+                if w.needRegIDs.b {
                     // byte 1: two reg IDs
-                    wm.rA.v = wm.inst18[4...7]
-                    wm.rB.v = wm.inst18[0...3]
+                    w.rA.v = w.inst18[4...7]
+                    w.rB.v = w.inst18[0...3]
                     // bute 2...9: valC
-                    wm.valC.v = wm.inst29.v
+                    w.valC.v = w.inst29.v
                 } else {
                     // no reg IDs
-                    wm.rA.v = R.NONE
-                    wm.rB.v = R.NONE
+                    w.rA.v = R.NONE
+                    w.rB.v = R.NONE
                     // byte 1...8: valC
-                    wm.valC.v = wm.inst18.v
+                    w.valC.v = w.inst18.v
                 }
             }
         )
 
         _ = um.addGenericUnit(
             unitName: "PCAdder",
-            inputWires: ["pc",
-                "needRegIDs", "needValC"],
-            outputWires: ["valP"],
-            logic: { wm in
+            inputWires: [w.pc,
+                w.needRegIDs, w.needValC],
+            outputWires: [w.valP],
+            logic: {
                 // calculate new PC
-                wm.valP.v = wm.pc.v + 1 + 1 * wm.needRegIDs.b.u64 + 8 * wm.needValC.b.u64
+                w.valP.v = w.pc.v + 1 + 1 * w.needRegIDs.b.u64 + 8 * w.needValC.b.u64
             }
         )
     }

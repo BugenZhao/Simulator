@@ -9,7 +9,7 @@ import Foundation
 
 
 // Instructions
-class I {
+struct I {
     static let HALT = 0.u64
     static let NOP = 1.u64
     static let RRMOVQ = 2.u64
@@ -25,7 +25,7 @@ class I {
 }
 
 // Functions
-class F {
+struct F {
     static let NONE = 0.u64
 
     static let ADD = 0.u64
@@ -43,7 +43,7 @@ class F {
 }
 
 // Registers
-class R {
+struct R {
     static let RAX = 0.u64
     static let RCX = 1.u64
     static let RDX = 2.u64
@@ -64,7 +64,7 @@ class R {
 }
 
 // Statuses
-fileprivate class S {
+struct S {
     static let AOK = 1.u64
     static let ADR = 2.u64
     static let INS = 3.u64

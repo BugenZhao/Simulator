@@ -9,13 +9,42 @@ import Foundation
 import SimulatorLib
 
 public class Y86_64Seq: Machine {
-    var um = UnitManager()
+    var um = StaticUnitManager()
 
-    var imemory: MemoryUnit?
-    var dmemory: MemoryUnit?
-    var pc: RegisterUnit?
-    var register: RegisterUnit?
+    var imemory: StaticMemoryUnit?
+    var dmemory: StaticMemoryUnit?
+    var pc: StaticRegisterUnit?
+    var register: StaticRegisterUnit?
 
+    class WireSet {
+        // MARK: Fetch
+        let newPC = Wire("newPC")
+        let pc = Wire("pc")
+        let inst0 = Wire("inst0")
+        let inst18 = Wire("inst18")
+        let inst29 = Wire("inst29")
+        let imemError = Wire("imemError")
+        let icode = Wire("icode")
+        let ifun = Wire("ifun")
+        let instValid = Wire("instValid")
+        let needRegIDs = Wire("needRegIDs")
+        let needValC = Wire("needValC")
+        let valP = Wire("valP")
+        let rA = Wire("rA")
+        let rB = Wire("rb")
+        let valC = Wire("valC")
+        
+        // MARK: Decode
+        
+        // MARK: Execute
+        
+        // MARK: Memory
+        
+        // MARK: WriteBack
+        
+    }
+    
+    var wires = WireSet()
 
     public func run() {
         um.clock()
