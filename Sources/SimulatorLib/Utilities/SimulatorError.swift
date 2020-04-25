@@ -16,6 +16,7 @@ public enum SimulatorError: String {
     case UnitManagerWriteNotAllowedError = "UnitManager: write not allowed"
     
     case WireManagerWireNotExistsError = "WireManager: wire not exists"
+    case WireManagerDuplicateNameError = "WireManager: duplicate name"
     
     case AddressableInvalidAccessError = "Addressable: invalid access at "
 }
