@@ -173,4 +173,6 @@ public class StaticUnitManager {
             cycle += 1
         }
     }
+
+    public func examine() -> Int { self.wireManager.examine() }
 }

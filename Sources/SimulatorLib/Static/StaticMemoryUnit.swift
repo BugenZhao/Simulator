@@ -11,13 +11,13 @@ public class StaticMemoryUnit: StaticUnit, Addressable {
     var name: UnitName
     var inputWires: [Wire]
     var outputWires: [Wire]
-    var logic: () -> Void = {}
-    var onRising: () -> Void = {}
+    var logic: () -> Void = { }
+    var onRising: () -> Void = { }
 
     public var data: Data
 
-    var realLogic: (StaticMemoryUnit) -> Void
-    var realOnRising: (StaticMemoryUnit) -> Void
+    var realLogics: [(StaticMemoryUnit) -> Void]
+    var realOnRisings: [(StaticMemoryUnit) -> Void]
 
     init(_ unitName: UnitName,
         _ inputWires: [Wire],
@@ -28,13 +28,21 @@ public class StaticMemoryUnit: StaticUnit, Addressable {
         self.name = unitName
         self.inputWires = inputWires
         self.outputWires = outputWires
-        
+
         self.data = Data(count: bytesCount)
 
-        self.realLogic = logic
-        self.realOnRising = onRising
+        self.realLogics = [logic]
+        self.realOnRisings = [onRising]
 
-        self.logic = { self.realLogic(self) }
-        self.onRising = { self.realOnRising(self) }
+        self.logic = { self.realLogics.forEach { $0(self) } }
+        self.onRising = { self.realOnRisings.forEach { $0(self) } }
+    }
+
+    public func addLogic(_ logic: @escaping (StaticMemoryUnit) -> Void) {
+        realLogics.append(logic)
+    }
+
+    public func addOnRising(_ onRising: @escaping (StaticMemoryUnit) -> Void) {
+        realOnRisings.append(onRising)
     }
 }

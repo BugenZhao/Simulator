@@ -218,4 +218,16 @@ class StaticUnitManagerTests: XCTestCase {
         XCTAssertEqual((unitManager.PC as! StaticRegisterUnit)[q: 0], 3)
     }
 
+    func testMemoryAddLogicAndOnRising() {
+        let unitManager = StaticUnitManager()
+
+        let instAddr = Wire("instAddr")
+        let inst = Wire("inst")
+        let dataAddr = Wire("dataAddr")
+        let data = Wire("data")
+
+        _ = unitManager.addMemoryUnit(unitName: "Memory", inputWires: [instAddr, dataAddr], outputWires: [inst, data], logic: { _ in }, onRising: { _ in }, bytesCount: 64)
+        
+        // TODO: complete it
+    }
 }
