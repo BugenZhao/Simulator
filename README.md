@@ -7,11 +7,11 @@ Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
 
 ## CPU Simulation
 
-- [x] Y86-64 Seq
+- [x] *CS:APP* Y86-64 Seq ([Sources](Sources/Y86_64SeqLib))
 
   ![Y86_64Seq](Resources/Y86_64Seq.png)
 
-- [ ] Y86-64 Pipe
+- [ ] *CS:APP* Y86-64 Pipe
 
 - [ ] MIPS for teaching
 
@@ -125,3 +125,7 @@ This project is built with *Swift Package Manager*, to run the simulator, simply
 swift run -c release Simulator
 swift run -c release Y86_64
 ```
+
+## Copyleft
+
+**BugenZhao, Apr. 2020**
