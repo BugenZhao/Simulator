@@ -11,7 +11,7 @@ import XCTest
 class DecodeTests: XCTestCase {
     var CPU: Y86_64Seq?
 
-    override func setUpWithError() throws {
+    override func setUp() {
         CPU = Y86_64Seq(fetch: true, decodeWriteBack: true)
         // fill register with its id
         (R.RAX...R.R14).forEach { CPU!.register![$0] = $0 }
