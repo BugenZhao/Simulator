@@ -15,6 +15,7 @@ public extension Bool {
 }
 
 public extension BinaryInteger {
+    @inlinable var nu64: UInt64 { return UInt64(bitPattern: Int64(self)) }
     @inlinable var u64: UInt64 { return UInt64(self) }
     @inlinable var u32: UInt32 { return UInt32(self) }
     @inlinable var u16: UInt16 { return UInt16(self) }

@@ -38,7 +38,7 @@ extension Y86_64Seq {
                 let icode = w.icode[0...3]
                 if [I.IRMOVQ, I.RMMOVQ, I.MRMOVQ].contains(icode) { w.aluA.v = w.valC.v }
                 else if [I.RRMOVQ, I.OPQ].contains(icode) { w.aluA.v = w.valA.v }
-                else if [I.CALL, I.PUSHQ].contains(icode) { w.aluA.v = (-8).u64 }
+                else if [I.CALL, I.PUSHQ].contains(icode) { w.aluA.v = (-8).nu64 }
                 else if [I.RET, I.POPQ].contains(icode) { w.aluA.v = 8 }
             }
         )
@@ -97,28 +97,28 @@ extension Y86_64Seq {
             outputWires: [w.valE, w.zfi, w.sfi, w.ofi],
             logic: {
                 let aluFun = w.aluFun[0...3]
-                let a = w.aluA.v
-                let b = w.aluB.v
-                var r = 0.u64
+                let a = Int64(bitPattern: w.aluA.v)
+                let b = Int64(bitPattern: w.aluB.v)
+                var r = Int64(0)
 
                 switch aluFun {
                 case F.ADD:
-                    r = a &+ b
+                    r = b &+ a
                     w.zfi.b = r == 0
                     w.sfi.b = r < 0
                     w.ofi.b = ((a < 0) == (b < 0)) && ((r < 0) != (a < 0))
                 case F.SUB:
-                    r = a &- b
+                    r = b &- a
                     w.zfi.b = r == 0
-                    w.sfi.b = r < 0
+                    w.sfi.b = Int64(r) < 0
                     w.ofi.b = ((a < 0) == (b < 0)) && ((r < 0) != (a < 0))
                 case F.AND:
-                    r = a & b
+                    r = b & a
                     w.zfi.b = r == 0
                     w.sfi.b = r < 0
                     w.ofi.b = false
                 case F.XOR:
-                    r = a ^ b
+                    r = b ^ a
                     w.zfi.b = r == 0
                     w.sfi.b = r < 0
                     w.ofi.b = false
@@ -126,7 +126,7 @@ extension Y86_64Seq {
                     fatalError()
                 }
 
-                w.valE.v = r
+                w.valE.v = UInt64(bitPattern: r)
             }
         )
 
