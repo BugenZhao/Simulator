@@ -70,7 +70,7 @@ public class Y86_64Seq: Machine {
         let dstM = Wire("dstM")
 
         // MARK: NewPC
-
+        // No new wires
     }
 
     var wires = WireSet()
@@ -94,8 +94,9 @@ public class Y86_64Seq: Machine {
         if decodeWriteBack { addDecodeWriteBack() }
         if execute { addExecute() }
         if memory { addMemory() }
+        if newPC { addNewPC() }
 
-        _ = um.examine()
+        assert(um.examine() == 0)
     }
 }
 
