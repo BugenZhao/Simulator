@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Y86_64GenericLib
 
 extension Y86_64Seq {
     func addFetch() {

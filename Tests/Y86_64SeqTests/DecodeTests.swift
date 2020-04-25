@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import Y86_64SeqLib
+@testable import Y86_64GenericLib
 
 class DecodeTests: XCTestCase {
     var CPU: Y86_64Seq?

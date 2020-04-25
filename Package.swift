@@ -10,6 +10,7 @@ let package = Package(
     ],
     products: [
         .executable(name: "Y86_64", targets: ["Y86_64"]),
+        .library(name: "Y86_64GenericLib", targets: ["Y86_64GenericLib"]),
         .library(name: "Y86_64SeqLib", targets: ["Y86_64SeqLib"]),
         .executable(name: "Simulator", targets: ["Simulator"]),
         .library(name: "SimulatorLib", targets: ["SimulatorLib"])
@@ -30,6 +31,9 @@ let package = Package(
             dependencies: ["SimulatorLib"]),
         .target(
             name: "Y86_64SeqLib",
+            dependencies: ["SimulatorLib", "Y86_64GenericLib"]),
+        .target(
+            name: "Y86_64GenericLib",
             dependencies: ["SimulatorLib"]),
         .target(
             name: "Y86_64",

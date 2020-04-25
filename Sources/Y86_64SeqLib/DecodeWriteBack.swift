@@ -1,11 +1,12 @@
 //
 //  DecodeWriteBack.swift
-//  Simulator
+//  Y86_64SeqLib
 //
 //  Created by Bugen Zhao on 2020/4/25.
 //
 
 import Foundation
+import Y86_64GenericLib
 
 extension Y86_64Seq {
     func addDecodeWriteBack() {

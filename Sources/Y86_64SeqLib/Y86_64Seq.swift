@@ -7,15 +7,16 @@
 
 import Foundation
 import SimulatorLib
+import Y86_64GenericLib
 
-public class Y86_64Seq: Machine {
-    var um = StaticUnitManager()
+public class Y86_64Seq: Machine, Y86_64System {
+    public var um = StaticUnitManager()
 
-    var memory: StaticMemoryUnit?
-    var pc: StaticRegisterUnit?
-    var register: StaticRegisterUnit?
-    var cc: StaticRegisterUnit?
-    var stat: StaticRegisterUnit?
+    public var memory: StaticMemoryUnit?
+    public var pc: StaticRegisterUnit?
+    public var register: StaticRegisterUnit?
+    public var cc: StaticRegisterUnit?
+    public var stat: StaticRegisterUnit?
 
     public var halted: Bool {
         get { stat?[b: 0] == S.HLT }
@@ -89,7 +90,7 @@ public class Y86_64Seq: Machine {
         memory!.dump(at: 0...0x200)
     }
 
-    convenience public init() {
+    required convenience public init() {
         self.init(fetch: true, decodeWriteBack: true, execute: true, memory: true, newPC: true)
     }
 
