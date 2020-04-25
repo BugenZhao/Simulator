@@ -20,7 +20,7 @@ class ExecuteTests: XCTestCase {
 
     func testAND() {
         let CPU = self.CPU!
-        CPU.imemory?.data[0...9] = Data([0x62, 0x31]) // and %rbx, %rcx
+        CPU.memory?.data[0...9] = Data([0x62, 0x31]) // and %rbx, %rcx
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.aluFun.v, F.AND)
@@ -32,7 +32,7 @@ class ExecuteTests: XCTestCase {
 
     func testSUB1() {
         let CPU = self.CPU!
-        CPU.imemory?.data[0...9] = Data([0x61, 0x31]) // sub %rbx, %rcx
+        CPU.memory?.data[0...9] = Data([0x61, 0x31]) // sub %rbx, %rcx
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.aluFun.v, F.SUB)
@@ -47,7 +47,7 @@ class ExecuteTests: XCTestCase {
 
     func testSUB2() {
         let CPU = self.CPU!
-        CPU.imemory?.data[0...9] = Data([0x61, 0x33]) // sub %rbx, %rbx
+        CPU.memory?.data[0...9] = Data([0x61, 0x33]) // sub %rbx, %rbx
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.aluFun.v, F.SUB)
@@ -62,7 +62,7 @@ class ExecuteTests: XCTestCase {
 
     func testADD() {
         let CPU = self.CPU!
-        CPU.imemory?.data[0...9] = Data([0x60, 0x33]) // sub %rbx, %rbx
+        CPU.memory?.data[0...9] = Data([0x60, 0x33]) // sub %rbx, %rbx
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.aluFun.v, F.ADD)
@@ -77,7 +77,7 @@ class ExecuteTests: XCTestCase {
 
     func testPUSHQ() {
         let CPU = self.CPU!
-        CPU.imemory?.data[0...9] = Data([0xa0, 0x6f]) // push %rsi
+        CPU.memory?.data[0...9] = Data([0xa0, 0x6f]) // push %rsi
         CPU.register?[R.RSP] = 0x100
         CPU.um.clock()
 
@@ -93,7 +93,7 @@ class ExecuteTests: XCTestCase {
 
     func testPOPQ() {
         let CPU = self.CPU!
-        CPU.imemory?.data[0...9] = Data([0xb0, 0x7f]) // pop %rdi
+        CPU.memory?.data[0...9] = Data([0xb0, 0x7f]) // pop %rdi
         CPU.register?[R.RSP] = 0x100
         CPU.um.clock()
 
@@ -109,7 +109,7 @@ class ExecuteTests: XCTestCase {
 
     func testMRMOVQ() {
         let CPU = self.CPU!
-        CPU.imemory?.data[0...9] = Data([0x50, 0x12, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]) // mrmovq 0xefcd_ab89_6745_2301(%rcx), %rdx
+        CPU.memory?.data[0...9] = Data([0x50, 0x12, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]) // mrmovq 0xefcd_ab89_6745_2301(%rcx), %rdx
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.aluFun.v, F.ADD)

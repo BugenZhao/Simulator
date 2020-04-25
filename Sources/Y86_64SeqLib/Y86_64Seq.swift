@@ -11,11 +11,12 @@ import SimulatorLib
 public class Y86_64Seq: Machine {
     var um = StaticUnitManager()
 
-    var imemory: StaticMemoryUnit?
+    var memory: StaticMemoryUnit?
     var dmemory: StaticMemoryUnit?
     var pc: StaticRegisterUnit?
     var register: StaticRegisterUnit?
     var cc: StaticRegisterUnit?
+    var stat: StaticRegisterUnit?
 
     class WireSet {
         // MARK: Fetch
@@ -54,12 +55,19 @@ public class Y86_64Seq: Machine {
         let ofo = Wire("ofo")
         let cond = Wire("cond")
         let valE = Wire("valE")
+
         // MARK: Memory
+        let memAddr = Wire("memAddr")
+        let memData = Wire("memData")
+        let memRead = Wire("memRead")
+        let memWrite = Wire("memWrite")
+        let dmemError = Wire("dmemError")
+        let valM = Wire("valM")
+        let halt = Wire("halt")
 
         // MARK: WriteBack
         let dstE = Wire("dstE")
         let dstM = Wire("dstM")
-        let valM = Wire("valM")
 
         // MARK: NewPC
 
@@ -85,6 +93,7 @@ public class Y86_64Seq: Machine {
         if fetch { addFetch() }
         if decodeWriteBack { addDecodeWriteBack() }
         if execute { addExecute() }
+        if memory { addMemory() }
 
         _ = um.examine()
     }

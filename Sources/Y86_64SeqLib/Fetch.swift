@@ -15,34 +15,44 @@ extension Y86_64Seq {
             unitName: "PC",
             inputWires: [w.newPC],
             outputWires: [w.pc],
-            logic: { mu in
+            logic: { ru in
                 // PC
-                w.pc.v = mu[0]
+                w.pc.v = ru[0]
             },
-            onRising: { mu in var mu = mu
+            onRising: { ru in var ru = ru
                 // update PC
-                mu[0] = w.newPC.v
+                ru[0] = w.newPC.v
             },
             bytesCount: 8
         )
 
-        imemory = um.addMemoryUnit(
-            unitName: "Imemory",
-            inputWires: [w.pc],
+        memory = um.addMemoryUnit(
+            unitName: "Memory",
+            inputWires: [w.pc,
+                w.memAddr, w.memData, w.memWrite, w.memRead],
             outputWires: [w.inst0, w.inst18, w.inst29,
-                w.imemError],
+                w.valM,
+                w.imemError, w.dmemError],
             logic: { mu in
-                // instruction
-                let addr = w.pc.v
-                w.inst0[0...7] = mu[b: addr]
-                w.inst18.v = mu[q: addr + 1]
-                w.inst29.v = mu[q: addr + 2]
+                // Instruction
+                let iAddr = w.pc.v
+                w.inst0[0...7] = mu[b: iAddr]
+                w.inst18.v = mu[q: iAddr + 1]
+                w.inst29.v = mu[q: iAddr + 2]
 
-                // FIXME: imemError always false now
+                // TODO: imemError always false now
                 w.imemError.b = false
+
+                // Data
+                if w.memRead.b { w.valM.v = mu[q: w.memAddr.v] }
+
+                // TODO: dmemError always false now
+                w.dmemError.b = false
             },
-            onRising: { _ in },
-            bytesCount: 0x100000
+            onRising: { mu in var mu = mu
+                if w.memWrite.b { mu[q: w.memAddr.v] = w.memData.v }
+            },
+            bytesCount: 16 * 1024 * 1024
         )
 
         _ = um.addGenericUnit(

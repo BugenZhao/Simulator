@@ -12,7 +12,7 @@ import XCTest
 class FetchTests: XCTestCase {
     func testNOP() {
         let CPU = Y86_64Seq(fetch: true)
-        CPU.imemory?.data[0...9] = Data([0x10]) // NOP
+        CPU.memory?.data[0...9] = Data([0x10]) // NOP
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.instValid.b, true)
@@ -25,7 +25,7 @@ class FetchTests: XCTestCase {
 
     func testAND() {
         let CPU = Y86_64Seq(fetch: true)
-        CPU.imemory?.data[0...9] = Data([0x62, 0x31]) // and %rbx, %rcx
+        CPU.memory?.data[0...9] = Data([0x62, 0x31]) // and %rbx, %rcx
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.instValid.b, true)
@@ -38,7 +38,7 @@ class FetchTests: XCTestCase {
 
     func testJNE() {
         let CPU = Y86_64Seq(fetch: true)
-        CPU.imemory?.data[0...9] = Data([0x74, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]) // jne 0xefcd_ab89_6745_2301
+        CPU.memory?.data[0...9] = Data([0x74, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]) // jne 0xefcd_ab89_6745_2301
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.instValid.b, true)
@@ -52,7 +52,7 @@ class FetchTests: XCTestCase {
 
     func testRMMOVQ() {
         let CPU = Y86_64Seq(fetch: true)
-        CPU.imemory?.data[0...9] = Data([0x40, 0x03, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]) // rmmovq %rax, 0xefcd_ab89_6745_2301(%rbx)
+        CPU.memory?.data[0...9] = Data([0x40, 0x03, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]) // rmmovq %rax, 0xefcd_ab89_6745_2301(%rbx)
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.instValid.b, true)
@@ -66,7 +66,7 @@ class FetchTests: XCTestCase {
     
     func testInvalid() {
         let CPU = Y86_64Seq(fetch: true)
-        CPU.imemory?.data[0...9] = Data([0xf0, 0x03, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]) // invalid 0xf0
+        CPU.memory?.data[0...9] = Data([0xf0, 0x03, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]) // invalid 0xf0
         CPU.um.clock()
 
         XCTAssertEqual(CPU.wires.instValid.b, false)
