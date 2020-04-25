@@ -37,21 +37,26 @@ extension Y86_64Seq {
             logic: { mu in
                 // Instruction
                 let iAddr = w.pc.v
-                w.inst0[0...7] = mu[b: iAddr]
-                w.inst18.v = mu[q: iAddr + 1]
-                w.inst29.v = mu[q: iAddr + 2]
+                let inst0 = mu[sb: iAddr]
+                let inst18 = mu[sq: iAddr + 1]
+                let inst29 = mu[sq: iAddr + 2]
+                w.inst0[0...7] = inst0 ?? 0
+                w.inst18.v = inst18 ?? 0
+                w.inst29.v = inst29 ?? 0
 
-                // TODO: imemError always false now
-                w.imemError.b = false
+                w.imemError.b = inst0 == nil || inst18 == nil || inst29 == nil
 
                 // Data
-                if w.memRead.b { w.valM.v = mu[q: w.memAddr.v] }
-
-                // TODO: dmemError always false now
-                w.dmemError.b = false
+                if w.memRead.b {
+                    let valM = mu[sq: w.memAddr.v]
+                    w.valM.v = valM ?? 0
+                    w.dmemError.b = valM == nil
+                } else {
+                    w.dmemError.b = false
+                }
             },
             onRising: { mu in var mu = mu
-                if w.memWrite.b { mu[q: w.memAddr.v] = w.memData.v }
+                if w.memWrite.b { mu[q: w.memAddr.v] = w.memData.v /* unsafe */}
             },
             bytesCount: 16 * 1024 * 1024
         )

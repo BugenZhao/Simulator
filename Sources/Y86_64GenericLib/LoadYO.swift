@@ -37,7 +37,7 @@ public extension Y86_64System {
                 }
             }
         }
-        print("\(path):\n\(lastAddr) bytes loaded:")
-        self.memory!.dump(at: 0...lastAddr.u64)
+//        print("\(path):\n\(lastAddr) bytes loaded:")
+//        self.memory!.dump(at: 0...lastAddr.u64)
     }
 }
