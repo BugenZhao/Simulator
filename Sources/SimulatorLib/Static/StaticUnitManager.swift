@@ -37,12 +37,12 @@ public class StaticUnitManager {
         outputWires: [Wire] = [],
         logic: @escaping () -> Void = { }) -> StaticGenericUnit {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
         let unit = StaticGenericUnit(unitName, inputWires, outputWires, logic)
         checkPermission(unit)
-        inputWires.forEach { $0.to.append(unitName) }
-        outputWires.forEach { $0.from = unitName }
+        inputWires.forEach { $0.to.append(unitName); wireManager.addWire($0) }
+        outputWires.forEach { $0.from = unitName; wireManager.addWire($0) }
         units[unitName] = unit
 
         return unit
@@ -53,11 +53,11 @@ public class StaticUnitManager {
         inputWires: [Wire],
         onlyOnRising: Bool = true) -> StaticPrinterUnit {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
         let unit = StaticPrinterUnit(unitName, inputWires, onlyOnRising)
         checkPermission(unit)
-        inputWires.forEach { $0.to.append(unitName) }
+        inputWires.forEach { $0.to.append(unitName); wireManager.addWire($0) }
         units[unitName] = unit
 
         return unit
@@ -68,11 +68,11 @@ public class StaticUnitManager {
         outputWires: [Wire] = [],
         outputValue: UInt64 = 0) -> StaticOutputUnit {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
         let unit = StaticOutputUnit(unitName, outputWires, outputValue)
         checkPermission(unit)
-        outputWires.forEach { $0.from = unitName }
+        outputWires.forEach { $0.from = unitName; wireManager.addWire($0) }
         units[unitName] = unit
 
         return unit
@@ -86,12 +86,12 @@ public class StaticUnitManager {
         onRising: @escaping (StaticRegisterUnit) -> Void,
         bytesCount: Int) -> StaticRegisterUnit {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
         let unit = StaticRegisterUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
         checkPermission(unit)
-        inputWires.forEach { $0.to.append(unitName) }
-        outputWires.forEach { $0.from = unitName }
+        inputWires.forEach { $0.to.append(unitName); wireManager.addWire($0) }
+        outputWires.forEach { $0.from = unitName; wireManager.addWire($0) }
         units[unitName] = unit
 
         return unit
@@ -105,12 +105,12 @@ public class StaticUnitManager {
         onRising: @escaping (StaticMemoryUnit) -> Void,
         bytesCount: Int) -> StaticMemoryUnit {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
         let unit = StaticMemoryUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
         checkPermission(unit)
-        inputWires.forEach { $0.to.append(unitName) }
-        outputWires.forEach { $0.from = unitName }
+        inputWires.forEach { $0.to.append(unitName); wireManager.addWire($0) }
+        outputWires.forEach { $0.from = unitName; wireManager.addWire($0) }
         units[unitName] = unit
 
         return unit
@@ -120,11 +120,11 @@ public class StaticUnitManager {
         unitName: UnitName,
         inputWires: [Wire] = []) -> StaticHaltUnit {
         guard !units.keys.contains(unitName) else {
-            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue)
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
         let unit = StaticHaltUnit(unitName, inputWires, { self.halted = true })
         checkPermission(unit)
-        inputWires.forEach { $0.to.append(unitName) }
+        inputWires.forEach { $0.to.append(unitName); wireManager.addWire($0) }
         units[unitName] = unit
 
         return unit
@@ -139,10 +139,10 @@ public class StaticUnitManager {
         unit.onRising()
 
         guard (unit.inputWires.allSatisfy { $0.counter.write == 0 }) else {
-            fatalError(SimulatorError.UnitManagerWriteNotAllowedError.rawValue)
+            fatalError(SimulatorError.UnitManagerWriteNotAllowedError.rawValue + unit.name)
         }
         guard (unit.outputWires.allSatisfy { $0.counter.read == 0 }) else {
-            fatalError(SimulatorError.UnitManagerReadNotAllowedError.rawValue)
+            fatalError(SimulatorError.UnitManagerReadNotAllowedError.rawValue + unit.name)
         }
 
         unit.inputWires.forEach { $0.clear() }

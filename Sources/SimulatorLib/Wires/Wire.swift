@@ -33,7 +33,7 @@ public class Wire {
 
     var from: UnitName? = nil {
         willSet {
-            guard from == nil else { fatalError(SimulatorError.WireFromIsFinalError.rawValue) }
+            guard from == nil else { fatalError(SimulatorError.WireFromIsFinalError.rawValue + name) }
         }
     }
     var to: [UnitName]
@@ -88,7 +88,7 @@ public class Wire {
         }
     }
 
-    public init(wireName: WireName,
+    public init(_ wireName: WireName,
         value: UInt64 = 0,
         from: UnitName? = nil,
         to: [UnitName] = [],

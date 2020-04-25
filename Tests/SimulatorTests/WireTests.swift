@@ -21,7 +21,7 @@ class WireTests: XCTestCase {
     }
 
     func testWire() {
-        var wire = Wire(wireName: "testWire", value: 0b1111_1111)
+        var wire = Wire("testWire", value: 0b1111_1111)
         wire.v = 0b1010_0101
         XCTAssert(wire.v == 0b1010_0101)
         XCTAssert(wire.v == 0b1010_0101)
@@ -40,7 +40,7 @@ class WireTests: XCTestCase {
         wire[31] = true
         XCTAssert(wire[31] == true)
 
-        wire = Wire(wireName: "testWire", value: 0b1010_0101)
+        wire = Wire( "testWire", value: 0b1010_0101)
 
         XCTAssert(wire[0...3] == 0b0101)
         XCTAssert(wire[4...7] == 0b1010)
@@ -52,7 +52,7 @@ class WireTests: XCTestCase {
     }
 
     func testWireError() {
-        let wire = Wire(wireName: "testWire", value: 0b1010_0101, safe: true)
+        let wire = Wire("testWire", value: 0b1010_0101, safe: true)
 
         expect { _ = wire[-1] }.to(throwAssertion())
         expect { _ = wire[64] }.to(throwAssertion())
@@ -71,7 +71,7 @@ class WireTests: XCTestCase {
     }
 
     func testWireCounter() {
-        let wire = Wire(wireName: "wire", value: 0xffff)
+        let wire = Wire("wire", value: 0xffff)
         XCTAssertEqual(wire.counter.read, 0)
         XCTAssertEqual(wire.counter.write, 0)
 

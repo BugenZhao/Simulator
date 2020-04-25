@@ -8,15 +8,15 @@
 import Foundation
 
 public enum SimulatorError: String {
-    case WireFromIsFinalError = "Wire: from is final"
+    case WireFromIsFinalError = "Wire: from is final: "
     case WireOutOfRangeError = "Wire: out of range"
     
-    case UnitManagerDuplicateNameError = "UnitManager: duplicate name"
-    case UnitManagerReadNotAllowedError = "UnitManager: read not allowed"
-    case UnitManagerWriteNotAllowedError = "UnitManager: write not allowed"
+    case UnitManagerDuplicateNameError = "UnitManager: duplicate name: "
+    case UnitManagerReadNotAllowedError = "UnitManager: read not allowed: "
+    case UnitManagerWriteNotAllowedError = "UnitManager: write not allowed: "
     
-    case WireManagerWireNotExistsError = "WireManager: wire not exists"
-    case WireManagerDuplicateNameError = "WireManager: duplicate name"
+    case WireManagerWireNotExistsError = "WireManager: wire not exists: "
+    case WireManagerDuplicateNameError = "WireManager: duplicate name: "
     
-    case AddressableInvalidAccessError = "Addressable: invalid access at "
+    case AddressableInvalidAccessError = "Addressable: invalid access at: "
 }
