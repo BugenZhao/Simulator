@@ -20,4 +20,4 @@ jobs:
     - name: Run Simulator
       run: swift run -c release Simulator
     - name: Run Y86_64
-      run: swift run -c release Y86_64
+      run: swift run -Xswiftc -DGITHUB -c release Y86_64

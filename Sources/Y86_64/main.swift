@@ -1,9 +1,17 @@
 import Y86_64SeqLib
 import Y86_64GenericLib
 import SimulatorLib
+import Foundation
 
 let system: Y86_64System = Y86_64Seq()
-system.loadYO("/Users/bugenzhao/Codes/Swift/Simulator/Resources/Objects/perf.yo")
+
+#if Xcode
+let yo = "/Users/bugenzhao/Codes/Swift/Simulator/Resources/Objects/perf.yo"
+#else
+let yo = FileManager.default.currentDirectoryPath + "/Resources/Objects/perf.yo"
+#endif
+
+system.loadYO(yo)
 
 let time = evaluate {
     system.run()
