@@ -1,4 +1,4 @@
-name: Swift
+name: Simulator
 
 on:
   push:
@@ -14,8 +14,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: swift build -c release -v
-    - name: Run
-      run: swift run -c release Simulator -v
+      run: swift build -c release
     - name: Run tests
-      run: swift test -v
+      run: swift test
+    - name: Run Simulator
+      run: swift run -c release Simulator
+    - name: Run Y86_64
+      run: swift run -c release Y86_64

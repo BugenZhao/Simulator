@@ -103,7 +103,7 @@ class Accumulator: Machine {
             inputWires: [w.halt]
         )
 
-        _ = unitManager.wireManager.examine()
+        _ = unitManager.ready()
 
 
         for (addr, data) in zip(0..<range.count.u64, range) {
