@@ -210,7 +210,7 @@ extension Addressable {
             (lo...(lo + 15)).forEach {
                 if $0 < data.count {
                     let c = Character(Unicode.Scalar(data[Int($0)]))
-                    if c.isLetter || c.isNumber {
+                    if c.isASCII && (c.isLetter || c.isNumber) {
                         print("\(c)", terminator: "")
                     }
                     else {
