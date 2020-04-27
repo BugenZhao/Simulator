@@ -32,6 +32,19 @@ public class StaticWireManager {
         return checkpoint == newCheckpoint
     }
 
+    public func doPaticialCheckpoint() -> Set<UnitName> {
+        var newCheckpoint = wires.map { $0.v }
+        defer { checkpoint = newCheckpoint }
+
+        var ret = Set<UnitName>()
+        for idx in 0..<checkpoint.count {
+            if checkpoint[idx] != newCheckpoint[idx] {
+                wires[idx].to.forEach { ret.insert($0) }
+            }
+        }
+        return ret
+    }
+
     public func examine(verbose: Bool = true) -> Int {
         return wires.reduce(0) { acc, wire in
             if wire.from == nil {

@@ -11,15 +11,17 @@ import Nimble
 
 class AddressableTests: XCTestCase {
     class Memory64B: Addressable {
+        let count: UInt64
         var data: Data
 
-        init() { data = Data(count: 64) }
+        init() { data = Data(count: 64); count = 64 }
     }
 
     class Memory70B: Addressable {
+        let count: UInt64
         var data: Data
 
-        init() { data = Data(count: 70) }
+        init() { data = Data(count: 70); count = 70 }
     }
 
     func testAddressing() {
