@@ -18,7 +18,7 @@ Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
 - [ ] ...
 
 ## Get Started
-An example of Accumulator is shown below, check [here](Sources/Simulator/Example/Accumulator.swift) for more details.
+An example of Accumulator is shown below, check [here](Sources/Simulator/Examples/Accumulator.swift) for more details.
 
 ![Accumulator Circuit](Resources/accumulator.png)
 
