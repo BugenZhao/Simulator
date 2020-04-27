@@ -148,8 +148,8 @@ accumulator.run()
 
 ```
 Sum of 0...100000 is 5000050000
-Performance of Accumulator: 
-    100002 cycles in 0.668019947 sec, 149699.12268203573 cycles per sec
+Performance of Accumulator:
+    100002 cycles in 0.44538172 sec, 224530.9933241086 cycles per sec
 ```
 
 
