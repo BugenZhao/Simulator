@@ -1,2 +1,2 @@
-let accumulator = Accumulator(0...500000.u64)
+let accumulator = Accumulator(0...100000.u64)
 accumulator.run()
