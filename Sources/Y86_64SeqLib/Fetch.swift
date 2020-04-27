@@ -37,26 +37,26 @@ extension Y86_64Seq {
             logic: { mu in
                 // Instruction
                 let iAddr = w.pc.v
-                let inst0 = mu[sb: iAddr]
-                let inst18 = mu[sq: iAddr + 1]
-                let inst29 = mu[sq: iAddr + 2]
-                w.inst0[0...7] = inst0 ?? 0
-                w.inst18.v = inst18 ?? 0
-                w.inst29.v = inst29 ?? 0
-
-                w.imemError.b = inst0 == nil || inst18 == nil || inst29 == nil
-
+                w.imemError.b = iAddr >= mu.count
+                w.inst0[0...7] = iAddr < mu.count ? mu[b: iAddr] : 0
+                w.inst18.v = iAddr + 8 < mu.count ? mu[q: iAddr + 1] : 0
+                w.inst29.v = iAddr + 9 < mu.count ? mu[q: iAddr + 2] : 0
                 // Data
                 if w.memRead.b {
-                    let valM = mu[sq: w.memAddr.v]
-                    w.valM.v = valM ?? 0
-                    w.dmemError.b = valM == nil
+                    w.dmemError.b = w.memAddr.v + 7 >= mu.count
+                    w.valM.v = w.memAddr.v + 7 < mu.count ? mu[q: w.memAddr.v] : 0
                 } else {
                     w.dmemError.b = false
                 }
             },
             onRising: { mu in var mu = mu
-                if w.memWrite.b { mu[q: w.memAddr.v] = w.memData.v /* unsafe */}
+                // Data
+                if w.memWrite.b {
+                    w.dmemError.b = w.memAddr.v + 7 >= mu.count
+                    mu[q: w.memAddr.v] = w.memAddr.v + 7 < mu.count ? w.memData.v : 0
+                } else {
+                    w.dmemError.b = false
+                }
             },
             bytesCount: 16 * 1024 * 1024
         )

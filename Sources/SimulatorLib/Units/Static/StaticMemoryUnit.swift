@@ -15,6 +15,7 @@ public class StaticMemoryUnit: StaticUnit, Addressable {
     var onRising: () -> Void = { }
 
     public var data: Data
+    public let count: UInt64
 
     var realLogics: [(StaticMemoryUnit) -> Void]
     var realOnRisings: [(StaticMemoryUnit) -> Void]
@@ -29,6 +30,7 @@ public class StaticMemoryUnit: StaticUnit, Addressable {
         self.inputWires = inputWires
         self.outputWires = outputWires
 
+        self.count = bytesCount.u64
         self.data = Data(count: bytesCount)
 
         self.realLogics = [logic]

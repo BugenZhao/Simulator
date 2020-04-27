@@ -15,6 +15,7 @@ public class StaticRegisterUnit: StaticUnit, Addressable {
     var onRising: () -> Void = { }
 
     public var data: Data
+    public let count: UInt64
 
     var realLogic: (StaticRegisterUnit) -> Void
     var realOnRising: (StaticRegisterUnit) -> Void
@@ -29,6 +30,7 @@ public class StaticRegisterUnit: StaticUnit, Addressable {
         self.inputWires = inputWires
         self.outputWires = outputWires
 
+        self.count = bytesCount.u64
         self.data = Data(count: bytesCount)
 
         self.realLogic = logic

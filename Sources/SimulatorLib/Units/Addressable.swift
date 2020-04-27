@@ -10,6 +10,7 @@ import Foundation
 
 public protocol Addressable {
     var data: Data { get set }
+    var count: UInt64 { get }
 
     subscript (_ idx: UInt64) -> UInt64 { get set } // quad index
 
@@ -44,25 +45,21 @@ extension Addressable {
     public subscript (b b: UInt64) -> UInt64 {
         get {
             let b = Int(b)
-            _ = validateAccess(at: b)
             return UInt64(data[b])
         }
         set {
             let b = Int(b)
-            _ = validateAccess(at: b)
             data[b] = UInt8(newValue)
         }
     }
     public subscript (w w: UInt64) -> UInt64 {
         get {
             let w = Int(w)
-            _ = validateAccess(at: w + 1)
             return (UInt64(data[w + 0]) << 0x00) +
                 (UInt64(data[w + 1]) << 0x08)
         }
         set {
             let w = Int(w)
-            _ = validateAccess(at: w + 1)
             data[w + 0] = UInt8((newValue & 0x00ff) >> 0x00)
             data[w + 1] = UInt8((newValue & 0xff00) >> 0x08)
         }
@@ -70,7 +67,6 @@ extension Addressable {
     public subscript (l l: UInt64) -> UInt64 {
         get {
             let l = Int(l)
-            _ = validateAccess(at: l + 3)
             return (UInt64(data[l + 0]) << 0x00) +
                 (UInt64(data[l + 1]) << 0x08) +
                 (UInt64(data[l + 2]) << 0x10) +
@@ -78,7 +74,6 @@ extension Addressable {
         }
         set {
             let l = Int(l)
-            _ = validateAccess(at: l + 3)
             data[l + 0] = UInt8((newValue & 0x0000_00ff) >> 0x00)
             data[l + 1] = UInt8((newValue & 0x0000_ff00) >> 0x08)
             data[l + 2] = UInt8((newValue & 0x00ff_0000) >> 0x10)
@@ -88,7 +83,6 @@ extension Addressable {
     public subscript (q q: UInt64) -> UInt64 {
         get {
             let q = Int(q)
-            _ = validateAccess(at: q + 7)
             let lo = (UInt64(data[q + 0]) << 0x00) +
                 (UInt64(data[q + 1]) << 0x08) +
                 (UInt64(data[q + 2]) << 0x10) +
@@ -103,7 +97,6 @@ extension Addressable {
         }
         set {
             let q = Int(q)
-            _ = validateAccess(at: q + 7)
             data[q + 0] = UInt8((newValue & 0x0000_0000_0000_00ff) >> 0x00)
             data[q + 1] = UInt8((newValue & 0x0000_0000_0000_ff00) >> 0x08)
             data[q + 2] = UInt8((newValue & 0x0000_0000_00ff_0000) >> 0x10)
