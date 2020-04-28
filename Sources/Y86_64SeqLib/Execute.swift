@@ -37,7 +37,7 @@ extension Y86_64Seq {
             outputWires: [w.aluA],
             logic: {
                 let icode = w.icode[0...3]
-                if [I.IRMOVQ, I.RMMOVQ, I.MRMOVQ].contains(icode) { w.aluA.v = w.valC.v }
+                if [I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.IADDQ].contains(icode) { w.aluA.v = w.valC.v }
                 else if [I.RRMOVQ, I.OPQ].contains(icode) { w.aluA.v = w.valA.v }
                 else if [I.CALL, I.PUSHQ].contains(icode) { w.aluA.v = (-8).nu64 }
                 else if [I.RET, I.POPQ].contains(icode) { w.aluA.v = 8 }
@@ -51,7 +51,7 @@ extension Y86_64Seq {
             logic: {
                 let icode = w.icode[0...3]
                 if [I.IRMOVQ, I.RRMOVQ].contains(icode) { w.aluB.v = 0 }
-                else if [I.RMMOVQ, I.MRMOVQ, I.OPQ, I.CALL, I.RET, I.PUSHQ, I.POPQ].contains(icode) { w.aluB.v = w.valB.v }
+                else if [I.RMMOVQ, I.MRMOVQ, I.OPQ, I.CALL, I.RET, I.PUSHQ, I.POPQ, I.IADDQ].contains(icode) { w.aluB.v = w.valB.v }
             }
         )
 
@@ -62,6 +62,7 @@ extension Y86_64Seq {
             logic: {
                 let icode = w.icode[0...3]
                 if icode == I.OPQ { w.aluFun[0...3] = w.ifun[0...3] }
+                else if icode == I.IADDQ { w.aluFun[0...3] = F.ADD }
                 else { w.aluFun[0...3] = F.ADD }
             }
         )
@@ -72,7 +73,7 @@ extension Y86_64Seq {
             outputWires: [w.setCC],
             logic: {
                 let icode = w.icode[0...3]
-                w.setCC.b = icode == I.OPQ
+                w.setCC.b = icode == I.OPQ || icode == I.IADDQ
             }
         )
 

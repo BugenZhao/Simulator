@@ -40,7 +40,7 @@ extension Y86_64Seq {
 
         _ = um.addGenericUnit(unitName: "B", inputWires: [w.icode, w.rB], outputWires: [w.srcB], logic: {
                 let icode = w.icode[0...3]
-                if [I.RMMOVQ, I.MRMOVQ, I.OPQ].contains(icode) { w.srcB[0...3] = w.rB[0...3] }
+                if [I.RMMOVQ, I.MRMOVQ, I.OPQ, I.IADDQ].contains(icode) { w.srcB[0...3] = w.rB[0...3] }
                 else if [I.CALL, I.RET, I.PUSHQ, I.POPQ].contains(icode) { w.srcB[0...3] = R.RSP }
                 else { w.srcB[0...3] = R.NONE }
             })
@@ -48,7 +48,7 @@ extension Y86_64Seq {
         _ = um.addGenericUnit(unitName: "E", inputWires: [w.icode, w.rB], outputWires: [w.dstE], logic: {
                 let icode = w.icode[0...3]
                 // TODO: Condition MOV
-                if [I.RRMOVQ, I.IRMOVQ, I.OPQ].contains(icode) { w.dstE[0...3] = w.rB[0...3] }
+                if [I.RRMOVQ, I.IRMOVQ, I.OPQ, I.IADDQ].contains(icode) { w.dstE[0...3] = w.rB[0...3] }
                 else if [I.CALL, I.RET, I.PUSHQ, I.POPQ].contains(icode) { w.dstE[0...3] = R.RSP }
                 else { w.dstE[0...3] = R.NONE }
             })

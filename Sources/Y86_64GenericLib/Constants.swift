@@ -22,6 +22,7 @@ public struct I {                     // A  , B  , E  , M
     public static let RET = 9.u64     // rsp, rsp, rsp, ---
     public static let PUSHQ = 0xa.u64 // rA , rsp, rsp, ---
     public static let POPQ = 0xb.u64  // rsp, rsp, rsp, rA
+    public static let IADDQ = 0xc.u64 // ---, rB , rB , ---
 }
 
 // Functions
