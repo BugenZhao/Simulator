@@ -10,6 +10,14 @@ import XCTest
 
 class YisTests: XCTestCase {
     func testHello() {
-        let yis = Yis("ddd")
+        #if Xcode
+            let yo = "/Users/bugenzhao/Codes/Swift/Simulator/Resources/Objects/asumi.yo"
+        #else
+            let yo = FileManager.default.currentDirectoryPath + "/Resources/Objects/asumi.yo"
+        #endif
+
+        let yis = Yis(yo)
+        let result = yis.run()
+        print("Result: \(result)")
     }
 }

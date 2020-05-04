@@ -14,13 +14,9 @@ void usage(char *pname)
     exit(0);
 }
 
-int runYis(char *yo_path, stat_t *ep, state_rec *sp) {
+int runYis(const char *yo_path, stat_t *ep, state_rec *sp) {
     FILE *code_file;
     int max_steps = 1000000;
-
-    sp = new_state(MEM_SIZE);
-    ep = malloc(sizeof(stat_t));
-    *ep = STAT_AOK;
 
     int step = 0;
 
@@ -43,7 +39,6 @@ int runYis(char *yo_path, stat_t *ep, state_rec *sp) {
     printf("Stopped in %d steps at PC = 0x%llx.  Status '%s', CC %s\n",
      step, sp->pc, stat_name(*ep), cc_name(sp->cc));
 
-//    free_state(s);
 
     return 0;
 }

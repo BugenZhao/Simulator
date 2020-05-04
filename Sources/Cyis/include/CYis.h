@@ -3,6 +3,6 @@
 
 #include "isa.h"
 
-int runYis(char *yo_path, stat_t *ep, state_ptr sp);
+int runYis(const char *yo_path, stat_t *ep, state_rec *sp);
 
 #endif  // SIMULATOR_CYIS_H
