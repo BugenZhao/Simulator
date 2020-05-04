@@ -40,7 +40,7 @@ extension Y86_64System {
             }
         }()
 
-        print("Cycle:\t\(um.cycle)\n")
+        print("Cycle:\t\(um.cycle)")
         print("\tPC: \t\(String(format: "0x%016llx", pc![0]))")
         print("\tSTAT:\t\(statDesc)")
         print("\tRAX:\t\(String(format: "0x%016llx %lld", register![R.RAX], register![R.RAX]))")

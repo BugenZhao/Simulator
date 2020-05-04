@@ -52,8 +52,11 @@ extension Y86_64Seq {
             onRising: { mu in var mu = mu
                 // Data
                 if w.memWrite.b {
-                    w.dmemError.b = w.memAddr.v + 7 >= mu.count
-                    mu[q: w.memAddr.v] = w.memAddr.v + 7 < mu.count ? w.memData.v : 0
+                    let error = w.memAddr.v + 7 >= mu.count
+                    if !error {
+                        mu[q: w.memAddr.v] = w.memData.v
+                    }
+                    w.dmemError.b = error
                 } else {
                     w.dmemError.b = false
                 }

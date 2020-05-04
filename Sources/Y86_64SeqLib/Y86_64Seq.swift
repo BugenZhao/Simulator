@@ -82,9 +82,8 @@ public class Y86_64Seq: Machine, Y86_64System {
         } while !halted
 
         if verbose {
-            print("System halted")
+            print("\(type(of:self))\n\tSystem halted after \(um.cycle) cycles")
             printStatus()
-            memory!.dump(at: 0...0x200)
         }
     }
 
