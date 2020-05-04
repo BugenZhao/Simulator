@@ -17,7 +17,7 @@ public class Yis {
     public let memSize = Int(MEM_SIZE)
     public let registerSize = 8 * 16
 
-    init(_ yoPath: String) {
+    public init(_ yoPath: String) {
         self.yoPath = yoPath
         self.statePtr = new_state(Int32(memSize))
         self.statPtr = .allocate(capacity: MemoryLayout<stat_t>.size)
@@ -25,7 +25,7 @@ public class Yis {
         self.statPtr.pointee = STAT_AOK
     }
 
-    public func run() -> Int {
+    @discardableResult public func run() -> Int {
         return Int(runYis(yoPath, statPtr, statePtr))
     }
 
