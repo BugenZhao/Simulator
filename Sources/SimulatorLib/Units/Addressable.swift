@@ -186,7 +186,7 @@ extension Addressable {
     }
 
     public func dump() {
-        self.dump()
+        self.data.dump()
     }
     
     public func dump(at range: ClosedRange<UInt64>) {

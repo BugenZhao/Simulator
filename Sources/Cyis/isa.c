@@ -702,7 +702,7 @@ stat_t step_state(state_ptr s, FILE *error_file)
 	    return STAT_INS;
 	}
 	val = get_reg_val(s->r, hi1);
-	if (cond_holds(s->cc, lo0))
+	if (cond_holds(s->cc, (alu_t) lo0))
 	  set_reg_val(s->r, lo1, val);
 	s->pc = ftpc;
 	break;
@@ -816,7 +816,7 @@ stat_t step_state(state_ptr s, FILE *error_file)
 			"PC = 0x%llx, Invalid instruction address\n", s->pc);
 	    return STAT_ADR;
 	}
-	if (cond_holds(s->cc, lo0))
+	if (cond_holds(s->cc, (alu_t) lo0))
 	    s->pc = cval;
 	else
 	    s->pc = ftpc;

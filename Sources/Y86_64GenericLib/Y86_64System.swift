@@ -19,7 +19,7 @@ public protocol Y86_64System {
 
     var halted: Bool { get }
 
-    func run()
+    func run(verbose: Bool)
     func reset()
     func printStatus()
 
@@ -51,8 +51,8 @@ extension Y86_64System {
         print("\tRBP:\t\(String(format: "0x%016llx %lld", register![R.RBP], register![R.RBP]))")
         print("\tRSI:\t\(String(format: "0x%016llx %lld", register![R.RSI], register![R.RSI]))")
         print("\tRDI:\t\(String(format: "0x%016llx %lld", register![R.RDI], register![R.RDI]))")
-        print("\tR8: \t\(String(format: "0x%016llx %lld", register![R.R8] , register![R.R8]))")
-        print("\tR9: \t\(String(format: "0x%016llx %lld", register![R.R9] , register![R.R9]))")
+        print("\tR8: \t\(String(format: "0x%016llx %lld", register![R.R8], register![R.R8]))")
+        print("\tR9: \t\(String(format: "0x%016llx %lld", register![R.R9], register![R.R9]))")
         print("\tR10:\t\(String(format: "0x%016llx %lld", register![R.R10], register![R.R10]))")
         print("\tR11:\t\(String(format: "0x%016llx %lld", register![R.R11], register![R.R11]))")
         print("\tR12:\t\(String(format: "0x%016llx %lld", register![R.R12], register![R.R12]))")
@@ -63,8 +63,12 @@ extension Y86_64System {
         print("\tOF: \t\(cc![b: 2] != 0)")
         print("\n")
     }
-    
+
     public var halted: Bool {
         get { stat?[b: 0] == S.HLT }
+    }
+    
+    public func run() {
+        run(verbose: false)
     }
 }

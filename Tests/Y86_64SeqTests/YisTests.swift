@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import YisWrapper
+@testable import Y86_64SeqLib
 
 class YisTests: XCTestCase {
     func testHello() {
@@ -17,10 +18,19 @@ class YisTests: XCTestCase {
         #endif
 
         let yis = Yis(yo)
-        let result = yis.run()
-        print("Result: \(result)")
+        _ = yis.run()
 
-        yis.memory?.dump()
+        yis.memory?.dump(at: 0...200)
         yis.register?.dump()
+
+        let system = Y86_64Seq()
+        system.loadYO(yo)
+        system.run()
+
+        system.memory?.dump(at: 0...200)
+        system.register?.dump()
+
+        XCTAssertEqual(yis.memory?[0...200], system.memory?.data[0...200])
+        XCTAssertEqual(yis.register, system.register?.data)
     }
 }

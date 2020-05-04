@@ -75,17 +75,17 @@ public class Y86_64Seq: Machine, Y86_64System {
 
     var wires = WireSet()
 
-    public func run() {
-//        printStatus()
+    public func run(verbose: Bool = false) {
         repeat {
             um.clock(resetWire: true)
-//            printStatus()
             if self.cc![b: 0] == S.ADR || self.cc![b: 0] == S.INS { fatalError("Exception occured") }
         } while !halted
 
-        print("System halted")
-        printStatus()
-        memory!.dump(at: 0...0x200)
+        if verbose {
+            print("System halted")
+            printStatus()
+            memory!.dump(at: 0...0x200)
+        }
     }
 
     required convenience public init() {
@@ -107,7 +107,7 @@ public class Y86_64Seq: Machine, Y86_64System {
         _ = um.ready()
 
         reset()
-        
+
 
 //        self.memory!.dump(at: 0...0x1f)
 //        self.pc!.dump(at: 0...0x7)
@@ -115,14 +115,14 @@ public class Y86_64Seq: Machine, Y86_64System {
 //        self.cc!.dump(at: 0...2)
 //        print(self.stat![b: 0])
     }
-    
+
     public func reset() {
         self.memory?.clear()
         self.pc?.clear()
         self.register?.clear()
         self.cc?.clear()
         self.stat?.clear()
-        
+
         self.um.resetWires()
     }
 }
