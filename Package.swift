@@ -13,7 +13,8 @@ let package = Package(
         .library(name: "Y86_64GenericLib", targets: ["Y86_64GenericLib"]),
         .library(name: "Y86_64SeqLib", targets: ["Y86_64SeqLib"]),
         .executable(name: "Simulator", targets: ["Simulator"]),
-        .library(name: "SimulatorLib", targets: ["SimulatorLib"])
+        .library(name: "SimulatorLib", targets: ["SimulatorLib"]),
+        .library(name: "Yis", targets: ["CYis", "YisWrapper"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -38,12 +39,18 @@ let package = Package(
         .target(
             name: "Y86_64",
             dependencies: ["Y86_64SeqLib"]),
+        .target(
+            name: "YisWrapper",
+            dependencies: ["CYis"]),
+        .target(
+            name: "CYis",
+            dependencies: []),
         
         .testTarget(
             name: "SimulatorTests",
             dependencies: ["SimulatorLib", "Nimble"]),
         .testTarget(
             name: "Y86_64SeqTests",
-            dependencies: ["SimulatorLib", "Y86_64SeqLib", "Nimble"]),
+            dependencies: ["SimulatorLib", "Y86_64SeqLib", "Nimble", "YisWrapper"]),
     ]
 )
