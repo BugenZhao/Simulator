@@ -19,5 +19,8 @@ class YisTests: XCTestCase {
         let yis = Yis(yo)
         let result = yis.run()
         print("Result: \(result)")
+
+        yis.memory?.dump()
+        yis.register?.dump()
     }
 }

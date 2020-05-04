@@ -20,6 +20,7 @@ public protocol Addressable {
     subscript (q q: UInt64) -> UInt64 { get set }
 
     func dump(at range: ClosedRange<UInt64>)
+    func dump()
 
     mutating func clear()
 }
@@ -184,35 +185,11 @@ extension Addressable {
         }
     }
 
+    public func dump() {
+        self.dump()
+    }
+    
     public func dump(at range: ClosedRange<UInt64>) {
-        guard range.last! < data.count.u64 else {
-            fatalError(SimulatorError.AddressableInvalidAccessError.rawValue)
-        }
-        var lo = range.first!.u32 & (~0xf)
-        var hi = (range.last!.u32 + 0x10) & (~0xf)
-        hi = hi < data.count ? hi : (data.count.u32 - 1)
-        print("           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F |")
-
-        while lo < hi {
-            print(String(format: "%08X  ", lo), terminator: "")
-            (lo...(lo + 15)).forEach {
-                if $0 < data.count { print(String(format: "%02X ", data[Int($0)]), terminator: "") }
-                else { print("   ", terminator: "") }
-            }
-            print("| ", terminator: "")
-            (lo...(lo + 15)).forEach {
-                if $0 < data.count {
-                    let c = Character(Unicode.Scalar(data[Int($0)]))
-                    if c.isASCII && (c.isLetter || c.isNumber) {
-                        print("\(c)", terminator: "")
-                    }
-                    else {
-                        print(".", terminator: "")
-                    }
-                }
-            }
-            print()
-            lo += 16
-        }
+        self.data.dump(at: range)
     }
 }
