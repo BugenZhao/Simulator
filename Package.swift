@@ -41,7 +41,7 @@ let package = Package(
             dependencies: ["Y86_64SeqLib"]),
         .target(
             name: "YisWrapper",
-            dependencies: ["CYis"]),
+            dependencies: ["CYis", "Y86_64GenericLib"]),
         .target(
             name: "CYis",
             dependencies: []),

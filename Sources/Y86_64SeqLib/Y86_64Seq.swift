@@ -105,11 +105,6 @@ public class Y86_64Seq: Machine, Y86_64System {
 
         reset()
 
-//        self.memory!.dump(at: 0...0x1f)
-//        self.pc!.dump(at: 0...0x7)
-//        self.register!.dump(at: 0...15 * 8 - 1)
-//        self.cc!.dump(at: 0...2)
-//        print(self.stat![b: 0])
     }
 
     public func reset() {
@@ -120,6 +115,11 @@ public class Y86_64Seq: Machine, Y86_64System {
         self.stat?.clear()
 
         self.um.resetWires()
+
+        // Default CC
+        self.cc?[b: 0] = 1  // ZF
+        self.cc?[b: 1] = 0  // SF
+        self.cc?[b: 2] = 0  // OF
     }
 }
 

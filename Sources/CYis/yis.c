@@ -29,7 +29,7 @@ int run_yis(const char *yo_path, stat_t *ep, state_rec *sp) {
 
     if (!load_mem(sp->m, code_file, 1)) {
         printf("Exiting\n");
-        return -1;
+        return -2;
     }
 
 
@@ -40,7 +40,7 @@ int run_yis(const char *yo_path, stat_t *ep, state_rec *sp) {
      yo_path, step, sp->pc, stat_name(*ep), cc_name(sp->cc));
 
 
-    return 0;
+    return step;
 }
 
 

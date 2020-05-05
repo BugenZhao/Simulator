@@ -23,7 +23,6 @@ class RegressionTests: XCTestCase {
 
     let excluded: [String] = [
         "perf.yo", // Too slow
-//        "abs-asum-cmov.yo", // TODO: cmov not implemented
     ]
 
 
@@ -36,10 +35,28 @@ class RegressionTests: XCTestCase {
         seq.loadYO(yoPath)
         seq.run(debug: false)
 
-        XCTAssertEqual(yis.memory![0...0x1000], seq.memory!.data[0...0x1000])
+        // MARK: Memory
+        XCTAssertEqual(yis.memory![0..<0x2000], seq.memory!.data[0..<0x2000])
+
+        // MARK: Register
         XCTAssertEqual(yis.register!, seq.register!.data, "\(yoPath)")
 
-        // TODO: incorrect initial cc
+        // MARK: CC
+        let yisCC = yis.cc
+        let seqCC = (zf: seq.cc![b: 0] != 0, sf: seq.cc![b: 1] != 0, of: seq.cc![b: 2] != 0)
+        XCTAssertEqual(yisCC.zf, seqCC.zf)
+        XCTAssertEqual(yisCC.sf, seqCC.sf)
+        XCTAssertEqual(yisCC.of, seqCC.of)
+
+        // MARK: Stat
+        let yisStat = yis.stat
+        let seqStat = seq.stat![b: 0]
+        XCTAssertEqual(yisStat, seqStat)
+
+        // MARK: PC
+        let yisPC = yis.pc
+        let seqPC = seq.pc![0]
+        XCTAssert(yisPC...(yisPC + 10) ~= seqPC)
     }
 
     func testRegression() {

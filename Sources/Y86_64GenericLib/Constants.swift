@@ -9,19 +9,19 @@ import Foundation
 
 
 // Instructions
-public struct I {                     // A  , B  , E  , M
-    public static let HALT = 0.u64    // ---, ---, ---, ---
-    public static let NOP = 1.u64     // ---, ---, ---, ---
-    public static let RRMOVQ = 2.u64  // rA , ---, rB , ---
-    public static let IRMOVQ = 3.u64  // ---, ---, rB , ---
-    public static let RMMOVQ = 4.u64  // rA , rB , ---, ---
-    public static let MRMOVQ = 5.u64  // ---, rB , ---, rA  !!
-    public static let OPQ = 6.u64     // rA , rB , rB , ---
-    public static let JXX = 7.u64     // ---, ---, ---, ---
-    public static let CALL = 8.u64    // ---, rsp, rsp, ---
-    public static let RET = 9.u64     // rsp, rsp, rsp, ---
+public struct I { // A  , B  , E  , M
+    public static let HALT = 0.u64 // ---, ---, ---, ---
+    public static let NOP = 1.u64 // ---, ---, ---, ---
+    public static let RRMOVQ = 2.u64 // rA , ---, rB , ---
+    public static let IRMOVQ = 3.u64 // ---, ---, rB , ---
+    public static let RMMOVQ = 4.u64 // rA , rB , ---, ---
+    public static let MRMOVQ = 5.u64 // ---, rB , ---, rA  !!
+    public static let OPQ = 6.u64 // rA , rB , rB , ---
+    public static let JXX = 7.u64 // ---, ---, ---, ---
+    public static let CALL = 8.u64 // ---, rsp, rsp, ---
+    public static let RET = 9.u64 // rsp, rsp, rsp, ---
     public static let PUSHQ = 0xa.u64 // rA , rsp, rsp, ---
-    public static let POPQ = 0xb.u64  // rsp, rsp, rsp, rA
+    public static let POPQ = 0xb.u64 // rsp, rsp, rsp, rA
     public static let IADDQ = 0xc.u64 // ---, rB , rB , ---
 }
 
@@ -70,4 +70,14 @@ public struct S {
     public static let ADR = 2.u64
     public static let INS = 3.u64
     public static let HLT = 4.u64
+
+    public static func statDesc (stat: UInt64) -> String {
+        switch stat {
+        case 0...(S.AOK): return "AOK"
+        case S.ADR: return "ADR"
+        case S.INS: return "INS"
+        case S.HLT: return "HLT"
+        default: return "ERR"
+        }
+    }
 }

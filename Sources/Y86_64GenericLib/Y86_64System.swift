@@ -28,15 +28,7 @@ public protocol Y86_64System {
 
 extension Y86_64System {
     public func printStatus() {
-        let statDesc = { () -> String in
-            switch self.stat![b: 0] {
-            case 0...(S.AOK): return "AOK"
-            case S.ADR: return "ADR"
-            case S.INS: return "INS"
-            case S.HLT: return "HLT"
-            default: return "ERR"
-            }
-        }()
+        let statDesc = S.statDesc(stat: self.stat![b: 0])
 
         print("Cycle:\t\(um.cycle)")
         print("\tPC: \t\(String(format: "0x%016llx", pc![0]))")
@@ -65,7 +57,7 @@ extension Y86_64System {
     public var halted: Bool {
         get { um.halted }
     }
-    
+
     public func run() {
         run(debug: false)
     }

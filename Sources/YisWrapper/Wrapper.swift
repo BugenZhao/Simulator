@@ -7,6 +7,7 @@
 
 import Foundation
 import CYis
+import Y86_64GenericLib
 
 public class Yis {
     let yoPath: String
@@ -16,6 +17,8 @@ public class Yis {
 
     public let memSize: Int
     public let registerSize = 8 * 16
+    
+    private(set) public var cycle: Int? = nil
 
     public init(_ yoPath: String) {
         self.yoPath = yoPath
@@ -27,7 +30,8 @@ public class Yis {
     }
 
     @discardableResult public func run() -> Int {
-        return Int(run_yis(yoPath, statPtr, statePtr))
+        cycle = Int(run_yis(yoPath, statPtr, statePtr))
+        return cycle!
     }
 
     public var memory: Data? {
@@ -38,6 +42,30 @@ public class Yis {
     public var register: Data? {
         let dataPointer = UnsafeMutableBufferPointer(start: statePtr.pointee.r.pointee.contents, count: registerSize)
         return Data(buffer: dataPointer)
+    }
+
+    public var cc: (zf: Bool, sf: Bool, of: Bool) {
+        let ccWord = statePtr.pointee.cc
+        return ((ccWord >> 2)&1 == 1, (ccWord >> 1)&1 == 1, (ccWord >> 0)&1 == 1)
+    }
+
+    public var stat: UInt64 {
+        switch statPtr.pointee {
+        case STAT_AOK:
+            return S.AOK
+        case STAT_INS:
+            return S.INS
+        case STAT_ADR:
+            return S.ADR
+        case STAT_HLT:
+            return S.HLT
+        default:
+            return 666
+        }
+    }
+    
+    public var pc: UInt64 {
+        return statePtr.pointee.pc.u64
     }
 
     deinit {
