@@ -81,7 +81,7 @@ public class Y86_64Seq: Machine, Y86_64System {
             if debug { printStatus(); print(">>", terminator: ""); _ = readLine() }
         } while !halted
 
-        print("\(type(of: self))\n\tSystem halted after \(um.cycle) cycles")
+        print("\(type(of: self)): System halted after \(um.cycle) cycles")
         printStatus()
     }
 

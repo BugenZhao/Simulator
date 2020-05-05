@@ -1,7 +1,8 @@
 # Simulator
 
 ![Language](https://img.shields.io/badge/Language-Swift%205.2-orange.svg)
-![Actions](https://github.com/bugenzhao/Simulator/workflows/Simulator/badge.svg)
+![macOS](https://github.com/BugenZhao/Simulator/workflows/macOS/badge.svg)
+![Ubuntu](https://github.com/BugenZhao/Simulator/workflows/Ubuntu/badge.svg)
 
 Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
 
