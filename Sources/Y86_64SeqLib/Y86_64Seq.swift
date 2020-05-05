@@ -75,15 +75,14 @@ public class Y86_64Seq: Machine, Y86_64System {
 
     var wires = WireSet()
 
-    public func run(verbose: Bool = false) {
+    public func run(debug: Bool = false) {
         repeat {
             um.clock(resetWire: true)
+            if debug { printStatus(); print(">>", terminator: ""); _ = readLine() }
         } while !halted
 
-        if verbose {
-            print("\(type(of:self))\n\tSystem halted after \(um.cycle) cycles")
-            printStatus()
-        }
+        print("\(type(of: self))\n\tSystem halted after \(um.cycle) cycles")
+        printStatus()
     }
 
     required convenience public init() {

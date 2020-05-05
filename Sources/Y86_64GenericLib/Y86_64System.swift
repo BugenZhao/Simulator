@@ -19,13 +19,11 @@ public protocol Y86_64System {
 
     var halted: Bool { get }
 
-    func run(verbose: Bool)
+    func run(debug: Bool)
     func reset()
     func printStatus()
 
     func loadYO(_: String)
-
-    init()
 }
 
 extension Y86_64System {
@@ -69,6 +67,6 @@ extension Y86_64System {
     }
     
     public func run() {
-        run(verbose: false)
+        run(debug: false)
     }
 }

@@ -89,7 +89,7 @@ extension Y86_64Seq {
                 else if ifun == F.JE { w.cond.b = w.zfo.b }
                 else if ifun == F.JNE { w.cond.b = !w.zfo.b }
                 else if ifun == F.JGE { w.cond.b = (w.sfo.b == w.ofo.b) }
-                else if ifun == F.JG { w.cond.b = (!w.zfo.b) || (w.sfo.b == w.ofo.b) }
+                else if ifun == F.JG { w.cond.b = (!w.zfo.b) && (w.sfo.b == w.ofo.b) }
             }
         )
 
@@ -112,8 +112,8 @@ extension Y86_64Seq {
                 case F.SUB:
                     r = b &- a
                     w.zfi.b = r == 0
-                    w.sfi.b = Int64(r) < 0
-                    w.ofi.b = ((a < 0) == (b < 0)) && ((r < 0) != (a < 0))
+                    w.sfi.b = r < 0
+                    w.ofi.b = ((a > 0) == (b < 0)) && ((r < 0) != (b < 0))
                 case F.AND:
                     r = b & a
                     w.zfi.b = r == 0

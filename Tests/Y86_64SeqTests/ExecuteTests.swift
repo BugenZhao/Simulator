@@ -42,7 +42,7 @@ class ExecuteTests: XCTestCase {
         XCTAssertEqual(CPU.wires.valE.v, (-2).nu64)
         XCTAssertEqual(CPU.wires.zfi.b, false)
         XCTAssertEqual(CPU.wires.sfi.b, true)
-        XCTAssertEqual(CPU.wires.ofi.b, true)
+        XCTAssertEqual(CPU.wires.ofi.b, false)
         XCTAssertEqual(CPU.wires.setCC.b, true)
     }
 

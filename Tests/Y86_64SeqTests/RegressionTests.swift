@@ -23,7 +23,7 @@ class RegressionTests: XCTestCase {
 
     let excluded: [String] = [
         "perf.yo", // Too slow
-        "abs-asum-cmov.yo", // TODO: cmov not implemented
+//        "abs-asum-cmov.yo", // TODO: cmov not implemented
     ]
 
 
@@ -34,7 +34,7 @@ class RegressionTests: XCTestCase {
 
         let seq = Y86_64Seq()
         seq.loadYO(yoPath)
-        seq.run(verbose: true)
+        seq.run(debug: false)
 
         XCTAssertEqual(yis.memory![0...0x1000], seq.memory!.data[0...0x1000])
         XCTAssertEqual(yis.register!, seq.register!.data, "\(yoPath)")
