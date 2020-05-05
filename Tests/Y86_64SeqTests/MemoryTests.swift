@@ -62,6 +62,7 @@ class MemoryTests: XCTestCase {
         let CPU = self.CPU!
         CPU.memory?.data[0...9] = Data([0x00]) // halt
         CPU.um.clock()
+        CPU.um.clock()
         XCTAssertEqual(CPU.halted, true)
     }
 }

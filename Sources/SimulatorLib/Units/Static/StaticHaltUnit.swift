@@ -11,14 +11,15 @@ public class StaticHaltUnit: StaticUnit {
     var name: UnitName
     var inputWires: [Wire]
     var outputWires: [Wire] = []
-    var logic: () -> Void = {}
-    var onRising: () -> Void = {}
+    var logic: () -> Void = { }
+    var onRising: () -> Void = { }
 
     var haltAction: () -> Void
 
     init(_ unitName: UnitName,
         _ inputWires: [Wire],
-        _ haltAction: @escaping () -> Void) {
+        _ haltAction: @escaping () -> Void,
+        _ onlyOnRising: Bool = true) {
         self.name = unitName
         self.inputWires = inputWires
 
@@ -28,5 +29,7 @@ public class StaticHaltUnit: StaticUnit {
             let needToHalt = !inputWires.allSatisfy { $0.b == false }
             if needToHalt { haltAction() }
         }
+
+        if !onlyOnRising { self.logic = self.onRising }
     }
 }

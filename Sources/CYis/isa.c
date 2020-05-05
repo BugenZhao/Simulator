@@ -15,6 +15,11 @@ extern int gui_mode;
 /* Bytes Per Line = Block size of memory */
 #define BPL 32
 
+
+int calculate_len(int len) {
+    return ((len+BPL-1)/BPL)*BPL;
+}
+
 struct {
     char *name;
     int id;

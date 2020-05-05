@@ -131,11 +131,12 @@ public class StaticUnitManager {
 
     public func addHaltUnit(
         unitName: UnitName,
-        inputWires: [Wire] = []) -> StaticHaltUnit {
+        inputWires: [Wire] = [],
+        onlyOnRising: Bool = true) -> StaticHaltUnit {
         guard !unitsDict.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
-        let unit = StaticHaltUnit(unitName, inputWires, { self.halted = true })
+        let unit = StaticHaltUnit(unitName, inputWires, { self.halted = true }, onlyOnRising)
         checkPermission(unit)
         inputWires.forEach { $0.to.append(unitName); wireManager.addWire($0) }
 
@@ -166,32 +167,32 @@ public class StaticUnitManager {
 
 
     func stablize() {
-//        _ = wireManager.doPaticialCheckpoint()
-//        units.forEach { $0.logic() }
-//
-//        while true {
-//            let unitsToRun = wireManager.doPaticialCheckpoint()
-//            guard !unitsToRun.isEmpty else { return }
-//            unitsToRun.map { unitsDict[$0] }.forEach { $0?.logic() }
-//        }
-        
         repeat {
+            guard !halted else { return }
             units.forEach { $0.logic() }
         } while(wireManager.doCheckpoint() == false)
     }
 
     func rise() {
+        guard !halted else { return }
         units.forEach { $0.onRising() }
         wireManager.clearCheckpoint()
     }
 
-    public func clock(resetWire: Bool = false) {
+    public func clock(resetWire: Bool = false, debug: Bool = false) {
         if !self.isReady { print("Warning: \(type(of: self)) may not be ready.") }
+
+        guard !halted else { return }
         stablize()
+        guard !halted else { return }
         rise()
+        guard !halted else { return }
+
         if resetWire { resetWires() }
-//        print("Rise:")
-//        wireManager.wires.forEach { print($0.name, $0.v) }
+        if debug {
+            print("Rise:")
+            wireManager.wires.forEach { print($0.name, $0.v) }
+        }
         cycle += 1
     }
 

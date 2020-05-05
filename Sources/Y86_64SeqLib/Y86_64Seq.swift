@@ -78,7 +78,6 @@ public class Y86_64Seq: Machine, Y86_64System {
     public func run(verbose: Bool = false) {
         repeat {
             um.clock(resetWire: true)
-            if self.cc![b: 0] == S.ADR || self.cc![b: 0] == S.INS { fatalError("Exception occured") }
         } while !halted
 
         if verbose {
@@ -106,7 +105,6 @@ public class Y86_64Seq: Machine, Y86_64System {
         _ = um.ready()
 
         reset()
-
 
 //        self.memory!.dump(at: 0...0x1f)
 //        self.pc!.dump(at: 0...0x7)

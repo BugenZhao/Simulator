@@ -17,7 +17,7 @@ extension Y86_64Seq {
             inputWires: [w.instValid, w.imemError, w.icode, w.dmemError],
             outputWires: [w.halt],
             logic: { ru in
-                w.halt.b = (ru[b: 0] != 0 && ru[b: 0] != S.AOK)
+                w.halt.b = ru[b: 0] > S.AOK
             },
             onRising: { ru in var ru = ru
                 if !w.instValid.b { ru[b: 0] = S.INS }
@@ -30,7 +30,8 @@ extension Y86_64Seq {
 
         _ = um.addHaltUnit(
             unitName: "Halt",
-            inputWires: [w.halt]
+            inputWires: [w.halt],
+            onlyOnRising: false
         )
 
         _ = um.addGenericUnit(

@@ -17,10 +17,13 @@ class RegressionTests: XCTestCase {
         let yoDirPath = FileManager.default.currentDirectoryPath + "/Resources/Objects/"
     #endif
 
-    let excluded = [
-        "perf.yo",          // Too slow
+
+    let included: [String] = [
+    ]
+
+    let excluded: [String] = [
+        "perf.yo", // Too slow
         "abs-asum-cmov.yo", // TODO: cmov not implemented
-        "prog10.yo"         // TODO: stat may not correct
     ]
 
 
@@ -35,7 +38,7 @@ class RegressionTests: XCTestCase {
 
         XCTAssertEqual(yis.memory![0...0x1000], seq.memory!.data[0...0x1000])
         XCTAssertEqual(yis.register!, seq.register!.data, "\(yoPath)")
-        
+
         // TODO: incorrect initial cc
     }
 
@@ -43,6 +46,7 @@ class RegressionTests: XCTestCase {
         let fileManager = FileManager.default
         try? fileManager.contentsOfDirectory(atPath: yoDirPath).forEach { yoName in
             guard !excluded.contains(yoName) else { return }
+            guard included.isEmpty || included.contains(yoName) else { return }
             guard yoName.hasSuffix(".yo") else { return }
 
             doTest(yoDirPath + yoName)

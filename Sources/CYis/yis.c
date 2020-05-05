@@ -14,7 +14,7 @@ void usage(char *pname)
     exit(0);
 }
 
-int runYis(const char *yo_path, stat_t *ep, state_rec *sp) {
+int run_yis(const char *yo_path, stat_t *ep, state_rec *sp) {
     FILE *code_file;
     int max_steps = 1000000;
 

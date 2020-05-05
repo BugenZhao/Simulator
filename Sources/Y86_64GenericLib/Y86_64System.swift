@@ -65,7 +65,7 @@ extension Y86_64System {
     }
 
     public var halted: Bool {
-        get { stat?[b: 0] == S.HLT }
+        get { um.halted }
     }
     
     public func run() {

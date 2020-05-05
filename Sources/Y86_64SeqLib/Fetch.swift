@@ -41,18 +41,23 @@ extension Y86_64Seq {
                 w.inst0[0...7] = iAddr < mu.count ? mu[b: iAddr] : 0
                 w.inst18.v = iAddr + 8 < mu.count ? mu[q: iAddr + 1] : 0
                 w.inst29.v = iAddr + 9 < mu.count ? mu[q: iAddr + 2] : 0
+
                 // Data
+                var dmemError = false
                 if w.memRead.b {
-                    w.dmemError.b = w.memAddr.v + 7 >= mu.count
-                    w.valM.v = w.memAddr.v + 7 < mu.count ? mu[q: w.memAddr.v] : 0
-                } else {
-                    w.dmemError.b = false
+                    dmemError = w.memAddr.v >= mu.count - 7
+                    w.valM.v = !dmemError ? mu[q: w.memAddr.v] : 0
                 }
+                if w.memWrite.b {
+                    // Only test if error
+                    dmemError = w.memAddr.v >= mu.count - 7
+                }
+                w.dmemError.b = dmemError
             },
             onRising: { mu in var mu = mu
                 // Data
                 if w.memWrite.b {
-                    let error = w.memAddr.v + 7 >= mu.count
+                    let error = w.memAddr.v >= mu.count - 7
                     if !error {
                         mu[q: w.memAddr.v] = w.memData.v
                     }

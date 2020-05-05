@@ -4,6 +4,8 @@
 #include "isa.h"
 #include <stdlib.h>
 
-int runYis(const char *yo_path, stat_t *ep, state_rec *sp);
+int calculate_len(int len);
+
+int run_yis(const char *yo_path, stat_t *ep, state_rec *sp);
 
 #endif  // SIMULATOR_CYIS_H
