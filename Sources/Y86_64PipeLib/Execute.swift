@@ -12,6 +12,12 @@ extension Y86_64Pipe {
     func addExecute() {
         let w = self.wires
 
+        Eregs = um.addQuadStageRegisterUnit(
+            unitName: "Eregs",
+            inputWires: [w.Dicode, w.Difun, w.Dstat, w.DvalC, w.dvalA, w.dvalB, w.ddstE, w.ddstM, w.dsrcA, w.dsrcB],
+            outputWires: [w.Eicode, w.Eifun, w.Estat, w.EvalC, w.EvalA, w.EvalB, w.EdstE, w.EdstM, w.EsrcA, w.EsrcB]
+        )
+
         cc = um.addRegisterUnit(
             unitName: "CC",
             inputWires: [w.setCC, w.zfi, w.sfi, w.ofi],
@@ -33,12 +39,12 @@ extension Y86_64Pipe {
 
         _ = um.addGenericUnit(
             unitName: "ALUA",
-            inputWires: [w.icode, w.valA, w.valC],
+            inputWires: [w.Eicode, w.EvalA, w.EvalC],
             outputWires: [w.aluA],
             logic: {
-                let icode = w.icode[0...3]
-                if [I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.IADDQ].contains(icode) { w.aluA.v = w.valC.v }
-                else if [I.RRMOVQ, I.OPQ].contains(icode) { w.aluA.v = w.valA.v }
+                let icode = w.Eicode[0...3]
+                if [I.IRMOVQ, I.RMMOVQ, I.MRMOVQ, I.IADDQ].contains(icode) { w.aluA.v = w.EvalC.v }
+                else if [I.RRMOVQ, I.OPQ].contains(icode) { w.aluA.v = w.EvalA.v }
                 else if [I.CALL, I.PUSHQ].contains(icode) { w.aluA.v = (-8).nu64 }
                 else if [I.RET, I.POPQ].contains(icode) { w.aluA.v = 8 }
             }
@@ -46,22 +52,22 @@ extension Y86_64Pipe {
 
         _ = um.addGenericUnit(
             unitName: "ALUB",
-            inputWires: [w.icode, w.valB],
+            inputWires: [w.Eicode, w.EvalB],
             outputWires: [w.aluB],
             logic: {
-                let icode = w.icode[0...3]
+                let icode = w.Eicode[0...3]
                 if [I.IRMOVQ, I.RRMOVQ].contains(icode) { w.aluB.v = 0 }
-                else if [I.RMMOVQ, I.MRMOVQ, I.OPQ, I.CALL, I.RET, I.PUSHQ, I.POPQ, I.IADDQ].contains(icode) { w.aluB.v = w.valB.v }
+                else if [I.RMMOVQ, I.MRMOVQ, I.OPQ, I.CALL, I.RET, I.PUSHQ, I.POPQ, I.IADDQ].contains(icode) { w.aluB.v = w.EvalB.v }
             }
         )
 
         _ = um.addGenericUnit(
             unitName: "ALUFun",
-            inputWires: [w.icode, w.ifun],
+            inputWires: [w.Eicode, w.Eifun],
             outputWires: [w.aluFun],
             logic: {
-                let icode = w.icode[0...3]
-                if icode == I.OPQ { w.aluFun[0...3] = w.ifun[0...3] }
+                let icode = w.Eicode[0...3]
+                if icode == I.OPQ { w.aluFun[0...3] = w.Eifun[0...3] }
                 else if icode == I.IADDQ { w.aluFun[0...3] = F.ADD }
                 else { w.aluFun[0...3] = F.ADD }
             }
@@ -69,28 +75,34 @@ extension Y86_64Pipe {
 
         _ = um.addGenericUnit(
             unitName: "SetCC",
-            inputWires: [w.icode, w.ifun],
+            inputWires: [w.Eicode, w.Eifun, w.Wstat, w.mstat],
             outputWires: [w.setCC],
             logic: {
-                let icode = w.icode[0...3]
-                let ifun = w.ifun[0...3]
-                w.setCC.b = (icode == I.OPQ && [F.ADD, F.SUB, F.AND, F.XOR].contains(ifun)) || icode == I.IADDQ
+                // FIXME: set CC by stat
+                if true {
+                    let icode = w.Eicode[0...3]
+                    let ifun = w.Eifun[0...3]
+                    w.setCC.b = (icode == I.OPQ && [F.ADD, F.SUB, F.AND, F.XOR].contains(ifun)) || icode == I.IADDQ
+                } else {
+                    w.setCC.b = false
+                }
             }
         )
 
         _ = um.addGenericUnit(
             unitName: "Cond",
-            inputWires: [w.ifun, w.zfo, w.sfo, w.ofo],
-            outputWires: [w.cond],
+            inputWires: [w.Eifun, w.zfo, w.sfo, w.ofo],
+            outputWires: [w.econd],
             logic: {
-                let ifun = w.ifun[0...3]
-                if ifun == F.JMP { w.cond.b = true }
-                else if ifun == F.JLE { w.cond.b = w.zfo.b || (w.sfo.b != w.ofo.b) }
-                else if ifun == F.JL { w.cond.b = (w.sfo.b != w.ofo.b) }
-                else if ifun == F.JE { w.cond.b = w.zfo.b }
-                else if ifun == F.JNE { w.cond.b = !w.zfo.b }
-                else if ifun == F.JGE { w.cond.b = (w.sfo.b == w.ofo.b) }
-                else if ifun == F.JG { w.cond.b = (!w.zfo.b) && (w.sfo.b == w.ofo.b) }
+                // for JXX and CMOV
+                let ifun = w.Eifun[0...3]
+                if ifun == F.JMP { w.econd.b = true }
+                else if ifun == F.JLE { w.econd.b = w.zfo.b || (w.sfo.b != w.ofo.b) }
+                else if ifun == F.JL { w.econd.b = (w.sfo.b != w.ofo.b) }
+                else if ifun == F.JE { w.econd.b = w.zfo.b }
+                else if ifun == F.JNE { w.econd.b = !w.zfo.b }
+                else if ifun == F.JGE { w.econd.b = (w.sfo.b == w.ofo.b) }
+                else if ifun == F.JG { w.econd.b = (!w.zfo.b) && (w.sfo.b == w.ofo.b) }
             }
         )
 
@@ -134,5 +146,15 @@ extension Y86_64Pipe {
             }
         )
 
+        _ = um.addGenericUnit(
+            unitName: "DstE",
+            inputWires: [w.Eicode, w.econd, w.EdstE],
+            outputWires: [w.edstE],
+            logic: {
+                // for CMOV
+                if w.Eicode[0...3] == I.RRMOVQ, !w.econd.b { w.edstE[0...3] = R.NONE }
+                else { w.edstE[0...3] = w.EdstE[0...3] }
+            }
+        )
     }
 }
