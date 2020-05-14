@@ -108,6 +108,33 @@ public class StaticUnitManager {
         return unit
     }
 
+    public func addQuadStageRegisterUnit(
+        unitName: UnitName,
+        inputWires: [Wire],
+        outputWires: [Wire]) -> StaticRegisterUnit {
+        guard !unitsDict.keys.contains(unitName) else {
+            fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
+        }
+        guard inputWires.count == outputWires.count else { fatalError() }
+
+        let logic: (StaticRegisterUnit) -> Void = { ru in
+            outputWires.enumerated().forEach { i, wire in wire.v = ru[i.u64] }
+        }
+        let onRising: (StaticRegisterUnit) -> Void = { ru in var ru = ru
+            inputWires.enumerated().forEach { i, wire in ru[i.u64] = wire.v }
+        }
+        let bytesCount = 8 * inputWires.count
+        let unit = StaticRegisterUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
+        checkPermission(unit)
+        inputWires.forEach { $0.to.append(unitName); wireManager.addWire($0) }
+        outputWires.forEach { $0.from = unitName; wireManager.addWire($0) }
+
+        unitsDict[unitName] = unit
+        units.append(unit)
+
+        return unit
+    }
+
     public func addMemoryUnit(
         unitName: UnitName,
         inputWires: [Wire],
