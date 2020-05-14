@@ -1,9 +1,10 @@
-import Y86_64SeqLib
-import Y86_64GenericLib
-import SimulatorLib
 import Foundation
+import SimulatorLib
+import Y86_64GenericLib
+import Y86_64PipeLib
+import Y86_64SeqLib
 
-let system: Y86_64System = Y86_64Seq()
+let system: Y86_64Pipe = Y86_64Pipe()
 
 #if Xcode
 let yo = "/Users/bugenzhao/Codes/Swift/Simulator/Resources/Objects/abs-asum-cmov.yo"

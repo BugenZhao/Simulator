@@ -146,25 +146,22 @@ public class Y86_64Pipe: Machine, Y86_64System {
     }
 
     required convenience public init() {
-        self.init(fetch: true, decodeWriteBack: true, execute: true, memory: true, newPC: true)
+        self.init(fetch: true, decodeWriteBack: true, execute: true, memory: true)
     }
 
     init(fetch: Bool = false,
         decodeWriteBack: Bool = false,
         execute: Bool = false,
-        memory: Bool = false,
-        newPC: Bool = false) {
+        memory: Bool = false) {
 
-//        if fetch { addFetch() }
-//        if decodeWriteBack { addDecodeWriteBack() }
-//        if execute { addExecute() }
-//        if memory { addMemory() }
-//        if newPC { addNewPC() }
+        if fetch { addFetch() }
+        if decodeWriteBack { addDecodeWriteBack(); addWriteBack() }
+        if execute { addExecute() }
+        if memory { addMemory() }
 
         _ = um.ready()
 
         reset()
-
     }
 
     public func reset() {

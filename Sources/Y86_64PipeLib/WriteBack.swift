@@ -14,8 +14,8 @@ extension Y86_64Pipe {
 
         Wregs = um.addQuadStageRegisterUnit(
             unitName: "Wregs",
-            inputWires: [w.Micode, w.Mifun, w.mstat, w.MvalE, w.mvalM, w.MdstE, w.MdstM],
-            outputWires: [w.Wicode, w.Wifun, w.Wstat, w.WvalE, w.WvalM, w.WdstE, w.WdstM]
+            inputWires: [w.Micode, w.Mifun, w.mstat, w.MvalE, w.mvalM, w.MdstE, w.MdstM, w.MsrcA, w.MsrcB],
+            outputWires: [w.Wicode, w.Wifun, w.Wstat, w.WvalE, w.WvalM, w.WdstE, w.WdstM, w.WsrcA, w.WsrcB]
         )
 
         stat = um.addRegisterUnit(

@@ -76,7 +76,7 @@ extension Y86_64Pipe {
             inputWires: [w.Dicode, w.dsrcA, w.drvalA, w.DvalP,
                          w.edstE, w.MdstM, w.MdstE, w.WdstM, w.WdstE,
                          w.evalE, w.mvalM, w.MvalE, w.WvalM, w.WvalE],
-            outputWires: [w.dsrcA],
+            outputWires: [w.dvalA],
             logic: {
                 let dsrcA = w.dsrcA[0...3]
                 if [I.CALL, I.JXX].contains(w.Dicode[0...3]) { // select valP
@@ -102,7 +102,7 @@ extension Y86_64Pipe {
             inputWires: [w.dsrcB, w.drvalB,
                          w.edstE, w.MdstM, w.MdstE, w.WdstM, w.WdstE,
                          w.evalE, w.mvalM, w.MvalE, w.WvalM, w.WvalE],
-            outputWires: [w.dsrcB],
+            outputWires: [w.dvalB],
             logic: {
                 let dsrcB = w.dsrcB[0...3]
                 if dsrcB == w.edstE[0...3] { // forward from EX

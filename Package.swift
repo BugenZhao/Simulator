@@ -42,7 +42,7 @@ let package = Package(
             dependencies: ["SimulatorLib"]),
         .target(
             name: "Y86_64",
-            dependencies: ["Y86_64SeqLib"]),
+            dependencies: ["Y86_64SeqLib", "Y86_64PipeLib"]),
         .target(
             name: "YisWrapper",
             dependencies: ["CYis", "Y86_64GenericLib"]),

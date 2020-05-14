@@ -18,13 +18,15 @@ extension Y86_64Pipe {
             outputWires: [w.FpredPC]
         )
 
+        pc = Fregs
+
         memory = um.addMemoryUnit(
             unitName: "Memory",
             inputWires: [w.fpc,
-                         /* w.memAddr, w.memData, w.memWrite, w.memRead */ ],
+                         w.memAddr, w.memData, w.memWrite, w.memRead],
             outputWires: [w.inst0, w.inst18, w.inst29,
-                          /* w.valM,
-                              w.imemError, w.dmemError*/ ],
+                          w.mvalM,
+                          w.imemError, w.dmemError],
             logic: { mu in
                 // Instruction
                 let iAddr = w.fpc.v
@@ -125,8 +127,8 @@ extension Y86_64Pipe {
 
         _ = um.addGenericUnit(
             unitName: "PCSelector",
-            inputWires: [w.fvalC, w.fvalP, w.ficode],
-            outputWires: [w.fpredPC],
+            inputWires: [w.FpredPC, w.MvalA, w.WvalM, w.Micode, w.Mcond, w.Wicode],
+            outputWires: [w.fpc],
             logic: {
                 if w.Micode.v == I.JXX, !w.Mcond.b { w.fpc.v = w.MvalA.v } // mispredicted always taken
                 else if w.Wicode.v == I.RET { w.fpc.v = w.WvalM.v } // `ret`
