@@ -12,56 +12,47 @@ extension Y86_64Pipe {
     func addMemory() {
         let w = self.wires
 
-        stat = um.addRegisterUnit(
-            unitName: "Stat",
-            inputWires: [w.instValid, w.imemError, w.icode, w.dmemError],
-            outputWires: [w.halt],
-            logic: { ru in
-                w.halt.b = ru[b: 0] > S.AOK
-            },
-            onRising: { ru in var ru = ru
-                if !w.instValid.b { ru[b: 0] = S.INS }
-                else if w.imemError.b || w.dmemError.b { ru[b: 0] = S.ADR }
-                else if w.icode[0...3] == I.HALT { ru[b: 0] = S.HLT }
-                else { ru[b: 0] = S.AOK }
-            },
-            bytesCount: 1
+        Mregs = um.addQuadStageRegisterUnit(
+            unitName: "Mregs",
+            inputWires: [w.Eicode, w.Eifun, w.Estat, w.econd, w.evalE, w.EvalA, w.edstE, w.EdstM, w.EsrcA, w.EsrcB],
+            outputWires: [w.Micode, w.Mifun, w.Mstat, w.Mcond, w.MvalE, w.MvalA, w.MdstE, w.MdstM, w.MsrcA, w.MsrcB]
         )
 
-        _ = um.addHaltUnit(
-            unitName: "Halt",
-            inputWires: [w.halt],
-            onlyOnRising: false
+        _ = um.addGenericUnit(
+            unitName: "MStat",
+            inputWires: [w.Mstat, w.dmemError],
+            outputWires: [w.mstat],
+            logic: {
+                w.mstat[0...7] = w.dmemError.b ? S.ADR : w.Mstat[0...7]
+            }
         )
 
         _ = um.addGenericUnit(
             unitName: "MemAddr",
-            inputWires: [w.icode, w.valE, w.valA],
+            inputWires: [w.Micode, w.MvalE, w.MvalA],
             outputWires: [w.memAddr],
             logic: {
-                let icode = w.icode[0...3]
-                if [I.POPQ, I.RET].contains(icode) { w.memAddr.v = w.valA.v }
-                else if [I.MRMOVQ, I.RMMOVQ, I.PUSHQ, I.CALL].contains(icode) { w.memAddr.v = w.valE.v }
+                let icode = w.Micode[0...3]
+                if [I.POPQ, I.RET].contains(icode) { w.memAddr.v = w.MvalA.v }
+                else if [I.MRMOVQ, I.RMMOVQ, I.PUSHQ, I.CALL].contains(icode) { w.memAddr.v = w.MvalE.v }
             }
         )
 
         _ = um.addGenericUnit(
             unitName: "MemData",
-            inputWires: [w.icode, w.valP, w.valA],
+            inputWires: [w.MvalA],
             outputWires: [w.memData],
             logic: {
-                let icode = w.icode[0...3]
-                if [I.RMMOVQ, I.PUSHQ].contains(icode) { w.memData.v = w.valA.v }
-                else if [I.CALL].contains(icode) { w.memData.v = w.valP.v }
+                w.memData.v = w.MvalA.v
             }
         )
 
         _ = um.addGenericUnit(
             unitName: "MemControl",
-            inputWires: [w.icode],
+            inputWires: [w.Micode],
             outputWires: [w.memRead, w.memWrite],
             logic: {
-                let icode = w.icode[0...3]
+                let icode = w.Micode[0...3]
                 if [I.RMMOVQ, I.PUSHQ, I.CALL].contains(icode) { w.memWrite.b = true; w.memRead.b = false }
                 else if [I.MRMOVQ, I.POPQ, I.RET].contains(icode) { w.memWrite.b = false; w.memRead.b = true }
                 else { w.memWrite.b = false; w.memRead.b = false }

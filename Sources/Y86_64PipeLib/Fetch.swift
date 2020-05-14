@@ -33,31 +33,29 @@ extension Y86_64Pipe {
                 w.inst18.v = iAddr + 8 < mu.count ? mu[q: iAddr + 1] : 0
                 w.inst29.v = iAddr + 9 < mu.count ? mu[q: iAddr + 2] : 0
 
-                /*
-                 // Data
-                 var dmemError = false
-                 if w.memRead.b {
-                     dmemError = w.memAddr.v >= mu.count - 7
-                     w.valM.v = !dmemError ? mu[q: w.memAddr.v] : 0
-                 }
-                 if w.memWrite.b {
-                     // Only test if error
-                     dmemError = w.memAddr.v >= mu.count - 7
-                 }
-                 w.dmemError.b = dmemError */
+                // Data
+                var dmemError = false
+                if w.memRead.b {
+                    dmemError = w.memAddr.v >= mu.count - 7
+                    w.mvalM.v = !dmemError ? mu[q: w.memAddr.v] : 0
+                }
+                if w.memWrite.b {
+                    // Only test if error
+                    dmemError = w.memAddr.v >= mu.count - 7
+                }
+                w.dmemError.b = dmemError
             },
             onRising: { mu in var mu = mu
                 // Data
-                /*
-                 if w.memWrite.b {
-                     let error = w.memAddr.v >= mu.count - 7
-                     if !error {
-                         mu[q: w.memAddr.v] = w.memData.v
-                     }
-                     w.dmemError.b = error
-                 } else {
-                     w.dmemError.b = false
-                 } */
+                if w.memWrite.b {
+                    let error = w.memAddr.v >= mu.count - 7
+                    if !error {
+                        mu[q: w.memAddr.v] = w.memData.v
+                    }
+                    w.dmemError.b = error
+                } else {
+                    w.dmemError.b = false
+                }
             },
             bytesCount: 16 * 1024 * 1024
         )
