@@ -78,12 +78,11 @@ extension Y86_64Pipe {
             inputWires: [w.Eicode, w.Eifun, w.Wstat, w.mstat],
             outputWires: [w.setCC],
             logic: {
-                // FIXME: set CC by stat
-                if true {
+                if ![S.ADR, S.INS, S.HLT].contains(w.mstat[0...7]), ![S.ADR, S.INS, S.HLT].contains(w.Wstat[0...7]) {
                     let icode = w.Eicode[0...3]
                     let ifun = w.Eifun[0...3]
                     w.setCC.b = (icode == I.OPQ && [F.ADD, F.SUB, F.AND, F.XOR].contains(ifun)) || icode == I.IADDQ
-                } else {
+                } else { // exception has occured in MEM or WB !!!
                     w.setCC.b = false
                 }
             }

@@ -146,18 +146,20 @@ public class Y86_64Pipe: Machine, Y86_64System {
     }
 
     required convenience public init() {
-        self.init(fetch: true, decodeWriteBack: true, execute: true, memory: true)
+        self.init(fetch: true, decodeWriteBack: true, execute: true, memory: true, control: true)
     }
 
     init(fetch: Bool = false,
         decodeWriteBack: Bool = false,
         execute: Bool = false,
-        memory: Bool = false) {
+        memory: Bool = false,
+        control: Bool = false) {
 
         if fetch { addFetch() }
         if decodeWriteBack { addDecodeWriteBack(); addWriteBack() }
         if execute { addExecute() }
         if memory { addMemory() }
+        if control { addControl() }
 
         _ = um.ready()
 
