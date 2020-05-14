@@ -11,8 +11,6 @@ import Y86_64GenericLib
 extension Y86_64Pipe {
     func addFetch() {
         let w = self.wires
-        
-        // FIXME: fcond !!!
 
         Fregs = um.addQuadStageRegisterUnit(
             unitName: "Fregs",
@@ -135,6 +133,18 @@ extension Y86_64Pipe {
                 if w.Micode.v == I.JXX, !w.Mcond.b { w.fpc.v = w.MvalA.v } // mispredicted always taken
                 else if w.Wicode.v == I.RET { w.fpc.v = w.WvalM.v } // `ret`
                 else { w.fpc.v = w.FpredPC.v }
+            }
+        )
+
+        _ = um.addGenericUnit(
+            unitName: "FStat",
+            inputWires: [w.ficode, w.instValid, w.imemError],
+            outputWires: [w.fstat],
+            logic: {
+                if !w.instValid.b { w.fstat[0...7] = S.INS }
+                else if w.imemError.b { w.fstat[0...7] = S.ADR }
+                else if w.ficode[0...3] == I.HALT { w.fstat[0...7] = S.HLT }
+                else { w.fstat[0...7] = S.AOK }
             }
         )
     }

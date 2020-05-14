@@ -66,17 +66,21 @@ public struct R {
 
 // Statuses
 public struct S {
+    public static let BUB = 0.u64
     public static let AOK = 1.u64
     public static let ADR = 2.u64
     public static let INS = 3.u64
     public static let HLT = 4.u64
+    public static let PIP = 5.u64
 
     public static func statDesc (stat: UInt64) -> String {
         switch stat {
-        case 0...(S.AOK): return "AOK"
+        case S.BUB: return "BUB"
+        case S.AOK: return "AOK"
         case S.ADR: return "ADR"
         case S.INS: return "INS"
         case S.HLT: return "HLT"
+        case S.PIP: return "PIP"
         default: return "ERR"
         }
     }
