@@ -11,29 +11,22 @@ import Y86_64GenericLib
 extension Y86_64Pipe {
     func addFetch() {
         let w = self.wires
+        
+        // FIXME: fcond !!!
 
-        Fregs = um.addRegisterUnit(
+        Fregs = um.addQuadStageRegisterUnit(
             unitName: "Fregs",
             inputWires: [w.fpredPC],
-            outputWires: [w.FpredPC],
-            logic: { ru in
-                // PC
-                w.FpredPC.v = ru[0]
-            },
-            onRising: { ru in var ru = ru
-                // update PC
-                ru[0] = w.fpredPC.v
-            },
-            bytesCount: 8
+            outputWires: [w.FpredPC]
         )
 
         memory = um.addMemoryUnit(
             unitName: "Memory",
             inputWires: [w.fpc,
-                /* w.memAddr, w.memData, w.memWrite, w.memRead */],
+                         /* w.memAddr, w.memData, w.memWrite, w.memRead */ ],
             outputWires: [w.inst0, w.inst18, w.inst29,
-                /* w.valM,
-                w.imemError, w.dmemError*/],
+                          /* w.valM,
+                              w.imemError, w.dmemError*/ ],
             logic: { mu in
                 // Instruction
                 let iAddr = w.fpc.v
@@ -43,30 +36,30 @@ extension Y86_64Pipe {
                 w.inst29.v = iAddr + 9 < mu.count ? mu[q: iAddr + 2] : 0
 
                 /*
-                // Data
-                var dmemError = false
-                if w.memRead.b {
-                    dmemError = w.memAddr.v >= mu.count - 7
-                    w.valM.v = !dmemError ? mu[q: w.memAddr.v] : 0
-                }
-                if w.memWrite.b {
-                    // Only test if error
-                    dmemError = w.memAddr.v >= mu.count - 7
-                }
-                w.dmemError.b = dmemError */
+                 // Data
+                 var dmemError = false
+                 if w.memRead.b {
+                     dmemError = w.memAddr.v >= mu.count - 7
+                     w.valM.v = !dmemError ? mu[q: w.memAddr.v] : 0
+                 }
+                 if w.memWrite.b {
+                     // Only test if error
+                     dmemError = w.memAddr.v >= mu.count - 7
+                 }
+                 w.dmemError.b = dmemError */
             },
             onRising: { mu in var mu = mu
                 // Data
                 /*
-                if w.memWrite.b {
-                    let error = w.memAddr.v >= mu.count - 7
-                    if !error {
-                        mu[q: w.memAddr.v] = w.memData.v
-                    }
-                    w.dmemError.b = error
-                } else {
-                    w.dmemError.b = false
-                } */
+                 if w.memWrite.b {
+                     let error = w.memAddr.v >= mu.count - 7
+                     if !error {
+                         mu[q: w.memAddr.v] = w.memData.v
+                     }
+                     w.dmemError.b = error
+                 } else {
+                     w.dmemError.b = false
+                 } */
             },
             bytesCount: 16 * 1024 * 1024
         )
@@ -74,9 +67,9 @@ extension Y86_64Pipe {
         _ = um.addGenericUnit(
             unitName: "Split",
             inputWires: [w.inst0,
-                w.imemError],
+                         w.imemError],
             outputWires: [w.ficode, w.fifun,
-                w.instValid, w.needRegIDs, w.needValC],
+                          w.instValid, w.needRegIDs, w.needValC],
             logic: {
                 // split the instruction
                 let icode = w.imemError.b ? I.NOP : w.inst0[4...7]
@@ -94,7 +87,7 @@ extension Y86_64Pipe {
         _ = um.addGenericUnit(
             unitName: "Align",
             inputWires: [w.inst18, w.inst29,
-                w.needRegIDs],
+                         w.needRegIDs],
             outputWires: [w.frA, w.frB, w.fvalC],
             logic: {
                 if w.needRegIDs.b {
@@ -116,7 +109,7 @@ extension Y86_64Pipe {
         _ = um.addGenericUnit(
             unitName: "PCAdder",
             inputWires: [w.fpc,
-                w.needRegIDs, w.needValC],
+                         w.needRegIDs, w.needValC],
             outputWires: [w.fvalP],
             logic: {
                 // calculate new PC
@@ -128,9 +121,20 @@ extension Y86_64Pipe {
             unitName: "PCPredictor",
             inputWires: [w.fvalC, w.fvalP, w.ficode],
             outputWires: [w.fpredPC],
-            logic: { // predict next PC
-                // mispredicted branch
-                
+            logic: { // always taken
+                if [I.JXX, I.CALL].contains(w.ficode.v) { w.fpredPC.v = w.fvalC.v }
+                else { w.fpredPC.v = w.fvalP.v }
+            }
+        )
+
+        _ = um.addGenericUnit(
+            unitName: "PCSelector",
+            inputWires: [w.fvalC, w.fvalP, w.ficode],
+            outputWires: [w.fpredPC],
+            logic: {
+                if w.Micode.v == I.JXX, !w.Mcond.b { w.fpc.v = w.MvalA.v } // mispredicted always taken
+                else if w.Wicode.v == I.RET { w.fpc.v = w.WvalM.v } // `ret`
+                else { w.fpc.v = w.FpredPC.v }
             }
         )
     }
