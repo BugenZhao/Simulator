@@ -69,11 +69,12 @@ extension Y86_64Seq {
 
         _ = um.addGenericUnit(
             unitName: "SetCC",
-            inputWires: [w.icode],
+            inputWires: [w.icode, w.ifun],
             outputWires: [w.setCC],
             logic: {
                 let icode = w.icode[0...3]
-                w.setCC.b = icode == I.OPQ || icode == I.IADDQ
+                let ifun = w.ifun[0...3]
+                w.setCC.b = (icode == I.OPQ && [F.ADD, F.SUB, F.AND, F.XOR].contains(ifun)) || icode == I.IADDQ
             }
         )
 
@@ -125,7 +126,8 @@ extension Y86_64Seq {
                     w.sfi.b = r < 0
                     w.ofi.b = false
                 default:
-                    fatalError()
+                    print("What is \(aluFun)?")
+                    break
                 }
 
                 w.valE.v = UInt64(bitPattern: r)

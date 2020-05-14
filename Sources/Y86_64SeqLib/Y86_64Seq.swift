@@ -76,9 +76,10 @@ public class Y86_64Seq: Machine, Y86_64System {
     var wires = WireSet()
 
     public func run(debug: Bool = false) {
+        if debug { memory?.dump(at: 0...0xff) }
         repeat {
             um.clock(resetWire: true)
-            if debug { printStatus(); print(">>", terminator: ""); _ = readLine() }
+            if debug { printStatus(); memory?.dump(at: 0...0xff);  print(">>", terminator: ""); _ = readLine() }
         } while !halted
 
         print("\(type(of: self)): System halted after \(um.cycle) cycles")
@@ -117,9 +118,9 @@ public class Y86_64Seq: Machine, Y86_64System {
         self.um.resetWires()
 
         // Default CC
-        self.cc?[b: 0] = 1  // ZF
-        self.cc?[b: 1] = 0  // SF
-        self.cc?[b: 2] = 0  // OF
+        self.cc?[b: 0] = 1 // ZF
+        self.cc?[b: 1] = 0 // SF
+        self.cc?[b: 2] = 0 // OF
     }
 }
 

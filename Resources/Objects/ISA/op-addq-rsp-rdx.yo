@@ -1,0 +1,9 @@
+0x000: 30f40001000000000000 | 	      irmovq $256, %rsp
+0x00a: 30f22000000000000000 | 	      irmovq $32, %rdx
+0x014: 10                   | 	      nop
+0x015: 10                   | 	      nop
+0x016: 10                   | 	      nop
+0x017: 6042                 | 	      addq %rsp,%rdx
+0x019: 10                   | 	      nop
+0x01a: 10                   | 	      nop
+0x01b: 00                   | 	      halt

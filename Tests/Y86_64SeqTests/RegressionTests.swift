@@ -17,6 +17,12 @@ class RegressionTests: XCTestCase {
         let yoDirPath = FileManager.default.currentDirectoryPath + "/Resources/Objects/"
     #endif
 
+    #if Xcode
+        let isaYoDirPath = "/Users/bugenzhao/Codes/Swift/Simulator/Resources/Objects/ISA/"
+    #else
+        let isaYoDirPath = FileManager.default.currentDirectoryPath + "/Resources/Objects/ISA/"
+    #endif
+
 
     let included: [String] = [
     ]
@@ -25,15 +31,19 @@ class RegressionTests: XCTestCase {
         "perf.yo", // Too slow
     ]
 
+    override func setUp() {
+        super.setUp()
+        self.continueAfterFailure = false
+    }
 
-    func doTest(_ yoPath: String) {
+    func doTest(_ yoPath: String, debug: Bool = false) {
         let yis = Yis(yoPath)
         yis.run()
         yis.register?.dump()
 
         let seq = Y86_64Seq()
         seq.loadYO(yoPath)
-        seq.run(debug: false)
+        seq.run(debug: debug)
 
         // MARK: Memory
         XCTAssertEqual(yis.memory![0..<0x2000], seq.memory!.data[0..<0x2000])
@@ -67,6 +77,18 @@ class RegressionTests: XCTestCase {
             guard yoName.hasSuffix(".yo") else { return }
 
             doTest(yoDirPath + yoName)
+        }
+    }
+
+    func testISA() {
+        let fileManager = FileManager.default
+        try? fileManager.contentsOfDirectory(atPath: isaYoDirPath).forEach { yoName in
+            guard !excluded.contains(yoName) else { return }
+            guard included.isEmpty || included.contains(yoName) else { return }
+            guard yoName.hasSuffix(".yo") else { return }
+
+            let debug = included.contains(yoName)
+            doTest(isaYoDirPath + yoName, debug: debug)
         }
     }
 }

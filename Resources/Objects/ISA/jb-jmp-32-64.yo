@@ -1,0 +1,24 @@
+0x000: 30f40001000000000000 | 	      irmovq stack, %rsp
+0x00a: 30f60100000000000000 | 	      irmovq $1, %rsi
+0x014: 30f70200000000000000 | 	      irmovq $2, %rdi
+0x01e: 30f50400000000000000 | 	      irmovq $4, %rbp
+0x028: 30f02000000000000000 | 	      irmovq $32, %rax
+0x032: 30f24000000000000000 | 	      irmovq $64, %rdx
+0x03c: 704f00000000000000   | 	      jmp skip
+0x045: 00                   | 	      halt
+0x046:                      | target:
+0x046: 6062                 | 	      addq %rsi,%rdx
+0x048: 6072                 | 	      addq %rdi,%rdx
+0x04a: 6052                 | 	      addq %rbp,%rdx
+0x04c: 10                   |               nop
+0x04d: 10                   |               nop
+0x04e: 00                   | 	      halt
+0x04f:                      | skip:
+0x04f: 6120                 | 	      subq %rdx,%rax
+0x051: 704600000000000000   | 	      jmp target
+0x05a: 6060                 | 	      addq %rsi,%rax
+0x05c: 6070                 | 	      addq %rdi,%rax
+0x05e: 6050                 | 	      addq %rbp,%rax
+0x060: 00                   |               halt
+0x100:                      | .pos 0x100
+0x100:                      | stack:
