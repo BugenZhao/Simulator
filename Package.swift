@@ -12,6 +12,7 @@ let package = Package(
         .executable(name: "Y86_64", targets: ["Y86_64"]),
         .library(name: "Y86_64GenericLib", targets: ["Y86_64GenericLib"]),
         .library(name: "Y86_64SeqLib", targets: ["Y86_64SeqLib"]),
+        .library(name: "Y86_64PipeLib", targets: ["Y86_64PipeLib"]),
         .executable(name: "Simulator", targets: ["Simulator"]),
         .library(name: "SimulatorLib", targets: ["SimulatorLib"]),
         .library(name: "Yis", targets: ["CYis", "YisWrapper"])
@@ -34,6 +35,9 @@ let package = Package(
             name: "Y86_64SeqLib",
             dependencies: ["SimulatorLib", "Y86_64GenericLib"]),
         .target(
+            name: "Y86_64PipeLib",
+            dependencies: ["SimulatorLib", "Y86_64GenericLib"]),
+        .target(
             name: "Y86_64GenericLib",
             dependencies: ["SimulatorLib"]),
         .target(
@@ -52,5 +56,8 @@ let package = Package(
         .testTarget(
             name: "Y86_64SeqTests",
             dependencies: ["SimulatorLib", "Y86_64SeqLib", "Nimble", "YisWrapper"]),
+        .testTarget(
+            name: "Y86_64PipeTests",
+            dependencies: ["SimulatorLib", "Y86_64PipeLib", "Nimble", "YisWrapper"]),
     ]
 )
