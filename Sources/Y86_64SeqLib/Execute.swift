@@ -19,7 +19,7 @@ extension Y86_64Seq {
             logic: { ru in
                 w.zfo.b = ru[b: 0] == 1
                 w.sfo.b = ru[b: 1] == 1
-                w.ofo.b = ru[b: 2] == 2
+                w.ofo.b = ru[b: 2] == 1
             },
             onRising: { ru in var ru = ru
                 if w.setCC.b {

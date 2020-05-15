@@ -9,7 +9,7 @@
 Bugen's logic-circuit-level CPU Simulator, in a descriptive manner.
 
 <p align="center">
-  <img src="Resources/Y86_64Pipe.png" alt="Y86_64Pipe" width="500" />
+  <img src="Resources/Y86_64Pipe.png" alt="Y86_64Pipe" width="700" />
 </p>
 
 
@@ -28,7 +28,7 @@ swift test --filter Y86_64SeqTests
 swift test --filter Y86_64PipeTests
 ```
 
-- In order to test the correctness of the implementations of the Y86-64 simulators, I ported *YIS*, the instruction-level simulator provided by *CS:APP 3e*, and wrapped it in Swift. There may be a stack overflow bug during the Swift-C interoperation when we run it through SwiftPM, which has been roughly resolved by using global variables instead. For more details, check [CYis](Sources/CYis) and [YisWrapper](Sources/YisWrapper).
+- In order to test the correctness of the implementations of the Y86-64 simulators, I ported *YIS*, the instruction-level simulator provided by *CS:APP 3e*, and wrapped it in Swift. There may be a stack overflow bug during the Swift-C interoperation when we run it through SwiftPM, which has been roughly resolved by using global variables instead (thanks to [@skyzh](https://github.com/skyzh)). For more details, check [CYis](Sources/CYis) and [YisWrapper](Sources/YisWrapper).
 - The tester in *CS:APP 3e*'s architecture lab yields **~950** cases to test the correctness, including the `iadd` extension instruction. Actually, there are some bugs in the cases testing the pipeline control combinations, since the tester may inherit the code from *2e*, and generate Y86-64 objects with incorrect instruction length assumptions, resulting in some overlap between data and instructions which may not be expected and make no sense on testing the pipeline control combinations. 
 All objects at [Resources/Objects/ISA](Resources/Objects/ISA) have been fixed to correct behaviors, and both Seq and Pipe simulators have passed them all.
 
@@ -40,19 +40,19 @@ The logic circuit behaves quite differently from the general imperative programm
 
 To create such a library firstly, I abstract the logic circuit into two basic types: ***Wire*** and ***Unit***. 
 
-[*Wire*](Sources/SimulatorLib/Wires/Wire.swift) is a simple object with a temporary value, representing the signals on it currently. Thanks to the Swift's powerful features like ranges, extensions, custom subscripts, and computed properties, we can read and write the wires in a fairly natural way.
+[*Wire*](Sources/SimulatorLib/Wires/Wire.swift) is a simple object with a temporary value, representing the signals on it currently. Thanks to Swift's powerful features like ranges, extensions, custom subscripts, and computed properties, we can read and write the wires in a fairly natural way.
 
 ```swift
 let wire = Wire("foo")
 wire.v = 0b1010_0101
 wire[0...3] 					// 0b0101
 wire[0] = 0
-wire.b      					// false
+wire.b      					// (boolean) false
 ```
 
-[*Unit*](Sources/SimulatorLib/Units/Static/) is the entity that performs arithmetic and logical computations. The behaviors of different units may vary a lot, but they all follow the [***protocol***](Sources/SimulatorLib/Units/Static/StaticUnit.swift) that, they can calculate the corresponding output based on their input signals in general time, and as the clock rises, they may change the state latched in themselves, depending on the input signal at that moment. 
+[*Unit*](Sources/SimulatorLib/Units/Static/) is the entity that performs arithmetic and logical computations. The behaviors of different units may vary a lot, but **they all follow the protocol** that, they can calculate the output based on their input signals in general time, and as the clock rises, they may change the state latched in themselves, depending on the input signal at that moment. 
 
-For better reuse of code, I make *Unit* a protocol and derive a series of unit types with some default behaviors, like `GenericUnit` and `RegisterUnit`. Besides, to separate the logic of different machines from the *SimulatorLib*, I create a [*UnitManager*](Sources/SimulatorLib/Units/Static/StaticUnitManager.swift) class and **represent the logic code as `@escaping` closures**. Besides, for better access to the data in register and memory, I also create a protocol named `Addressable` and provide easy access by custom subscripts like this:
+For better reuse of code, I make *Unit* a [*protocol*](Sources/SimulatorLib/Units/Static/StaticUnit.swift) and derive a series of unit types with some default behaviors, like `GenericUnit` and `RegisterUnit`. To get and set the data in register and memory, I also create a protocol named `Addressable` and provide easy access by custom subscripts like:
 
 ```swift
 memory[l: 0x10] = 0x4567_89ab     // set the long word at address 0x10
@@ -61,7 +61,7 @@ memory[7] = 0x0123_4567_89ab_cdef // get the 7th quad word (at address 0x38)
 memory.dump(at: 0...0x80)         // dump the memory content
 ```
 
-Here's an example of the CC register, where `ru` will represent `cc` itself when the closure is called.
+I also create [*UnitManager*](Sources/SimulatorLib/Units/Static/StaticUnitManager.swift) class, which manages a set of units in a machine and includes several factory methods. To add a unit into the system, simply call `addSomeUnit()` method by **representing the logic code as `@escaping` closures**, which provides quite a powerful generalization for *SimulatorLib*. Here's an example of the CC register, where `w` is a set of wires, and `ru` will represent `cc` itself when the closure is called by the manager.
 
 ```swift
 cc = um.addRegisterUnit(
@@ -71,7 +71,7 @@ cc = um.addRegisterUnit(
     logic: { ru in
         w.zfo.b = ru[b: 0] == 1
         w.sfo.b = ru[b: 1] == 1
-        w.ofo.b = ru[b: 2] == 2
+        w.ofo.b = ru[b: 2] == 1
     },
     onRising: { ru in var ru = ru
         if w.setCC.b {
@@ -84,9 +84,9 @@ cc = um.addRegisterUnit(
 )
 ```
 
-After we succeed in representing the logic, how can *SimulatorLib* run and compute the whole circuits? One possible approach is to perform evaluation in a reversed sequence by using *lazy* variables or computed properties, with a somewhat *FP* style. Here I take another intuitive approach, that is, **to simulate the parallel propagation of signals by repeatedly calling their logic code until they're all stable, and then rise the clock**. Thus, I also create a [*WireManager*](Sources/SimulatorLib/Wires/Static/StaticWireManager.swift) to manage a set of wires and check the stability by making checkpoints. 
+After we succeed in representing the logic, how can *SimulatorLib* run and compute the whole circuits? One possible approach is to perform evaluation in a reversed sequence by using *lazy* variables or computed properties, with a somewhat *FP* style. Here I take another intuitive approach, that is, **to simulate the parallel propagation of signals by repeatedly calling their logic code until they're all stable, and then rise the clock**. Thus, I create a [*WireManager*](Sources/SimulatorLib/Wires/Static/StaticWireManager.swift) to manage a set of wires and check the stability by making checkpoints. 
 
-Here's some code snippets from [*UnitManager*](Sources/SimulatorLib/Units/Static/StaticUnitManager.swift), as you can guess, the core of any machine or simulator.
+Here are snippets of the key part in *UnitManager*, as you know, the core of any machine or simulator.
 
 ```swift
 func stablize() {
@@ -113,7 +113,7 @@ public func clock() {
 
 After the construction of *SimulatorLib*, it is quite easy now to create a Y86-64 simulator based on it. First, I make a [*Y86_64GenericLib*](Sources/Y86_64GenericLib) module, where I define some constants of Y86-64 ISA and make a protocol named `Y86_64System` with necessary properties like `memory`, `register`, `pc`, `cc`, and `stat`, as well as an object loader. Within every *Y86_64System*, there must also be a set of wires, which can be up to 100 in the pipeline version. 
 
-Next, we just need to write the logic of each unit very *happily*, one stage after another, as *extensions* of the *Y86_64System* like [this](Sources/Y86_64PipeLib). Here's an example of  the pipeline control unit. As you can see, because we can pass closures as the logic code, we can also make some temporary variables within it and make the logic *much clearer*.
+Next, we just need to write the logic of each unit very *happily* one stage after another, as *extensions* of the *Y86_64System* like [this](Sources/Y86_64PipeLib). Here's an example of  the pipeline control unit. As you can see, because we can pass the logic code as closures, we are also able to make some temporary variables within it and make the logic *much clearer*.
 
 ```swift
 _ = um.addGenericUnit(
@@ -144,9 +144,9 @@ _ = um.addGenericUnit(
 )
 ```
 
-The majority of designs for both *Seq* and *Pipe* are based on the HCL of *CS:APP 3e*. However, all units have the same place in our design, from the PC predictor to ALU, which becomes **a good playground for us to add, modify, and practice some designs of *Computer Architecture*.**
+The majority of designs for both *Seq* and *Pipe* are based on the HCL design of *CS:APP 3e*. However, all units, from the PC predictor to the ALU, have the same place in our design, which makes the project **a good playground to add, modify, and practice some techniques of *Computer Architecture*.**
 
-Besides, I also wrap *YIS*, the instruction-level simulator for Y86-64, into the project and fix some bugs in order to make a comprehensive comparison test for *Seq* and *Pipe*. Except for the different definition on PC register, both simulators have passed the [*~1000 test cases*](Resources/Objects).
+Besides, in order to make a comprehensive comparison test for *Seq* and *Pipe*, I also wrap *YIS*, the instruction-level simulator for Y86-64, into the project. After some fixes on *YIS* and tester mentioned previously, both simulators have passed all [*~1000 test cases*](Resources/Objects).
 
 ## Get Started with SimulatorLib
 An example of Accumulator is shown below, check [here](Sources/Simulator/Examples/Accumulator.swift) for more details.
