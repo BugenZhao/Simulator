@@ -32,11 +32,11 @@ extension Y86_64Pipe {
             },
             onRising: { ru in var ru = ru
                 let stat = w.Wstat[0...7]
-                ru[b:0] = stat == S.BUB ? S.AOK : stat
+                ru[b: 0] = stat == S.BUB ? S.AOK : stat
             },
             bytesCount: 1
         )
-        
+
         _ = um.addHaltUnit(
             unitName: "Halt",
             inputWires: [w.halt],

@@ -26,6 +26,7 @@ public class Y86_64Pipe: Machine, Y86_64System {
 
     class WireSet {
         // MARK: Fetch
+
         let FpredPC = Wire("FpredPC")
         let fpredPC = Wire("fpredPC")
         let fpc = Wire("fpc")
@@ -46,8 +47,8 @@ public class Y86_64Pipe: Machine, Y86_64System {
         let fvalC = Wire("fvalC")
         let fvalP = Wire("fvalP")
 
-
         // MARK: Decode
+
         let Dicode = Wire("Dicode")
         let Difun = Wire("Difun")
         let Dstat = Wire("Dstat")
@@ -60,15 +61,15 @@ public class Y86_64Pipe: Machine, Y86_64System {
         let dsrcB = Wire("dsrcB")
         let ddstE = Wire("ddstE")
         let ddstM = Wire("ddstM")
-        
+
         let drvalA = Wire("drvalA")
         let drvalB = Wire("drvalB")
-        
+
         let dvalA = Wire("dvalA")
         let dvalB = Wire("dvalB")
 
-
         // MARK: Execute
+
         let Eicode = Wire("Eicode")
         let Eifun = Wire("Eifun")
         let Estat = Wire("Estat")
@@ -79,7 +80,7 @@ public class Y86_64Pipe: Machine, Y86_64System {
         let EsrcB = Wire("EsrcB")
         let EdstE = Wire("EdstE")
         let EdstM = Wire("EdstM")
-        
+
         let aluA = Wire("aluA")
         let aluB = Wire("aluB")
         let aluFun = Wire("aluFun")
@@ -89,13 +90,13 @@ public class Y86_64Pipe: Machine, Y86_64System {
         let zfo = Wire("zfo")
         let sfo = Wire("sfo")
         let ofo = Wire("ofo")
-        
+
         let econd = Wire("econd")
         let evalE = Wire("evalE")
         let edstE = Wire("edstE")
 
-        
         // MARK: Memory
+
         let Micode = Wire("Micode")
         let Mifun = Wire("Mifun")
         let Mstat = Wire("Mstat")
@@ -106,18 +107,18 @@ public class Y86_64Pipe: Machine, Y86_64System {
         let MsrcB = Wire("MsrcB")
         let MdstE = Wire("MdstE")
         let MdstM = Wire("MdstM")
-        
+
         let memAddr = Wire("memAddr")
         let memData = Wire("memData")
         let memRead = Wire("memRead")
         let memWrite = Wire("memWrite")
         let dmemError = Wire("dmemError")
-        
+
         let mstat = Wire("mstat")
         let mvalM = Wire("mvalM")
-        
 
         // MARK: WriteBack
+
         let Wicode = Wire("Wicode")
         let Wifun = Wire("Wifun")
         let Wstat = Wire("Wstat")
@@ -127,11 +128,11 @@ public class Y86_64Pipe: Machine, Y86_64System {
         let WsrcB = Wire("WsrcB")
         let WdstE = Wire("WdstE")
         let WdstM = Wire("WdstM")
-        
+
         let halt = Wire("halt")
 
-
         // MARK: Control
+
         let Fstall = Wire("Fstall")
         let Dstall = Wire("Dstall")
         let Dbubble = Wire("Dbubble")
@@ -154,16 +155,15 @@ public class Y86_64Pipe: Machine, Y86_64System {
         printStatus()
     }
 
-    required convenience public init() {
+    public required convenience init() {
         self.init(fetch: true, decodeWriteBack: true, execute: true, memory: true, control: true)
     }
 
     init(fetch: Bool = false,
-        decodeWriteBack: Bool = false,
-        execute: Bool = false,
-        memory: Bool = false,
-        control: Bool = false) {
-
+         decodeWriteBack: Bool = false,
+         execute: Bool = false,
+         memory: Bool = false,
+         control: Bool = false) {
         if fetch { addFetch() }
         if decodeWriteBack { addDecodeWriteBack(); addWriteBack() }
         if execute { addExecute() }
@@ -190,4 +190,3 @@ public class Y86_64Pipe: Machine, Y86_64System {
         self.cc?[b: 2] = 0 // OF
     }
 }
-
