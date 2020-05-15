@@ -22,6 +22,7 @@ extension Y86_64Pipe {
                 if w.Ebubble.b {
                     ru[0] = I.NOP
                     ru[1] = F.NONE
+                    ru[2] = S.BUB
                     ru[6] = R.NONE
                     ru[7] = R.NONE
                     ru[8] = R.NONE

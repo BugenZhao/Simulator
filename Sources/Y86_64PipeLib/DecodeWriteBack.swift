@@ -23,6 +23,7 @@ extension Y86_64Pipe {
                 if w.Dbubble.b {
                     ru[0] = I.NOP
                     ru[1] = F.NONE
+                    ru[2] = S.BUB
                     ru[5] = R.NONE
                     ru[6] = R.NONE
                 }
