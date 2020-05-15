@@ -1,0 +1,8 @@
+0x000: 30f40400000000000000 | 	    irmovq $4, %rsp
+0x00a: 10                   | 	    nop
+0x00b: 10                   | 	    nop
+0x00c: 10                   | 	    nop
+0x00d: c0f4e0ffffffffffffff |             iaddq $-32, %rsp
+0x017: 10                   | 	    nop
+0x018: 10                   | 	    nop
+0x019: 00                   | 	    halt
