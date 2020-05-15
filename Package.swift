@@ -9,10 +9,7 @@ let package = Package(
         .macOS(.v10_15),
     ],
     products: [
-        .executable(name: "Y86_64", targets: ["Y86_64"]),
-        .library(name: "Y86_64GenericLib", targets: ["Y86_64GenericLib"]),
-        .library(name: "Y86_64SeqLib", targets: ["Y86_64SeqLib"]),
-        .library(name: "Y86_64PipeLib", targets: ["Y86_64PipeLib"]),
+        .executable(name: "Y86_64", targets: ["Y86_64", "Y86_64GenericLib", "Y86_64SeqLib", "Y86_64PipeLib"]),
         .executable(name: "Simulator", targets: ["Simulator"]),
         .library(name: "SimulatorLib", targets: ["SimulatorLib"]),
         .library(name: "Yis", targets: ["CYis", "YisWrapper"])

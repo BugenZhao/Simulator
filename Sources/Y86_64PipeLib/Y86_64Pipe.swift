@@ -170,7 +170,7 @@ public class Y86_64Pipe: Machine, Y86_64System {
         if memory { addMemory() }
         if control { addControl() }
 
-        _ = um.ready()
+        _ = um.ready(verbose: false)
 
         reset()
     }

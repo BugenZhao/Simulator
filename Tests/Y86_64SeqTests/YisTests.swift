@@ -19,14 +19,14 @@ class YisTests: XCTestCase {
 
         let yis = Yis(yo)
         _ = yis.run()
-
+        yis.printStatus()
         yis.memory?.dump(at: 0...200)
         yis.register?.dump()
 
         let system = Y86_64Seq()
         system.loadYO(yo)
         system.run()
-
+        
         system.memory?.dump(at: 0...200)
         system.register?.dump()
 

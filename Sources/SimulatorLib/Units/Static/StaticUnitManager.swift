@@ -238,8 +238,8 @@ public class StaticUnitManager {
     }
 
     @discardableResult
-    public func ready() -> Int {
+    public func ready(verbose: Bool = true) -> Int {
         defer { isReady = true }
-        return self.wireManager.examine()
+        return self.wireManager.examine(verbose: verbose)
     }
 }

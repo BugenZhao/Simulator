@@ -17,6 +17,7 @@ system.loadYO(yo)
 let time = evaluate {
     system.run()
 }
+
 let cycle = system.um.cycle
 print("Performance of \(type(of: system)) [\(yo)]: ")
 print("\t\(cycle) cycles in \(time) sec, \(Double(cycle) / time) cycles per sec")

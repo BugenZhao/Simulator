@@ -35,9 +35,10 @@ class RegressionTests: XCTestCase {
     }
 
     func doTest(_ yoPath: String, debug: Bool = false) {
+        print(">>>\(yoPath)")
+        
         let yis = Yis(yoPath)
         yis.run()
-        yis.register?.dump()
 
         let seq = Y86_64Pipe()
         seq.loadYO(yoPath)

@@ -8,7 +8,7 @@
 
 Bugen's logic-circuit-level CPU Simulator, in a descriptive manner.
 
-  ![Y86_64Seq](Resources/Y86_64Seq.png)
+  ![Y86_64Pipe](Resources/Y86_64Pipe.png)
 
 ## CPU Simulation
 

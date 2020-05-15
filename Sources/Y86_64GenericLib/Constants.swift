@@ -9,20 +9,20 @@ import Foundation
 
 
 // Instructions
-public struct I { // A  , B  , E  , M
-    public static let HALT = 0.u64 // ---, ---, ---, ---
-    public static let NOP = 1.u64 // ---, ---, ---, ---
-    public static let RRMOVQ = 2.u64 // rA , ---, rB , ---
-    public static let IRMOVQ = 3.u64 // ---, ---, rB , ---
-    public static let RMMOVQ = 4.u64 // rA , rB , ---, ---
-    public static let MRMOVQ = 5.u64 // ---, rB , ---, rA  !!
-    public static let OPQ = 6.u64 // rA , rB , rB , ---
-    public static let JXX = 7.u64 // ---, ---, ---, ---
-    public static let CALL = 8.u64 // ---, rsp, rsp, ---
-    public static let RET = 9.u64 // rsp, rsp, rsp, ---
-    public static let PUSHQ = 0xa.u64 // rA , rsp, rsp, ---
-    public static let POPQ = 0xb.u64 // rsp, rsp, rsp, rA
-    public static let IADDQ = 0xc.u64 // ---, rB , rB , ---
+public struct I {                      // A  , B  , E  , M
+    public static let HALT   = 0x0.u64 // ---, ---, ---, ---
+    public static let NOP    = 0x1.u64 // ---, ---, ---, ---
+    public static let RRMOVQ = 0x2.u64 // rA , ---, rB , ---
+    public static let IRMOVQ = 0x3.u64 // ---, ---, rB , ---
+    public static let RMMOVQ = 0x4.u64 // rA , rB , ---, ---
+    public static let MRMOVQ = 0x5.u64 // ---, rB , ---, rA  !!
+    public static let OPQ    = 0x6.u64 // rA , rB , rB , ---
+    public static let JXX    = 0x7.u64 // ---, ---, ---, ---
+    public static let CALL   = 0x8.u64 // ---, rsp, rsp, ---
+    public static let RET    = 0x9.u64 // rsp, rsp, rsp, ---
+    public static let PUSHQ  = 0xa.u64 // rA , rsp, rsp, ---
+    public static let POPQ   = 0xb.u64 // rsp, rsp, rsp, rA
+    public static let IADDQ  = 0xc.u64 // ---, rB , rB , ---
 }
 
 // Functions
@@ -36,25 +36,25 @@ public struct F {
 
     public static let JMP = 0.u64
     public static let JLE = 1.u64
-    public static let JL = 2.u64
-    public static let JE = 3.u64
+    public static let JL  = 2.u64
+    public static let JE  = 3.u64
     public static let JNE = 4.u64
     public static let JGE = 5.u64
-    public static let JG = 6.u64
+    public static let JG  = 6.u64
 }
 
 // Registers
 public struct R {
-    public static let RAX = 0.u64
-    public static let RCX = 1.u64
-    public static let RDX = 2.u64
-    public static let RBX = 3.u64
-    public static let RSP = 4.u64
-    public static let RBP = 5.u64
-    public static let RSI = 6.u64
-    public static let RDI = 7.u64
-    public static let R8 = 8.u64
-    public static let R9 = 9.u64
+    public static let RAX = 0x0.u64
+    public static let RCX = 0x1.u64
+    public static let RDX = 0x2.u64
+    public static let RBX = 0x3.u64
+    public static let RSP = 0x4.u64
+    public static let RBP = 0x5.u64
+    public static let RSI = 0x6.u64
+    public static let RDI = 0x7.u64
+    public static let R8  = 0x8.u64
+    public static let R9  = 0x9.u64
     public static let R10 = 0xa.u64
     public static let R11 = 0xb.u64
     public static let R12 = 0xc.u64
@@ -62,6 +62,25 @@ public struct R {
     public static let R14 = 0xe.u64
 
     public static let NONE = 0xf.u64
+
+    public static let names = [
+        "RAX",
+        "RCX",
+        "RDX",
+        "RBX",
+        "RSP",
+        "RBP",
+        "RSI",
+        "RDI",
+        "R8 ",
+        "R9 ",
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R14",
+        "None"
+    ]
 }
 
 // Statuses
@@ -73,15 +92,12 @@ public struct S {
     public static let HLT = 4.u64
     public static let PIP = 5.u64
 
-    public static func statDesc (stat: UInt64) -> String {
-        switch stat {
-        case S.BUB: return "BUB"
-        case S.AOK: return "AOK"
-        case S.ADR: return "ADR"
-        case S.INS: return "INS"
-        case S.HLT: return "HLT"
-        case S.PIP: return "PIP"
-        default: return "ERR"
-        }
-    }
+    public static let names = [
+        "BUB",
+        "AOK",
+        "ADR",
+        "INS",
+        "HLT",
+        "PIP"
+    ]
 }

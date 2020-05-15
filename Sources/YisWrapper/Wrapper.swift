@@ -31,6 +31,7 @@ public class Yis {
 
     @discardableResult public func run() -> Int {
         cycle = Int(run_yis(yoPath, statPtr, statePtr))
+        printStatus()
         return cycle!
     }
 
@@ -59,9 +60,23 @@ public class Yis {
             return S.ADR
         case STAT_HLT:
             return S.HLT
+        case STAT_BUB:
+            return S.BUB
+        case STAT_PIP:
+            return S.PIP
         default:
-            return 666
+            return 0
         }
+    }
+    
+    public func printStatus() {
+        R.names
+            .enumerated()
+            .dropLast()
+            .forEach { idx, name in
+                let value = get_reg_val(statePtr.pointee.r, reg_id_t(rawValue: reg_id_t.RawValue(idx)))
+                print("\(name):\t\(String(format: "0x%016llx %lld", value, value))") }
+        print("\n")
     }
     
     public var pc: UInt64 {
