@@ -86,7 +86,6 @@ public class Y86_64Pipe: Machine, Y86_64System {
         let zfi = Wire("zfi")
         let sfi = Wire("sfi")
         let ofi = Wire("ofi")
-        let setCC = Wire("setCC")
         let zfo = Wire("zfo")
         let sfo = Wire("sfo")
         let ofo = Wire("ofo")
@@ -130,6 +129,16 @@ public class Y86_64Pipe: Machine, Y86_64System {
         let WdstM = Wire("WdstM")
         
         let halt = Wire("halt")
+
+
+        // MARK: Control
+        let Fstall = Wire("Fstall")
+        let Dstall = Wire("Dstall")
+        let Dbubble = Wire("Dbubble")
+        let Ebubble = Wire("Ebubble")
+        let Mbubble = Wire("Mbubble")
+        let Wstall = Wire("Wstall")
+        let setCC = Wire("setCC")
     }
 
     var wires = WireSet()

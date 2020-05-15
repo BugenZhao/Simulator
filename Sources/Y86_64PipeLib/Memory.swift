@@ -15,7 +15,19 @@ extension Y86_64Pipe {
         Mregs = um.addQuadStageRegisterUnit(
             unitName: "Mregs",
             inputWires: [w.Eicode, w.Eifun, w.Estat, w.econd, w.evalE, w.EvalA, w.edstE, w.EdstM, w.EsrcA, w.EsrcB],
-            outputWires: [w.Micode, w.Mifun, w.Mstat, w.Mcond, w.MvalE, w.MvalA, w.MdstE, w.MdstM, w.MsrcA, w.MsrcB]
+            outputWires: [w.Micode, w.Mifun, w.Mstat, w.Mcond, w.MvalE, w.MvalA, w.MdstE, w.MdstM, w.MsrcA, w.MsrcB],
+            controlWires: [w.Mbubble],
+            defaultOnRisingWhen: !w.Mbubble.b,
+            else: { ru in var ru = ru
+                if w.Mbubble.b {
+                    ru[0] = I.NOP
+                    ru[1] = F.NONE
+                    ru[6] = R.NONE
+                    ru[7] = R.NONE
+                    ru[8] = R.NONE
+                    ru[9] = R.NONE
+                }
+            }
         )
 
         _ = um.addGenericUnit(

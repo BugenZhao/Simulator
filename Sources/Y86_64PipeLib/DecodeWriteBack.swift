@@ -15,7 +15,18 @@ extension Y86_64Pipe {
         Dregs = um.addQuadStageRegisterUnit(
             unitName: "Dregs",
             inputWires: [w.ficode, w.fifun, w.fstat, w.fvalC, w.fvalP, w.frA, w.frB],
-            outputWires: [w.Dicode, w.Difun, w.Dstat, w.DvalC, w.DvalP, w.DrA, w.DrB]
+            outputWires: [w.Dicode, w.Difun, w.Dstat, w.DvalC, w.DvalP, w.DrA, w.DrB],
+            controlWires: [w.Dstall, w.Dbubble],
+            defaultOnRisingWhen: !w.Dstall.b && !w.Dbubble.b,
+            else: { ru in var ru = ru
+                if w.Dstall.b { return }
+                if w.Dbubble.b {
+                    ru[0] = I.NOP
+                    ru[1] = F.NONE
+                    ru[5] = R.NONE
+                    ru[6] = R.NONE
+                }
+            }
         )
 
         register = um.addRegisterUnit(

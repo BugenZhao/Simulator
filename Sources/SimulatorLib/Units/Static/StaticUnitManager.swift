@@ -14,9 +14,9 @@ public class StaticUnitManager {
     private(set) var unitsDict: [UnitName: StaticUnit] = [:]
     private(set) var units: [StaticUnit] = []
 
-    private(set) public var halted: Bool = false
+    public private(set) var halted: Bool = false
 
-    private(set) public var cycle: UInt64 = 0
+    public private(set) var cycle: UInt64 = 0
 
     subscript(dynamicMember unitName: UnitName) -> StaticUnit? {
         get {
@@ -32,13 +32,13 @@ public class StaticUnitManager {
 
     var isReady = false
 
-    public init() { }
+    public init() {}
 
     public func addGenericUnit(
         unitName: UnitName,
         inputWires: [Wire] = [],
         outputWires: [Wire] = [],
-        logic: @escaping () -> Void = { }) -> StaticGenericUnit {
+        logic: @escaping () -> Void = {}) -> StaticGenericUnit {
         guard !unitsDict.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
@@ -111,7 +111,10 @@ public class StaticUnitManager {
     public func addQuadStageRegisterUnit(
         unitName: UnitName,
         inputWires: [Wire],
-        outputWires: [Wire]) -> StaticRegisterUnit {
+        outputWires: [Wire],
+        controlWires: [Wire],
+        defaultOnRisingWhen: @autoclosure @escaping () -> Bool = true,
+        else: @escaping (StaticRegisterUnit) -> Void = { _ in }) -> StaticRegisterUnit {
         guard !unitsDict.keys.contains(unitName) else {
             fatalError(SimulatorError.UnitManagerDuplicateNameError.rawValue + unitName)
         }
@@ -121,12 +124,14 @@ public class StaticUnitManager {
             outputWires.enumerated().forEach { i, wire in wire.v = ru[i.u64] }
         }
         let onRising: (StaticRegisterUnit) -> Void = { ru in var ru = ru
-            inputWires.enumerated().forEach { i, wire in ru[i.u64] = wire.v }
+            if defaultOnRisingWhen() { // write
+                inputWires.enumerated().forEach { i, wire in ru[i.u64] = wire.v }
+            } else { `else`(ru) } // may bubble?
         }
         let bytesCount = 8 * inputWires.count
-        let unit = StaticRegisterUnit(unitName, inputWires, outputWires, logic, onRising, bytesCount)
+        let unit = StaticRegisterUnit(unitName, inputWires + controlWires, outputWires, logic, onRising, bytesCount)
         checkPermission(unit)
-        inputWires.forEach { $0.to.append(unitName); wireManager.addWire($0) }
+        (inputWires + controlWires).forEach { $0.to.append(unitName); wireManager.addWire($0) }
         outputWires.forEach { $0.from = unitName; wireManager.addWire($0) }
 
         unitsDict[unitName] = unit
@@ -173,7 +178,6 @@ public class StaticUnitManager {
         return unit
     }
 
-
     private func checkPermission(_ unit: StaticUnit) {
         let tempWireManager = StaticWireManager()
         unit.inputWires.forEach { tempWireManager.addWire($0) }
@@ -192,12 +196,11 @@ public class StaticUnitManager {
         unit.outputWires.forEach { $0.clear() }
     }
 
-
     func stablize() {
         repeat {
             guard !halted else { return }
             units.forEach { $0.logic() }
-        } while(wireManager.doCheckpoint() == false)
+        } while (wireManager.doCheckpoint() == false)
     }
 
     func rise() {

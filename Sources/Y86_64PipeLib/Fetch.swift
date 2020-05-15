@@ -15,7 +15,12 @@ extension Y86_64Pipe {
         Fregs = um.addQuadStageRegisterUnit(
             unitName: "Fregs",
             inputWires: [w.fpredPC],
-            outputWires: [w.FpredPC]
+            outputWires: [w.FpredPC],
+            controlWires: [w.Fstall],
+            defaultOnRisingWhen: !w.Fstall.b,
+            else: { ru in
+                if w.Fstall.b { return }
+            }
         )
 
         pc = Fregs
@@ -92,7 +97,7 @@ extension Y86_64Pipe {
                     // byte 1: two reg IDs
                     w.frA.v = w.inst18[4...7]
                     w.frB.v = w.inst18[0...3]
-                    // bute 2...9: valC
+                    // byte 2...9: valC
                     w.fvalC.v = w.inst29.v
                 } else {
                     // no reg IDs
