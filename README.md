@@ -1,20 +1,20 @@
 # Simulator
 
 ![Language](https://img.shields.io/badge/Language-Swift%205.2-orange.svg)
-![macOS](https://github.com/BugenZhao/Simulator/workflows/macOS/badge.svg)
-![Ubuntu](https://github.com/BugenZhao/Simulator/workflows/Ubuntu/badge.svg)
+![Simulator](https://github.com/BugenZhao/Simulator/workflows/Simulator/badge.svg)
+![SimulatorLib](https://github.com/BugenZhao/Simulator/workflows/SimulatorLib/badge.svg)
+![Y86_64Seq](https://github.com/BugenZhao/Simulator/workflows/Y86_64Seq/badge.svg)
+![Y86_64Pipe](https://github.com/BugenZhao/Simulator/workflows/Y86_64Pipe/badge.svg)
 
 Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
 
-## CPU Simulation
-
-- [x] *CS:APP* Y86-64 Seq *[ISA test passed]*
-
-   ([Sources](Sources/Y86_64SeqLib)) ([Design](Resources/Y86_64SeqDesign.pdf))
-
   ![Y86_64Seq](Resources/Y86_64Seq.png)
 
-- [x] *CS:APP* Y86-64 Pipe
+## CPU Simulation
+
+- [x] *CS:APP* Y86-64 Seq ([Sources](Sources/Y86_64SeqLib)) ([Design](Resources/Y86_64SeqDesign.pdf)) *[ISA tests passed]*
+
+- [x] *CS:APP* Y86-64 Pipe ([Sources](Sources/Y86_64PipeLib)) ([Design](Resources/Y86_64PipeDesign.pdf)) *[ISA tests passed]*
 
 - [ ] ...
 
