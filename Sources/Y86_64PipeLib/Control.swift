@@ -22,8 +22,9 @@ extension Y86_64Pipe {
                           w.Dbubble, w.Ebubble, w.Mbubble],
             logic: {
                 let ret = [w.Dicode[0...3], w.Eicode[0...3], w.Micode[0...3]].contains(I.RET)
-                let loadAndUse = [I.MRMOVQ, I.POPQ].contains(w.Eicode[0...3]) && [w.dsrcA[0...3], w.dsrcB[0...3]].contains(w.EdstM[0...3])
-                let mispridicted = w.Eicode[0...3] == I.JXX && !w.econd.b
+                let loadAndUse = [I.MRMOVQ, I.POPQ].contains(w.Eicode[0...3]) &&
+                    [w.dsrcA[0...3], w.dsrcB[0...3]].contains(w.EdstM[0...3])
+                let mispredicted = w.Eicode[0...3] == I.JXX && !w.econd.b
 
                 let WException = [S.ADR, S.INS, S.HLT].contains(w.Wstat[0...7])
                 let mException = [S.ADR, S.INS, S.HLT].contains(w.mstat[0...7])
@@ -32,8 +33,8 @@ extension Y86_64Pipe {
                 w.Dstall.b = loadAndUse
                 w.Wstall.b = WException // avoid next WB if exception has occurred
 
-                w.Dbubble.b = mispridicted || (ret && !loadAndUse)
-                w.Ebubble.b = mispridicted || loadAndUse
+                w.Dbubble.b = mispredicted || (ret && !loadAndUse)
+                w.Ebubble.b = mispredicted || loadAndUse
                 w.Mbubble.b = WException || mException // avoid next MEM if exception has occurred
             }
         )

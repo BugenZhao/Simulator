@@ -32,7 +32,7 @@ public class StaticWireManager {
         return checkpoint == newCheckpoint
     }
 
-    public func doPaticialCheckpoint() -> Set<UnitName> {
+    public func doPartialCheckpoint() -> Set<UnitName> {
         var newCheckpoint = wires.map { $0.v }
         defer { checkpoint = newCheckpoint }
 
