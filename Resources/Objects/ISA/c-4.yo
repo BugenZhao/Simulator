@@ -1,0 +1,29 @@
+0x000: 30f48000000000000000 | 	irmovq Stack1,%rsp
+0x00a: 30f26e00000000000000 | 	irmovq rtnpt,%rdx
+0x014: 40240000000000000000 | 	rmmovq %rdx,(%rsp)   # Put return point on top of Stack1
+0x01e: 30f09000000000000000 | 	irmovq Stack2,%rax
+0x028: 40400000000000000000 | 	rmmovq %rsp,(%rax)   # Put Stack1 on top of Stack2
+0x032: 30f4a000000000000000 | 	irmovq Stack3,%rsp   # Point to Stack3
+0x03c: a02f                 |         pushq %rdx
+0x03e: 2045                 |         rrmovq %rsp,%rbp
+0x040: 30f20300000000000000 | 	irmovq $3,%rdx       # Initialize
+0x04a: 6333                 | 	xorq   %rbx,%rbx     # Set condition codes to ZF=1,SF=0,OF=0
+                            | #       Here's where the 4 instruction sequence goes
+0x04c: 30f00300000000000000 |         irmovq $3,%rax
+0x056: 10                   |         nop
+0x057: 746100000000000000   |         jne target
+0x060: 00                   | 	halt
+0x061:                      | target:
+0x061: 2002                 |         rrmovq %rax,%rdx
+                            | #	Now finish things off
+0x063: 30f30300000000000000 | 	irmovq $3,%rbx       # Not reached when sequence ends with ret
+0x06d: 00                   | 	halt                  # 
+0x06e: 30f60500000000000000 | rtnpt:  irmovq $5,%rsi       # Return point
+0x078: 00                   | 	halt
+0x080:                      | .pos 0x80
+0x080:                      | 	Stack1:
+0x090:                      | .pos 0x90
+0x090:                      | 	Stack2:
+0x0a0:                      | .pos 0xa0
+0x0a0:                      | 	Stack3:
+0x0a0: 00                   |         halt
