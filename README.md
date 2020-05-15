@@ -6,7 +6,7 @@
 ![Y86_64Seq](https://github.com/BugenZhao/Simulator/workflows/Y86_64Seq/badge.svg)
 ![Y86_64Pipe](https://github.com/BugenZhao/Simulator/workflows/Y86_64Pipe/badge.svg)
 
-Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
+Bugen's logic-circuit-level CPU Simulator, in a descriptive manner.
 
   ![Y86_64Seq](Resources/Y86_64Seq.png)
 
@@ -17,6 +17,14 @@ Bugen's logic-circuit-level CPU Simulator, in a descriptive manner. (WIP)
 - [x] *CS:APP* Y86-64 Pipe ([Sources](Sources/Y86_64PipeLib)) ([Design](Resources/Y86_64PipeDesign.pdf)) *[ISA tests passed]*
 
 - [ ] ...
+
+### Notes
+
+- In order to test the correctness of the implementations of the Y86-64 simulators, I ported *YIS*, the instruction-level simulator provided by *CS:APP 3e*, and wrapped it in Swift. There may be a stack overflow bug during the Swift-C interoperation when we run it through SwiftPM, which has been roughly resolved by using global variables instead. For more details, check [CYis](Sources/CYis) and [YisWrapper](Sources/YisWrapper).
+- The tester in *CS:APP 3e*'s architecture lab yields **~950** cases to test the correctness, including the `iadd` extension instruction. Actually, there are some bugs in the cases testing the pipeline control combinations, since the tester may inherit the code from *2e*, and generate Y86-64 objects with incorrect instruction length assumptions, resulting in some overlap between data and instructions which may not be expected and make no sense on testing the pipeline control combinations. 
+All objects at [Resources/Objects/ISA](Resources/Objects/ISA) have been fixed to correct behaviors. And both Seq and Pipe simulators have passed them all.
+
+  
 
 ## Get Started
 An example of Accumulator is shown below, check [here](Sources/Simulator/Examples/Accumulator.swift) for more details.
@@ -30,36 +38,8 @@ import Foundation
 import SimulatorLib
 
 class Accumulator: Machine {
-    public var unitManager = StaticUnitManager()
-
-    var range: ClosedRange<UInt64>
-    var ans: StaticRegisterUnit
-    var memory: StaticMemoryUnit
-
-    struct WireSet {
-        let pcin = Wire("pcin")
-        let pcout = Wire("pcout")
-        let mem = Wire("mem")
-        let adderin = Wire("adderin")
-        let adder = Wire("adder")
-        let ans = Wire("ans")
-        let halt = Wire("halt")
-    }
-
-    var wires = WireSet()
-
-    public func run() {
-        let time = evaluate {
-            repeat {
-                unitManager.clock()
-            } while !unitManager.halted
-            print("Sum of \(range) is \(ans[q: 0])")
-        }
-        let cycle = unitManager.cycle
-        print("Performance of \(type(of: self)): ")
-        print("\t\(cycle) cycles in \(time) sec, \(Double(cycle) / time) cycles per sec")
-    }
-
+    ...
+    
     public init(_ range: ClosedRange<UInt64>) {
         self.range = range
         
