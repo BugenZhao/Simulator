@@ -91,8 +91,8 @@ class UnitManagerTests: XCTestCase {
                 outputValue: 555
             ) }
 
-        addOne()
-        expect { addOne() }.to(throwAssertion())
+        _ = addOne()
+        expect { _ = addOne() }.to(throwAssertion())
     }
 
     func testConflictOutput() {

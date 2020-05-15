@@ -34,6 +34,7 @@ public class StaticUnitManager {
 
     public init() {}
 
+    @discardableResult
     public func addGenericUnit(
         unitName: UnitName,
         inputWires: [Wire] = [],
@@ -53,6 +54,7 @@ public class StaticUnitManager {
         return unit
     }
 
+    @discardableResult
     public func addPrinterUnit(
         unitName: UnitName,
         inputWires: [Wire],
@@ -70,6 +72,7 @@ public class StaticUnitManager {
         return unit
     }
 
+    @discardableResult
     public func addOutputUnit(
         unitName: UnitName,
         outputWires: [Wire] = [],
@@ -87,6 +90,7 @@ public class StaticUnitManager {
         return unit
     }
 
+    @discardableResult
     public func addRegisterUnit(
         unitName: UnitName,
         inputWires: [Wire],
@@ -108,6 +112,7 @@ public class StaticUnitManager {
         return unit
     }
 
+    @discardableResult
     public func addQuadStageRegisterUnit(
         unitName: UnitName,
         inputWires: [Wire],
@@ -140,6 +145,7 @@ public class StaticUnitManager {
         return unit
     }
 
+    @discardableResult
     public func addMemoryUnit(
         unitName: UnitName,
         inputWires: [Wire],
@@ -161,6 +167,7 @@ public class StaticUnitManager {
         return unit
     }
 
+    @discardableResult
     public func addHaltUnit(
         unitName: UnitName,
         inputWires: [Wire] = [],
@@ -230,6 +237,7 @@ public class StaticUnitManager {
         wireManager.wires.forEach { $0.v = 0 }
     }
 
+    @discardableResult
     public func ready() -> Int {
         defer { isReady = true }
         return self.wireManager.examine()

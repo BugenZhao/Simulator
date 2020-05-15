@@ -30,6 +30,7 @@ public class UnitManager {
 
     public init() { }
 
+    @discardableResult
     public func addGenericUnit(
         unitName: UnitName,
         inputWires: [WireName] = [],
@@ -47,6 +48,7 @@ public class UnitManager {
         return unit
     }
 
+    @discardableResult
     public func addPrinterUnit(
         unitName: UnitName,
         inputWires: [WireName],
@@ -62,6 +64,7 @@ public class UnitManager {
         return unit
     }
 
+    @discardableResult
     public func addOutputUnit(
         unitName: UnitName,
         outputWires: [WireName] = [],
@@ -77,6 +80,7 @@ public class UnitManager {
         return unit
     }
 
+    @discardableResult
     public func addRegisterUnit(
         unitName: UnitName,
         inputWires: [WireName],
@@ -96,6 +100,7 @@ public class UnitManager {
         return unit
     }
 
+    @discardableResult
     public func addMemoryUnit(
         unitName: UnitName,
         inputWires: [WireName],
@@ -115,6 +120,7 @@ public class UnitManager {
         return unit
     }
 
+    @discardableResult
     public func addHaltUnit(
         unitName: UnitName,
         inputWires: [WireName] = []) -> HaltUnit {
