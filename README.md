@@ -3,8 +3,8 @@
 ![Language](https://img.shields.io/badge/Language-Swift%205.2-orange.svg)
 ![Simulator](https://github.com/BugenZhao/Simulator/workflows/Simulator/badge.svg)
 ![SimulatorLib](https://github.com/BugenZhao/Simulator/workflows/SimulatorLib/badge.svg)
-![Y86_64Seq](https://github.com/BugenZhao/Simulator/workflows/Y86_64Seq/badge.svg)
-![Y86_64Pipe](https://github.com/BugenZhao/Simulator/workflows/Y86_64Pipe/badge.svg)
+![Y86-64Seq](https://github.com/BugenZhao/Simulator/workflows/Y86-64Seq/badge.svg)
+![Y86-64Pipe](https://github.com/BugenZhao/Simulator/workflows/Y86-64Pipe/badge.svg)
 
 Bugen's logic-circuit-level CPU Simulator, in a descriptive manner.
 
