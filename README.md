@@ -20,8 +20,9 @@ Bugen's logic-circuit-level CPU Simulator, in a descriptive manner.
 
 ### Notes on Y86-64 Testing
 
-```bash
-swift test
+```
+swift test --filter Y86_64SeqTests
+swift test --filter Y86_64PipeTests
 ```
 
 - In order to test the correctness of the implementations of the Y86-64 simulators, I ported *YIS*, the instruction-level simulator provided by *CS:APP 3e*, and wrapped it in Swift. There may be a stack overflow bug during the Swift-C interoperation when we run it through SwiftPM, which has been roughly resolved by using global variables instead. For more details, check [CYis](Sources/CYis) and [YisWrapper](Sources/YisWrapper).
@@ -48,7 +49,16 @@ wire.b      					// false
 
 [*Unit*](Sources/SimulatorLib/Units/Static/) is the entity that performs arithmetic and logical computations. The behaviors of different units may vary a lot, but they all follow the [***protocol***](Sources/SimulatorLib/Units/Static/StaticUnit.swift) that, they can calculate the corresponding output based on their input signals in general time, and as the clock rises, they may change the state latched in themselves, depending on the input signal at that moment. 
 
-For better reuse of code, I make *Unit* a protocol and derive a series of unit types with some default behaviors, like `GenericUnit` and `RegisterUnit`. Besides, to separate the logic of different machines from the *SimulatorLib*, I create a [*UnitManager*](Sources/SimulatorLib/Units/Static/StaticUnitManager.swift) class and **represent the logic code as `@escaping` closures**. Here's an example of the CC register, where `ru` will represent `cc` itself when the closure is called.
+For better reuse of code, I make *Unit* a protocol and derive a series of unit types with some default behaviors, like `GenericUnit` and `RegisterUnit`. Besides, to separate the logic of different machines from the *SimulatorLib*, I create a [*UnitManager*](Sources/SimulatorLib/Units/Static/StaticUnitManager.swift) class and **represent the logic code as `@escaping` closures**. Besides, for better access to the data in register and memory, I also create a protocol named `Addressable` and provide easy access by custom subscripts like this:
+
+```swift
+memory[l: 0x10] = 0x4567_89ab     // set the long word at address 0x10
+memory[b: 0x12]                   // get the byte at address 0x12
+memory[7] = 0x0123_4567_89ab_cdef // get the 7th quad word (at address 0x38)
+memory.dump(at: 0...0x80)         // dump the memory content
+```
+
+Here's an example of the CC register, where `ru` will represent `cc` itself when the closure is called.
 
 ```swift
 cc = um.addRegisterUnit(
@@ -100,7 +110,7 @@ public func clock() {
 
 After the construction of *SimulatorLib*, it is quite easy now to create a Y86-64 simulator based on it. First, I make a [*Y86_64GenericLib*](Sources/Y86_64GenericLib) module, where I define some constants of Y86-64 ISA and make a protocol named `Y86_64System` with necessary properties like `memory`, `register`, `pc`, `cc`, and `stat`, as well as an object loader. Within every *Y86_64System*, there must also be a set of wires, which can be up to 100 in the pipeline version. 
 
-Next, we just need to write the logic of each unit very *happily*, one stage after another. Here's an example of  the pipeline control unit. As you can see, because we can pass closures as the logic code, we can also make some temporary variables within it and make the logic *much clearer*.
+Next, we just need to write the logic of each unit very *happily*, one stage after another, as *extensions* of the *Y86_64System* like [this](Sources/Y86_64PipeLib). Here's an example of  the pipeline control unit. As you can see, because we can pass closures as the logic code, we can also make some temporary variables within it and make the logic *much clearer*.
 
 ```swift
 _ = um.addGenericUnit(
@@ -133,9 +143,9 @@ _ = um.addGenericUnit(
 
 The majority of designs for both *Seq* and *Pipe* are based on the HCL of *CS:APP 3e*. However, all units have the same place in our design, from the PC predictor to ALU, which becomes **a good playground for us to add, modify, and practice some designs of *Computer Architecture*.**
 
-Besides, I also wrap *YIS*, the instruction-level simulator for Y86-64, into the project and fix some bugs in order to make a comprehensive comparison test for *Seq* and *Pipe*. Except for the different definitions on PC register, both simulators have passed the [*~1000 test cases*](Resources/Objects).
+Besides, I also wrap *YIS*, the instruction-level simulator for Y86-64, into the project and fix some bugs in order to make a comprehensive comparison test for *Seq* and *Pipe*. Except for the different definition on PC register, both simulators have passed the [*~1000 test cases*](Resources/Objects).
 
-## Get Started
+## Get Started with SimulatorLib
 An example of Accumulator is shown below, check [here](Sources/Simulator/Examples/Accumulator.swift) for more details.
 
 ![Accumulator Circuit](Resources/accumulator.png)
@@ -244,11 +254,17 @@ Performance of Accumulator:
 
 
 ## Build and Run
-This project is built with *Swift Package Manager*, to run the simulator, simply execute:
+This project is built with *Swift Package Manager*, to run the simulator:
 
 ```bash
 swift run -c release Simulator
 swift run -c release Y86_64
+```
+
+To test the simulator:
+
+```
+swift test
 ```
 
 ## Copyleft
